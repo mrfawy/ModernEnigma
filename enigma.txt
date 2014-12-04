@@ -1,0 +1,32 @@
+format
+
+setting encoded +specialchar+plainMsg
+
+specialChar !$#%<>=[].,;:'"?()&|~-+*/\@^
+
+Rotor 3-5
+Reflector
+plugboard
+
+
+why modern :
+key can mapped to itself
+ensures random initial setup :in the begining of each msg , random secret is encrypted by the machine and added to the front of msg
+(resolve human lazy operator problem
+https://www.youtube.com/watch?v=2cqbeSVhLBM
+
+base randomization on seed ( like machine ID)
+
+
+
+
+
+settings:
+https://www.youtube.com/watch?v=mcX7iO_XCFA
+rotor order III I II
+rotor Base labels 01 A1 B1
+plugboard pairs  AF WZ KL
+Msg Secret settings : after setting base , send ABCABC using the machine -> KLJHMN at the begining of the msg
+the reciever will get this repeated and then adjust his setting as rotor base label
+
+
