@@ -1,8 +1,8 @@
 from Switch import Switch
 from CharIndexMap import CharIndexMap
 class PlugBoard(Switch):
-    def __init__(self,charIndexMap):
-        super().__init__(charIndexMap)
+    def __init__(self):
+        super().__init__()
 
     #override connection
     def connectByIndex(self,xIndex,yIndex):
@@ -22,9 +22,8 @@ class PlugBoard(Switch):
         self.inputWiring[xIndex]=yIndex
         self.outputWiring[yIndex]=xIndex
 
-m=CharIndexMap()
-p=PlugBoard(m)
-p.connectByChar("A","C")
-p.connectByChar("B","A")
-p.connectByChar("C","B")
-p.printConnections()
+# p=PlugBoard()
+# p.connectByChar("A","C")
+# p.connectByChar("B","A")
+# p.connectByChar("C","B")
+# p.printConnections()
