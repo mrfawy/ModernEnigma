@@ -1,15 +1,15 @@
 ROTORS = {
     'I': {
         'wiring': 'EKMFLGDQVZNTOWYHXUSPAIBRCJ',
-        'stepping': 'Q',
+        'stepping': 'QABFDEGLCK',
     },
     'II': {
         'wiring': 'AJDKSIRUXBLHWTMCQGZNPYFVOE',
-        'stepping': 'E',
+        'stepping': 'EABCDFI',
     },
     'III': {
         'wiring': 'BDFHJLCPRTXVZNYEIWGAKMUSQO',
-        'stepping': 'V',
+        'stepping': 'VACE',
     },
     'IV': {
         'wiring': 'ESOVPZJAYQUIRHXLNFTGKDCMWB',
