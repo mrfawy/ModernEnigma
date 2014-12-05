@@ -37,14 +37,16 @@ class ModernEnigma:
         return CharIndexMap.indexToChar(output)
 
 rotor1Wiring=Wiring("EKMFLGDQVZNTOWYHXUSPAIBRCJ")
-rotor1=Rotor(rotor1Wiring)
+rotor1=Rotor(rotor1Wiring,[1,3])
 w=Wiring()
 reflectorWiring=Wiring("YRUHQSLDPXNGOKMIEBFZCWVJAT")
 reflector=Reflector(reflectorWiring)
 plugboard=PlugBoard(w)
-mc=ModernEnigma([rotor1],reflector,plugboard)
-MSG="HNR"
+mc=ModernEnigma([rotor1,rotor1],reflector,plugboard)
+MSG="AAAAA"
 for c in MSG:
+    print("R0:"+mc.rotorList[0].getDisplay())
+    print("R1:"+mc.rotorList[1].getDisplay())
     result=mc.processKeyPress(c)
     print(result)
 

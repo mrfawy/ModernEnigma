@@ -2,7 +2,7 @@ from CharIndexMap import CharIndexMap
 from Switch import Switch
 from Wiring import Wiring
 class Rotor(Switch):
-    def __init__(self,wiring,offset=0,notchIndexList=[]):
+    def __init__(self,wiring,notchIndexList=[],offset=0):
         super().__init__(wiring)
         self.offset=offset
         self.size=CharIndexMap.getRangeSize()
@@ -26,10 +26,11 @@ class Rotor(Switch):
 
     #return True if notch touches to mark rotate next Rotor
     def rotate(self):
+        flipNextRotorFlag=False
         self.offset=(self.offset+1)%self.size
         if(self.offset in self.notchIndexList):
-            return True
-        return False
+            flipNextRotorFlag=True
+        return flipNextRotorFlag
 
 # #test
 #import pdb; pdb.set_trace()
