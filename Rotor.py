@@ -1,8 +1,9 @@
 from CharIndexMap import CharIndexMap
 from Switch import Switch
+from Wiring import Wiring
 class Rotor(Switch):
-    def __init__(self,offset=0,notchIndexList=[]):
-        super().__init__()
+    def __init__(self,wiring,offset=0,notchIndexList=[]):
+        super().__init__(wiring)
         self.offset=offset
         self.size=CharIndexMap.getRangeSize()
         self.notchIndexList=notchIndexList
@@ -18,7 +19,7 @@ class Rotor(Switch):
         return (output-self.offset)%self.size
 
     def adjustDisplay(self,char):
-        self.offset=CharIndexMap.charIndex(char)
+        self.offset=CharIndexMap.charToIndex(char)
 
     def getDisplay(self):
         return CharIndexMap.indexToChar(self.offset)
@@ -32,11 +33,3 @@ class Rotor(Switch):
 
 # #test
 #import pdb; pdb.set_trace()
-# r=Rotor()
-# config="EKMFLGDQVZNTOWYHXUSPAIBRCJ"
-# r.connectByConfig(config)
-# r.printConnections()
-# for i in range(0,5):
-#     print(CharIndexMap.indexToChar(r.signalIn(0)))
-#     r.rotate()
-#

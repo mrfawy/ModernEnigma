@@ -2,6 +2,7 @@ from Plugboard import PlugBoard
 from Rotor import Rotor
 from Reflector import Reflector
 from CharIndexMap import CharIndexMap
+from Wiring import Wiring
 
 class ModernEnigma:
     def __init__(self,rotorList,reflector,plugboard):
@@ -34,12 +35,13 @@ class ModernEnigma:
             if notchFlag:
                 notchFlag=rotor.rotate()
         return CharIndexMap.indexToChar(output)
-rotor1=Rotor()
-config="EKMFLGDQVZNTOWYHXUSPAIBRCJ"
-rotor1.connectByConfig(config)
-rotor1.printConnections()
-reflector=Reflector()
-plugboard=PlugBoard()
+
+rotor1Wiring=Wiring("EKMFLGDQVZNTOWYHXUSPAIBRCJ")
+rotor1=Rotor(rotor1Wiring)
+w=Wiring()
+reflectorWiring=Wiring("BCDEFGHIJKLMNOPQRSTUVWXYZA")
+reflector=Reflector(reflectorWiring)
+plugboard=PlugBoard(w)
 mc=ModernEnigma([rotor1],reflector,plugboard)
 MSG="AAA"
 for c in MSG:
