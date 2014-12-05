@@ -39,13 +39,12 @@ class ModernEnigma:
 rotor1Wiring=Wiring("EKMFLGDQVZNTOWYHXUSPAIBRCJ")
 rotor1=Rotor(rotor1Wiring)
 w=Wiring()
-reflectorWiring=Wiring("BCDEFGHIJKLMNOPQRSTUVWXYZA")
+reflectorWiring=Wiring("YRUHQSLDPXNGOKMIEBFZCWVJAT")
 reflector=Reflector(reflectorWiring)
 plugboard=PlugBoard(w)
 mc=ModernEnigma([rotor1],reflector,plugboard)
-MSG="AAA"
+MSG="HNR"
 for c in MSG:
     result=mc.processKeyPress(c)
     print(result)
-    print("R1:"+rotor1.getDisplay())
 
