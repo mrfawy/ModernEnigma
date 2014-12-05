@@ -2,8 +2,9 @@ from CharIndexMap import CharIndexMap
 from Switch import Switch
 from Wiring import Wiring
 class Rotor(Switch):
-    def __init__(self,wiring,notchChars="",offset=0):
+    def __init__(self,id,wiring,notchChars="",offset=0):
         super().__init__(wiring)
+        self.id=id
         self.offset=offset
         self.size=CharIndexMap.getRangeSize()
         self.notchIndexList=[]
