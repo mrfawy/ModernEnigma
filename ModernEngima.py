@@ -12,19 +12,19 @@ class ModernEnigma:
 
     def processKeyPress(self,char):
         indexIn=CharIndexMap.charToIndex(char)
-        print("indexIn"+str(indexIn))
+        # print("indexIn"+str(indexIn))
         lastOut=self.plugboard.signalIn(indexIn)
-        print("plug"+str(lastOut))
+        # print("plug"+str(lastOut))
         for rotor in self.rotorList:
             lastOut=rotor.signalIn(lastOut)
-            print("rotorIn"+str(lastOut))
+            # print("rotorIn"+str(lastOut))
         lastReverseIn=self.reflector.signalIn(lastOut)
-        print("reflectorRev"+str(lastReverseIn))
+        # print("reflectorRev"+str(lastReverseIn))
         for rotor in reversed(self.rotorList):
             lastReverseIn=rotor.reverseSignal(lastReverseIn)
-            print("rotorReve"+str(lastReverseIn))
+            # print("rotorReve"+str(lastReverseIn))
         output=self.plugboard.reverseSignal(lastReverseIn)
-        print("plugRev"+str(output))
+        # print("plugRev"+str(output))
 
         notchFlag=False
         for i  in range(len(self.rotorList)) :
@@ -38,15 +38,18 @@ class ModernEnigma:
 
 rotor1Wiring=Wiring("EKMFLGDQVZNTOWYHXUSPAIBRCJ")
 rotor1=Rotor(rotor1Wiring,[1,3])
+rotor2Wiring=Wiring("EKMFLGDQVZNTOWYHXUSPAIBRCJ")
+rotor2=Rotor(rotor1Wiring,[1,3])
 w=Wiring()
 reflectorWiring=Wiring("YRUHQSLDPXNGOKMIEBFZCWVJAT")
 reflector=Reflector(reflectorWiring)
 plugboard=PlugBoard(w)
-mc=ModernEnigma([rotor1,rotor1],reflector,plugboard)
-MSG="AAAAA"
+mc=ModernEnigma([rotor1,rotor2],reflector,plugboard)
+MSG="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 for c in MSG:
     print("R0:"+mc.rotorList[0].getDisplay())
     print("R1:"+mc.rotorList[1].getDisplay())
     result=mc.processKeyPress(c)
     print(result)
 
+# import pdb; pdb.set_trace()
