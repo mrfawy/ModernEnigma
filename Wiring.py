@@ -35,6 +35,3 @@ class Wiring(object):
     def printWiring(self):
         for entry in self.tupleList:
             print(str(entry))
-conf="EKMFLGDQVZNTOWYHXUSPAIBRCJ"
-w=Wiring(conf)
-w.printWiring()
