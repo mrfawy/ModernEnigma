@@ -39,13 +39,30 @@ class EnigmaDynamicFactory(object):
 
     def createReflectorConfig(self,id):
         reflectorConfig={"ID":id}
-        reflectorConfig["wiring"]=self.seqToStr(self.getShuffledSequence())
+        reflectorConfig["wiring"]=self.seqToStr(self.getValidReflectorShuffledSequence())
         return reflectorConfig
+
+    def getValidReflectorShuffledSequence(self):
+        result=[]
+        #init result before mapping
+        for i in range(CharIndexMap.getRangeSize()):
+            result.append("")
+
+        seq= self.getShuffledSequence()
+        while len(seq)>0:
+            selectedPair=random.sample(seq,2)
+            result[CharIndexMap.charToIndex(selectedPair[0])]=selectedPair[1]
+            result[CharIndexMap.charToIndex(selectedPair[1])]=selectedPair[0]
+            seq.remove(selectedPair[0])
+            seq.remove(selectedPair[1])
+
+        return result
+
 
     def createRotorConfig(self,id):
         rotorConfig={"ID":id}
         rotorConfig["wiring"]=self.seqToStr(self.getShuffledSequence())
-        rotorConfig["noch"]=self.seqToStr(self.getSampleSeq())
+        rotorConfig["noch"]=self.seqToStr(self.getSampleNotchSeq())
         return rotorConfig
 
     def createPlugboardConfig(self,id):
@@ -70,7 +87,7 @@ class EnigmaDynamicFactory(object):
             #to keep the original and copy it
             result= sorted(result, key=lambda k: random.random())
         return result
-    def getSampleSeq(self,seq=CharIndexMap.getRange()):
+    def getSampleNotchSeq(self,seq=CharIndexMap.getRange()):
         result=random.sample(seq,self.nextInt(0,CharIndexMap.getRangeSize()//2))
         return result
 
