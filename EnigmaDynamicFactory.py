@@ -91,8 +91,7 @@ class EnigmaDynamicFactory(object):
         result=random.sample(seq,self.nextInt(0,CharIndexMap.getRangeSize()//2))
         return result
 
-mcCfg=EnigmaDynamicFactory().createMachineConfig("1")
-mc1=EnigmaDynamicFactory().createEnigmaMachineFromConfig(mcCfg)
+mc1=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCx")
 msg="AAAAAAA"
 print("MSG:"+msg)
 encMsg=""
@@ -100,7 +99,7 @@ for c in msg:
     encMsg+=mc1.processKeyPress(c)
 print ("Encrpyted:"+encMsg)
 
-mc2=EnigmaDynamicFactory().createEnigmaMachineFromConfig(mcCfg)
+mc2=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCx")
 decMsg=""
 for c in encMsg:
     decMsg+=mc2.processKeyPress(c)

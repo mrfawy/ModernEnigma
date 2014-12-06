@@ -6,13 +6,44 @@ from Wiring import Wiring
 import fixedSettings
 
 class ModernEnigma:
-    def __init__(self,rotorListDisplay,reflector,plugboard):
-        #reverse to be easier to directly map visually by human
+    def __init__(self,rotorStockList,reflector,plugboard,initSetting=None):
+        self.rotorStockList=rotorStockList
+        self.rotorsStockMap={}
+        for rotorStock in rotorStockList:
+            self.rotorsStockMap[rotorStock.id]=rotorStock
         self.rotorList=[]
-        for r in reversed(rotorListDisplay):
-            self.rotorList.append(r)
         self.reflector=reflector
         self.plugboard=plugboard
+        if initSetting:
+            self.adjustMachineSettings(initSetting)
+        else:
+            self.adjustDefaultSettings()
+
+    def adjustDefaultSettings(self):
+        for rotorStock in self.rotorStockList:
+            self.rotorList.append(rotorStock)
+
+    #fromat for setting line
+    #2 digitID rotor order for selected rotor set |1 char for offset |2 chars for each plugboard pair |(optional) dynamic inmsg  conf change rules
+    def adjustMachineSettings(self,settings):
+        settingsParts=settings.split('|')
+        rotorOrderStg=settingsParts[0]
+        rotorOffsetStg=settingsParts[1]
+        plugboardStg=settingsParts[2]
+
+        i=len(rotorOrderStg)
+        while i>0:
+            rotorId=rotorOrderStg[i-2:i-1]
+            self.rotorList.append(self.rotorsStockMap[rotorId])
+            i-=2
+        j=0
+        for offsetChar in reversed(rotorOffsetStg):
+            self.rotorList[j].adjustDisplay(offsetChar)
+            j+=1
+        #setting plugboard
+        self.plugboard=Plugboard(plugboardStg)
+
+
 
     def processKeyPress(self,char):
         indexIn=CharIndexMap.charToIndex(char)
