@@ -77,6 +77,17 @@ class ModernEnigma:
             result+=rotor.getDisplay()+" "
         return result
 
+    def getMachineSettings(self):
+        #settings format 2chars of rotorID  of right order | 1  char each of win display |plugboard settings| (optional) cycle
+        rotorOrderStg=""
+        rotorOffsetStg=""
+        for rotor in reversed(self.rotorList):
+            rotorOrderStg+=str(rotor.id) if len(str(rotor.id))>1 else "0"+str(rotor.id)
+            rotorOffsetStg+=rotor.getDisplay()
+
+        return rotorOrderStg+"|"+rotorOffsetStg+"|"+self.plugboard.getSettings()
+
+
 
 #
 # RI=fixedSettings.ROTORS["I"]

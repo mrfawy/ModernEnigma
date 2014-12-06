@@ -29,12 +29,12 @@ class EnigmaDynamicFactory(object):
 
     def createEnigmaMachineFromConfig(self,config):
         rotorCfgList=config["ROTORS"]
-        rotorList=[]
+        rotorStockList=[]
         for r in rotorCfgList:
-            rotorList.append(Rotor(r["ID"],Wiring(r["wiring"]),r["noch"]))
+            rotorStockList.append(Rotor(r["ID"],Wiring(r["wiring"]),r["noch"]))
         plugboard=PlugBoard(Wiring(config["PLUGBOARD"]["wiring"]))
         reflector=Reflector(Wiring(config["REFLECTOR"]["wiring"]))
-        mc=ModernEnigma(rotorList,reflector,plugboard)
+        mc=ModernEnigma(rotorStockList,reflector,plugboard)
         return mc
 
     def createReflectorConfig(self,id):
@@ -106,4 +106,4 @@ for c in encMsg:
 
 print("Decrypted:"+decMsg)
 
-
+print("settings:"+mc1.getMachineSettings())
