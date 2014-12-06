@@ -91,19 +91,38 @@ class EnigmaDynamicFactory(object):
         result=random.sample(seq,self.nextInt(0,CharIndexMap.getRangeSize()//2))
         return result
 
+
+def mainTst():
+    mc1=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCx")
+    msg="AAAAAAA"
+    print("MSG:"+msg)
+    encMsg=""
+    for c in msg:
+        encMsg+=mc1.processKeyPress(c)
+    print ("Encrpyted:"+encMsg)
+
+    mc2=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCx")
+    decMsg=""
+    for c in encMsg:
+        decMsg+=mc2.processKeyPress(c)
+
+    print("Decrypted:"+decMsg)
+
+    print("settings:"+mc1.getMachineSettings())
+
+stg=""
 mc1=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCx")
-msg="AAAAAAA"
+# mc1.adjustMachineSettings(stg)
+mc2=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCx")
+# mc2.adjustMachineSettings(stg)
+msg="HELLOXENIGMAX!"
 print("MSG:"+msg)
 encMsg=""
 for c in msg:
     encMsg+=mc1.processKeyPress(c)
 print ("Encrpyted:"+encMsg)
-
-mc2=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCx")
 decMsg=""
 for c in encMsg:
     decMsg+=mc2.processKeyPress(c)
-
 print("Decrypted:"+decMsg)
-
 print("settings:"+mc1.getMachineSettings())

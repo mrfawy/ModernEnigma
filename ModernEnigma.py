@@ -10,7 +10,7 @@ class ModernEnigma:
         self.rotorStockList=rotorStockList
         self.rotorsStockMap={}
         for rotorStock in rotorStockList:
-            self.rotorsStockMap[rotorStock.id]=rotorStock
+            self.rotorsStockMap[str(rotorStock.id)]=rotorStock
         self.rotorList=[]
         self.reflector=reflector
         self.plugboard=plugboard
@@ -29,11 +29,12 @@ class ModernEnigma:
         settingsParts=settings.split('|')
         rotorOrderStg=settingsParts[0]
         rotorOffsetStg=settingsParts[1]
-        plugboardStg=settingsParts[2]
+
+        self.rotorList=[]
 
         i=len(rotorOrderStg)
         while i>0:
-            rotorId=rotorOrderStg[i-2:i-1]
+            rotorId=str(int(rotorOrderStg[i-2:i]))
             self.rotorList.append(self.rotorsStockMap[rotorId])
             i-=2
         j=0
@@ -41,7 +42,9 @@ class ModernEnigma:
             self.rotorList[j].adjustDisplay(offsetChar)
             j+=1
         #setting plugboard
-        self.plugboard=Plugboard(plugboardStg)
+        if len(settingsParts)>2:
+            plugboardStg=settingsParts[2]
+            self.plugboard=PlugBoard(plugboardStg)
 
 
 
