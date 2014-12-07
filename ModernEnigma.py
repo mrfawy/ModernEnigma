@@ -90,31 +90,5 @@ class ModernEnigma:
 
         return rotorOrderStg+"|"+rotorOffsetStg+"|"+self.plugboard.getSettings()
 
-
-
-#
-# RI=fixedSettings.ROTORS["I"]
-# RII=fixedSettings.ROTORS["II"]
-# RIII=fixedSettings.ROTORS["III"]
-# REF_B=fixedSettings.REFLECTORS["B"]
-#
-# r0=Rotor(Wiring(RI['wiring']),RI['stepping'])
-# r1=Rotor(Wiring(RII['wiring']),RII['stepping'])
-# r2=Rotor(Wiring(RIII['wiring']),RIII['stepping'])
-# r3=Rotor(Wiring(RIII['wiring']),RIII['stepping'])
-# r4=Rotor(Wiring(RIII['wiring']),RIII['stepping'])
-# r5=Rotor(Wiring(RIII['wiring']),RIII['stepping'])
-# reflector=Reflector(Wiring(REF_B))
-#
-#
-# plugboard=PlugBoard(Wiring(RI["wiring"]))
-# mc=ModernEnigma([r0,r1,r2,r3,r4,r5],reflector,plugboard)
-# MSG="ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ"
-# MSG="VSYAJCSMNTOAGHIAHYZYEICZSUPYPVODZVKUCGKYXJBPVJWTLGDK"
-# encMsg=""
-# for c in MSG:
-#     encMsg+=mc.processKeyPress(c)
-# print("result: "+encMsg)
-# print (mc.getWindowDisplay())
-#
-# # import pdb; pdb.set_trace()
+    def encryptMessage(self,msg,spaceReplaceChar="X"):
+        pass

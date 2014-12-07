@@ -109,20 +109,22 @@ def mainTst():
     print("Decrypted:"+decMsg)
 
     print("settings:"+mc1.getMachineSettings())
+def machineFromStgTst():
+    stg="232221201918171615141312111009080706050403020100|AAAAAAAAAAAAAAAAAAAAACDO|"
+    mc1=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCx")
+    mc1.adjustMachineSettings(stg)
+    mc2=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCx")
+    mc2.adjustMachineSettings(stg)
+    msg="AAAAAAAAAAAAAAAAAAAAAA"
+    print("MSG:"+msg)
+    encMsg=""
+    for c in msg:
+        encMsg+=mc1.processKeyPress(c)
+    print ("Encrpyted:"+encMsg)
+    decMsg=""
+    for c in encMsg:
+        decMsg+=mc2.processKeyPress(c)
+    print("Decrypted:"+decMsg)
+    print("settings:"+mc1.getMachineSettings())
 
-stg=""
-mc1=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCx")
-# mc1.adjustMachineSettings(stg)
-mc2=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCx")
-# mc2.adjustMachineSettings(stg)
-msg="HELLOXENIGMAX!"
-print("MSG:"+msg)
-encMsg=""
-for c in msg:
-    encMsg+=mc1.processKeyPress(c)
-print ("Encrpyted:"+encMsg)
-decMsg=""
-for c in encMsg:
-    decMsg+=mc2.processKeyPress(c)
-print("Decrypted:"+decMsg)
-print("settings:"+mc1.getMachineSettings())
+machineFromStgTst()
