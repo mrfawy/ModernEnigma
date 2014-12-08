@@ -12,12 +12,17 @@ class Decryptor(object):
         #decrypt the perMSgStg with current base settings
         perMsgStg=""
         result=""
+        charCount=0;
         for i in range(len(self.machine.rotorList)):
+            if(self.machine.cyclePeriod!=0 and charCount%self.machine.cyclePeriod==0):
+                self.machine.cycleRotorsForward()
             perMsgStg+=self.machine.processKeyPress(msg[i])
         #adjust window to new perMsgStg
         self.machine.adjustWindowDisplay(perMsgStg)
         #now encrypt msg
         for c in msg[len(perMsgStg):len(msg)]:
+            if(self.machine.cyclePeriod!=0 and charCount%self.machine.cyclePeriod==0):
+                self.machine.cycleRotorsForward()
             result+=self.machine.processKeyPress(c)
 
         # msg=self.replaceSpaceCharInMsg(msg)

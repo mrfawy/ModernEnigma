@@ -13,11 +13,16 @@ class Encryptor(object):
         perMsgStg=self.generatePerMsgWindowSetting()
         #encrypt the perMSgStg with current base settings
         result=""
+        charCount=0;
         for c in perMsgStg:
+            if(self.machine.cyclePeriod!=0 and charCount%self.machine.cyclePeriod==0):
+                self.machine.cycleRotorsForward()
             result+=self.machine.processKeyPress(c)
         self.machine.adjustWindowDisplay(perMsgStg)
         #now encrypt msg
         for c in msg:
+            if(self.machine.cyclePeriod!=0 and charCount%self.machine.cyclePeriod==0):
+                self.machine.cycleRotorsForward()
             result+=self.machine.processKeyPress(c)
         self.restoreMachine()
         return result

@@ -13,6 +13,7 @@ class ModernEnigma:
         for rotorStock in rotorStockList:
             self.rotorsStockMap[str(rotorStock.id)]=rotorStock
         self.rotorList=[]
+        self.cyclePeriod=0
         self.reflector=reflector
         self.plugboard=plugboard
         if initSetting:
@@ -46,6 +47,10 @@ class ModernEnigma:
         if len(settingsParts)>2:
             plugboardStg=settingsParts[2]
             self.plugboard=PlugBoard(plugboardStg)
+        #settingCyclePeriod
+        if len(settingsParts)>3:
+            self.cyclePeriod=int(settingsParts[3])
+
 
 
 
@@ -90,7 +95,7 @@ class ModernEnigma:
             rotorOrderStg+=str(rotor.id) if len(str(rotor.id))>1 else "0"+str(rotor.id)
             rotorOffsetStg+=rotor.getDisplay()
 
-        return rotorOrderStg+"|"+rotorOffsetStg+"|"+self.plugboard.getSettings()
+        return rotorOrderStg+"|"+rotorOffsetStg+"|"+self.plugboard.getSettings()+"|"+str(self.cyclePeriod)
 
     def cycleRotorsForward(self):
         lastRotor=self.rotorList[-1]
