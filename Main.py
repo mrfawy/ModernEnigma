@@ -19,7 +19,6 @@ mc2=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCx")
 mc2.adjustMachineSettings(stg)
 decMsg=Decryptor(mc2).decryptMsg(encMsg)
 print("Decrypted:"+decMsg)
-print("settings:"+mc1.getMachineSettings())
 
 
 
