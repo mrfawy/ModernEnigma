@@ -127,4 +127,4 @@ def machineFromStgTst():
     print("Decrypted:"+decMsg)
     print("settings:"+mc1.getMachineSettings())
 
-machineFromStgTst()
+# machineFromStgTst()

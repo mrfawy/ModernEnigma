@@ -4,6 +4,7 @@ from Reflector import Reflector
 from CharIndexMap import CharIndexMap
 from Wiring import Wiring
 import fixedSettings
+import random
 
 class ModernEnigma:
     def __init__(self,rotorStockList,reflector,plugboard,initSetting=None):
@@ -50,19 +51,13 @@ class ModernEnigma:
 
     def processKeyPress(self,char):
         indexIn=CharIndexMap.charToIndex(char)
-        # print("indexIn"+str(indexIn))
         lastOut=self.plugboard.signalIn(indexIn)
-        # print("plug"+str(lastOut))
         for rotor in self.rotorList:
             lastOut=rotor.signalIn(lastOut)
-            # print("rotorIn"+str(lastOut))
         lastReverseIn=self.reflector.signalIn(lastOut)
-        # print("reflectorRev"+str(lastReverseIn))
         for rotor in reversed(self.rotorList):
             lastReverseIn=rotor.reverseSignal(lastReverseIn)
-            # print("rotorReve"+str(lastReverseIn))
         output=self.plugboard.reverseSignal(lastReverseIn)
-        # print("plugRev"+str(output))
 
         notchFlag=False
         for i  in range(len(self.rotorList)) :
@@ -79,6 +74,13 @@ class ModernEnigma:
         for rotor in reversed(self.rotorList):
             result+=rotor.getDisplay()+" "
         return result
+    def adjustWindowDisplay(self,windowSetting):
+        #reversed string order
+        i=len(windowSetting)-1
+        for c in windowSetting[::-1]:
+            self.rotorList[i].adjustDisplay(c)
+            i-=1
+
 
     def getMachineSettings(self):
         #settings format 2chars of rotorID  of right order | 1  char each of win display |plugboard settings| (optional) cycle
@@ -90,5 +92,20 @@ class ModernEnigma:
 
         return rotorOrderStg+"|"+rotorOffsetStg+"|"+self.plugboard.getSettings()
 
-    def encryptMessage(self,msg,spaceReplaceChar="X"):
-        pass
+    def cycleRotorsForward(self):
+        lastRotor=self.rotorList[-1]
+        for i in range(len(self.rotorList)-1,0,-1):
+            self.rotorList[i]=self.rotorList[i-1]
+        self.rotorList[0]=lastRotor
+
+    def cycleRotorsBackward(self):
+        firstRotor=self.rotorList[0]
+        for i in range(0,len(self.rotorList)-1):
+            self.rotorList[i]=self.rotorList[i+1]
+        self.rotorList[-1]=firstRotor
+
+
+
+
+
+
