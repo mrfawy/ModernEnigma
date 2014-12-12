@@ -21,7 +21,6 @@ class CharIndexMap(object):
     @classmethod
     def indexToChar(cls,index):
         return cls.charIndex[index]
-
 # print(CharIndexMap.getRange())
 # print(CharIndexMap.getRangeSize())
 # print(CharIndexMap.indexToChar(0))

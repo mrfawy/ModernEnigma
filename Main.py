@@ -20,7 +20,9 @@ mc2.adjustMachineSettings(stg)
 decMsg=Decryptor(mc2).decryptMsg(encMsg)
 print("Decrypted:"+decMsg)
 
-
-
-
+x="232221201918171615141312111009080706050403020100"
+r=""
+for c in x:
+    r+="{0:b}".format(int(c))
+print(r)
 # import pdb; pdb.set_trace()

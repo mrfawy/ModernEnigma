@@ -95,7 +95,8 @@ class ModernEnigma:
             rotorOrderStg+=str(rotor.id) if len(str(rotor.id))>1 else "0"+str(rotor.id)
             rotorOffsetStg+=rotor.getDisplay()
 
-        return rotorOrderStg+"|"+rotorOffsetStg+"|"+self.plugboard.getSettings()+"|"+str(self.cyclePeriod)
+        result= rotorOrderStg+"|"+rotorOffsetStg+"|"+self.plugboard.getSettings()+"|"+str(self.cyclePeriod)
+        return result
 
     def cycleRotorsForward(self):
         lastRotor=self.rotorList[-1]
