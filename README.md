@@ -64,16 +64,20 @@ https://www.gnupg.org/gph/en/manual.html
 history : http://www.eng.utah.edu/~nmcdonal/Tutorials/EncryptionResearchReview.pdf
 
 
-INTERNAL MODER WORKING:
+INTERNAL MODERN Enigma Protocol WORKING:
 ====================
 * Multi level , each one needs 2 machines , the first one needs a base machine , and a chosen one 
 * each level is as following:
-..Encrypt Msg with B , i times ->x
-..Encypt x with M ,j time -y
-..Generate per msg setting in machime M ->MP ( as M per message )
-..Encrypt MP with M ,k times ->EMP
+..Generate Per Msg B ->Bp
+..Encrypt as enigma Msg : -> EMsg
+....Encrypt Per Msg Bp using Bs->EBp
+....Merge with Encrypted Msg with Bp ->EMsg
+..Encrypt EMsg with Bs , i times ->x
+..Encypt x with Ms ,j time ->y
+..Generate per msg setting in machime Mp ->MP ( as M per message )
+..Encrypt MP with M ,k times ->EMp
 ..Encrypt y with MP , l times -> M0
-..Merge ( join ) EMP + M0 -> W
+..Merge ( join ) EMp + M0 -> W
 ..Shuffle W ->S
 ..Encrypt S with M ,m tims ->R
 ..Encrypt R with B, n times->E ( encrypted)
