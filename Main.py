@@ -1,28 +1,22 @@
 from ModernEnigma import ModernEnigma
 from EnigmaDynamicFactory import EnigmaDynamicFactory
-from CharIndexMap import CharIndexMap
-from Encryptor import Encryptor
-from Decryptor import Decryptor
+from Level import Level
+from LevelEncryptor import LevelEncryptor
+from LevelDecryptor import LevelDecryptor
 
 
-stg="232221201918171615141312111009080706050403020100|AAAAAAAAAAAAAAAAAAAAACDO||3"
-mc1=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCx")
-mc1.adjustMachineSettings(stg)
-print(mc1.getWindowDisplay())
-msg="AAAAAAAA"
-print("MSG"+msg)
-encMsg=Encryptor(mc1).encryptMsg(msg)
-
-print ("Encrpyted:"+encMsg)
-
-mc2=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCx")
-mc2.adjustMachineSettings(stg)
-decMsg=Decryptor(mc2).decryptMsg(encMsg)
-print("Decrypted:"+decMsg)
-
-x="232221201918171615141312111009080706050403020100"
-r=""
-for c in x:
-    r+="{0:b}".format(int(c))
-print(r)
-# import pdb; pdb.set_trace()
+baseMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCb")
+levelMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCm")
+level=Level(baseMachine.getMachineSettings(),levelMachine.getMachineSettings())
+msg="AAAAA"
+level.inputMsg=msg
+levelEncryptor=LevelEncryptor(baseMachine,levelMachine,level)
+encLevel=levelEncryptor.encryptLevel()
+encLevel.inputMsg=""
+levelDecryptor=LevelDecryptor(baseMachine,levelMachine,level)
+levelDecryptor.level=encLevel
+resultLevel=levelDecryptor.decryptLevel()
+print(resultLevel.toJson())
+print("MSG: "+msg)
+print("Enc: "+encLevel.outputMsg)
+print("Dec: "+resultLevel.inputMsg)
