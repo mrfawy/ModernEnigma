@@ -33,11 +33,56 @@ Features:
 
 Mathematics of Modern Enigma :
 ----------------------------
-Number of availalbe rotor wiring=64! ~~ 1.3×10^9 × the number of atoms in the visible universe (~~ 10^80)
-Number of availalbe rotors per machine = N , we recommend larger n >100
-Number of bits to store the rotor offset [0-64] = 6 bits
-Number of bits ( Key) to store machine setting of N rotors =m(no of bit to represent N)xN +6xN
-e.g. for a 100 rotors machine =7x100+6x100=1200 bits
+* Number of availalbe rotor wiring=64! ~ 1.3 x 10^9 the number of atoms in the visible universe (~ 10^80)
+* Number of availalbe rotors per machine = N , we recommend larger n >100
+* Number of bits to store the rotor offset [0-64] = 6 bits
+* Number of bits ( Key) to store machine setting of N rotors =m(no of bit to represent N)xN +6xN
+* e.g. for a 100 rotors machine =7x100+6x100=1200 bits
+INTERNAL MODERN Enigma Protocol WORKING:
+====================
+* Multi level , each level needs 2 machines , the first one needs a base machine , and a chosen one 
+* we will refer to base machine as B , and level machine as M
+* we will refer to  machine settings as s , and it's per message settings as p
+* like in original Enigma you need only to know ( exchange) s between sender and receiver
+* each level is as following:
+* Encrypt as enigma Msg : 
+    * Generate Per Msg setting by machine B ->Bp
+    * Encrypt Per Msg Bp using Ms,o times->EBp
+    * Merge with (Encrypted Msg with Bp,p times) ->EMsg
+* Shuffle EMsg,s1 times->SEmsg
+* Encrypt SEMsg with Bs , i times ->x
+* Encypt x with Ms ,j time ->y
+* Encrypt as enigma Msg : 
+    * Generate per msg setting in machime Mp ->MP 
+    * Encrypt MP with Bs ,k times ->EMp
+    * Encrypt y with Mp , l times -> M0
+    * Merge ( join ) EMp + M0 -> W
+* Shuffle W ,s2 times->S
+* Encrypt S with Ms ,m tims ->R
+* Encrypt R with Bs, n times->E ( encrypted)
+
+* Each level input :
+    * B , Base Machine settings
+    * M , Chosen level machine Settings
+* Each level output:
+    * i , int 
+    * j , int 
+    * k , int 
+    * l , int 
+    * m , int 
+    * n , int 
+    * s , int shuffle seed number ,to be able to deshuffle back
+
+* For extra level of scrambling , you can take the output of one level , feed it into other level as many times you need,
+each level will need a different machine though
+
+
+
+* for shuffling , and reverse shuffling , there is a key 
+http://stackoverflow.com/questions/3541378/reversible-shuffle-algorithm-using-a-key
+
+USer our implementation of PRNG 
+http://www0.cs.ucl.ac.uk/staff/d.jones/GoodPracticeRNG.pdf
 
 
 References:
@@ -64,41 +109,3 @@ https://www.gnupg.org/gph/en/manual.html
 history : http://www.eng.utah.edu/~nmcdonal/Tutorials/EncryptionResearchReview.pdf
 
 
-INTERNAL MODERN Enigma Protocol WORKING:
-====================
-* Multi level , each one needs 2 machines , the first one needs a base machine , and a chosen one 
-* each level is as following:
-..Generate Per Msg B ->Bp
-..Encrypt as enigma Msg : -> EMsg
-....Encrypt Per Msg Bp using Bs,o times->EBp
-....Merge with Encrypted Msg with Bp ->EMsg
-..Encrypt EMsg with Bs , i times ->x
-..Encypt x with Ms ,j time ->y
-..Generate per msg setting in machime Mp ->MP ( as M per message )
-..Encrypt MP with M ,k times ->EMp
-..Encrypt y with Mp , l times -> M0
-..Merge ( join ) EMp + M0 -> W
-..Shuffle W ->S
-..Encrypt S with M ,m tims ->R
-..Encrypt R with B, n times->E ( encrypted)
-* Each level input :
-.. B , Base Machine settings
-.. M , Chosen level machine Settings
-* Each level output:
-.. i , int 
-.. j , int 
-.. k , int 
-.. l , int 
-.. m , int 
-.. n , int 
-.. s , int shuffle seed number ,to be able to deshuffle back
-* For extra level of scrambling , you can take the output of one level , feed it into other level as many times you need,
-each level will need a different machine though
-
-
-
-* for shuffling , and reverse shuffling , there is a key 
-http://stackoverflow.com/questions/3541378/reversible-shuffle-algorithm-using-a-key
-
-USer our implementation of PRNG 
-http://www0.cs.ucl.ac.uk/staff/d.jones/GoodPracticeRNG.pdf

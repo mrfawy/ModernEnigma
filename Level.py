@@ -13,7 +13,12 @@ class Level(object):
         self.l_MmpEncTimes=0
         self.m_secondMsEncTimes=0
         self.n_secondBsEncTimes=0
-        self.s_shuffleSeed=0
+        self.o_PerMsgBpEncTimes=0
+        self.p_BpEncTimes=0
+        self.s1t_shuffle1Times=0
+        self.s2t_shuffle2Times=0
+        self.s1_shuffleSeed=0
+        self.s2_shuffleSeed=0
 
     def toJson(self):
         jsonMap={}
@@ -27,5 +32,11 @@ class Level(object):
         jsonMap["l_MmpEncTimes"]=self.l_MmpEncTimes
         jsonMap["m_secondMsEncTimes"]=self.m_secondMsEncTimes
         jsonMap["n_secondBsEncTimes"]=self.n_secondBsEncTimes
-        jsonMap["s_shuffleSeed"]=self.s_shuffleSeed
+
+        jsonMap["o_PerMsgBpEncTimes"]=self.o_PerMsgBpEncTimes
+        jsonMap["p_BpEncTimes"]=self.p_BpEncTimes
+        jsonMap["s1t_shuffle1Times"]=self.s1t_shuffle1Times
+        jsonMap["s2t_shuffle2Times"]=self.s2t_shuffle2Times
+        jsonMap["s1_shuffleSeed"]=self.s1_shuffleSeed
+        jsonMap["s2_shuffleSeed"]=self.s2_shuffleSeed
         return (json.dumps(jsonMap,sort_keys=True,indent=4, separators=(',', ': ')))

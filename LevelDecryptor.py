@@ -22,7 +22,7 @@ class LevelDecryptor(object):
         print("R: "+R)
         S=self.encryptText(R,self.levelMachine,self.level.m_secondMsEncTimes)
         print("S: "+S)
-        W=self.shuffler.deshuffle(S,self.level.s_shuffleSeed)
+        W=self.shuffler.deshuffle(S,self.level.s2_shuffleSeed)
         print("W: "+W)
         EMp=W[0:len(self.levelMachine.rotorList)]
         print("EMp: "+EMp)
@@ -34,15 +34,17 @@ class LevelDecryptor(object):
         print("y: "+y)
         x=self.encryptText(y,self.levelMachine,self.level.j_firstMsEncTimes)
         print("x: "+x)
-        Emsg=self.encryptText(x,self.baseMachine,self.level.i_firstBsEncTimes)
+        SEmsg=self.encryptText(x,self.baseMachine,self.level.i_firstBsEncTimes)
+        print("SEmsg: "+SEmsg)
+        Emsg=self.shuffler.deshuffle(SEmsg,self.level.s1_shuffleSeed)
         print("Emsg: "+Emsg)
         EBp=Emsg[0:len(self.baseMachine.rotorList)]
         print("EBp: "+EBp)
         restMsg=Emsg[len(self.baseMachine.rotorList):len(Emsg)]
         print("restMsg: "+restMsg)
-        Bp=self.encryptText(EBp,self.baseMachine,1)
+        Bp=self.encryptText(EBp,self.baseMachine,self.level.p_BpEncTimes)
         print("Bp: "+Bp)
-        msg=self.encryptText(restMsg,self.baseMachine,1,Bp)
+        msg=self.encryptText(restMsg,self.baseMachine,self.level.o_PerMsgBpEncTimes,Bp)
         print("msg: "+msg)
         self.level.inputMsg=msg
         return self.level
