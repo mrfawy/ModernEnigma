@@ -70,13 +70,13 @@ INTERNAL MODERN Enigma Protocol WORKING:
 * each level is as following:
 ..Generate Per Msg B ->Bp
 ..Encrypt as enigma Msg : -> EMsg
-....Encrypt Per Msg Bp using Bs->EBp
+....Encrypt Per Msg Bp using Bs,o times->EBp
 ....Merge with Encrypted Msg with Bp ->EMsg
 ..Encrypt EMsg with Bs , i times ->x
 ..Encypt x with Ms ,j time ->y
 ..Generate per msg setting in machime Mp ->MP ( as M per message )
 ..Encrypt MP with M ,k times ->EMp
-..Encrypt y with MP , l times -> M0
+..Encrypt y with Mp , l times -> M0
 ..Merge ( join ) EMp + M0 -> W
 ..Shuffle W ->S
 ..Encrypt S with M ,m tims ->R
