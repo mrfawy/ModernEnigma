@@ -8,8 +8,8 @@ from LevelDecryptor import LevelDecryptor
 baseMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCb")
 levelMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCm")
 level=Level(baseMachine.getMachineSettings(),levelMachine.getMachineSettings())
-msg="AAAAA"
-level.inputMsg=msg
+msg="987123"
+level.inputMsg=msg.upper()
 levelEncryptor=LevelEncryptor(baseMachine,levelMachine,level)
 encLevel=levelEncryptor.encryptLevel()
 encLevel.inputMsg=""

@@ -2,6 +2,7 @@ from ModernEnigma import ModernEnigma
 from CharIndexMap import CharIndexMap
 from Wiring import Wiring
 from Rotor import Rotor
+from Switch import Switch
 from Reflector import Reflector
 from Plugboard import PlugBoard
 import random
@@ -64,6 +65,38 @@ class EnigmaDynamicFactory(object):
         rotorConfig["wiring"]=self.seqToStr(self.getShuffledSequence())
         rotorConfig["noch"]=self.seqToStr(self.getSampleNotchSeq())
         return rotorConfig
+
+    def createSwappingRotorConfig(self,id,size):
+        rotorConfig={"ID":id}
+        seqToShuffle=[]
+        for i in range(size):
+            seqToShuffl.append(CharIndexMap.getRange[i])
+
+        rotorConfig["wiring"]=self.seqToStr(self.getShuffledSequence(seqToShuffle))
+        rotorConfig["noch"]=self.seqToStr(self.getSampleNotchSeq(seqToShuffle))
+        return rotorConfig
+    def createSwappingSeparator(self,fromIndexRange,toIndexRange):
+        mappingTuples=[]
+        coveredTo=[]
+        for fromIndex in fromIndexRange:
+            mappedTo=random.sample(toIndexRange,self.nextInt(1,len(toIndexRange)))
+            for m in mappedTo:
+                mappingTuples.append((fromIndex,m))
+                coveredTo.append(m)
+        for toIndex in toIndexRange:
+            if toIndex not in coveredTo:
+                mappedFrom=random.sample(fromIndexRange,self.nextInt(1,len(fromIndexRange)))
+                for m in mappedFrom:
+                    mappingTuples.append((m,toIndex))
+        w=Wiring()
+        w.initWiringFromTupleList(mappingTuples)
+
+        return Switch(w)
+
+
+
+
+
 
     def createPlugboardConfig(self,id):
         plugboardConfig={"ID":id}

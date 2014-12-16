@@ -7,6 +7,12 @@ class Wiring(object):
             self.connectByConfig(config)
         else:
             self.loadDefaultWiring()
+
+    def initWiringFromTupleList(self,tupleList):
+        self.tupleList=[]
+        for t in tupleList:
+            self.addConnection(t[0],t[1])
+
     def loadDefaultWiring(self):
         for i in range(CharIndexMap.getRangeSize()):
             self.addConnection(i,i)
