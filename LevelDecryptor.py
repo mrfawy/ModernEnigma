@@ -15,37 +15,37 @@ class LevelDecryptor(object):
         self.shuffler=Shuffler()
 
     def decryptLevel(self):
-        print("==========DECRYPT===========")
+        # print("==========DECRYPT===========")
         E=self.level.outputMsg
-        print("E: "+E)
+        # print("E: "+E)
         R=self.encryptText(E,self.baseMachine,self.level.n_secondBsEncTimes)
-        print("R: "+R)
+        # print("R: "+R)
         S=self.encryptText(R,self.levelMachine,self.level.m_secondMsEncTimes)
-        print("S: "+S)
+        # print("S: "+S)
         W=self.shuffler.deshuffle(S,self.level.s2_shuffleSeed)
-        print("W: "+W)
+        # print("W: "+W)
         EMp=W[0:len(self.levelMachine.rotorList)]
-        print("EMp: "+EMp)
+        # print("EMp: "+EMp)
         M0=W[len(self.levelMachine.rotorList)::]
-        print("M0: "+M0)
+        # print("M0: "+M0)
         Mp=self.encryptText(EMp,self.levelMachine,self.level.k_PerMsgMsEncTimes)
-        print("Mp: "+Mp)
+        # print("Mp: "+Mp)
         y=self.encryptText(M0,self.levelMachine,self.level.l_MmpEncTimes,Mp)
-        print("y: "+y)
+        # print("y: "+y)
         x=self.encryptText(y,self.levelMachine,self.level.j_firstMsEncTimes)
-        print("x: "+x)
+        # print("x: "+x)
         SEmsg=self.encryptText(x,self.baseMachine,self.level.i_firstBsEncTimes)
-        print("SEmsg: "+SEmsg)
+        # print("SEmsg: "+SEmsg)
         Emsg=self.shuffler.deshuffle(SEmsg,self.level.s1_shuffleSeed)
-        print("Emsg: "+Emsg)
+        # print("Emsg: "+Emsg)
         EBp=Emsg[0:len(self.baseMachine.rotorList)]
-        print("EBp: "+EBp)
+        # print("EBp: "+EBp)
         restMsg=Emsg[len(self.baseMachine.rotorList):len(Emsg)]
-        print("restMsg: "+restMsg)
+        # print("restMsg: "+restMsg)
         Bp=self.encryptText(EBp,self.baseMachine,self.level.p_BpEncTimes)
-        print("Bp: "+Bp)
+        # print("Bp: "+Bp)
         msg=self.encryptText(restMsg,self.baseMachine,self.level.o_PerMsgBpEncTimes,Bp)
-        print("msg: "+msg)
+        # print("msg: "+msg)
         self.level.inputMsg=msg
         return self.level
 

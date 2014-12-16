@@ -3,9 +3,13 @@ from EnigmaDynamicFactory import EnigmaDynamicFactory
 from Level import Level
 from LevelEncryptor import LevelEncryptor
 from LevelDecryptor import LevelDecryptor
+import json
 
+baseMachineCfg=EnigmaDynamicFactory().createMachineConfig("MCb")
+cfg=json.dumps(baseMachineCfg)
+print(cfg)
 
-baseMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCb")
+baseMachine=EnigmaDynamicFactory().createEnigmaMachineFromConfig(baseMachineCfg)
 levelMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCm")
 level=Level(baseMachine.getMachineSettings(),levelMachine.getMachineSettings())
 msg="987123"

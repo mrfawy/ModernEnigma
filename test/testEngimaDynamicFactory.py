@@ -9,8 +9,8 @@ class TestEnigmaDynamicFactory(unittest.TestCase):
     def testCreateSwappingSeparator(self):
         fromRange=[0,1,2,3,4,5,6,7,8,9]
         toRange=[0,1,2]
-        separator=self.factory.createSwappingSeparator(fromRange,toRange)
-        tupleList=separator.wiring.tupleList
+        separatorConfig=self.factory.createSwappingSeparatorConfig("ID",len(fromRange),len(toRange))
+        tupleList=separatorConfig["wiring"]
         for f in fromRange:
             self.assertTrue(self.existsInTuples(f,tupleList))
         for t in toRange:
@@ -22,4 +22,7 @@ class TestEnigmaDynamicFactory(unittest.TestCase):
             if x in t:
                 return True
 
+    def testCreateSwappingLevel2RotorConfig(self):
+        level2RotorConfig=self.factory.createSwappingLevel2RotorConfig("id",6)
+        self.assertEqual(6,len(level2RotorConfig["wiring"]))
 

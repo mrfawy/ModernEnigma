@@ -20,6 +20,14 @@ class Wiring(object):
     def addConnection(self,x,y):
         self.tupleList.append((x,y))
 
+    def getMultiPairdPin(self,pin):
+        result=[]
+        for entry in self.tupleList:
+            if pin==entry[0]:
+                result.append(entry[1])
+        if len(result)==0:
+            raise("Multi Paired Pin not found")
+        return result
     def getPairedPin(self,pin):
         for entry in self.tupleList:
             if pin ==entry[0]:

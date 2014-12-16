@@ -9,10 +9,8 @@ class RotorSwapper(object):
         self.baseSwapActiveChars=self.machine.baseSwapActiveChars
         self.rotorList=self.machine.rotorList
 
-    def processSignalSwapping(self,char):
-        indexIn=CharIndexMap.charToIndex(char)
-        # lastOut=self.plugboard.signalIn(indexIn)
-        lastout=(indexIn)
+    def processRotorSwapping(self,indexIn):
+        lastout=indexIn
         activePins=[]
         for c in self.baseSwapActiveChars:
             activePins.append(CharIndexMap.charToIndex(c))

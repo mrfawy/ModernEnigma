@@ -15,5 +15,7 @@ class TestLevelEncryptor(unittest.TestCase):
         msg="AAAAA"
         self.level.inputMsg=msg
         resultLevel=self.levelEncryptor.encryptLevel()
-        print(resultLevel.toJson())
+        ENC="""U//=27%"L+Z<<+VO!<3=K/][?XG"=<"&]P"":QP7XZ.#6="""
+        self.assertEqual(resultLevel.outputMsg,ENC)
+        # print(resultLevel.toJson())
 

@@ -20,5 +20,6 @@ class TestLevelDecryptor(unittest.TestCase):
         encLevel.inputMsg=""
         self.levelDecryptor.level=encLevel
         resultLevel=self.levelDecryptor.decryptLevel()
-        print(resultLevel.toJson())
+        self.assertEqual(resultLevel.inputMsg,msg)
+        # print(resultLevel.toJson())
 

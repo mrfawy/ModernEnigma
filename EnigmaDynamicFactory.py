@@ -2,7 +2,7 @@ from ModernEnigma import ModernEnigma
 from CharIndexMap import CharIndexMap
 from Wiring import Wiring
 from Rotor import Rotor
-from Switch import Switch
+from SwappingSwitch import SwappingSwitch
 from Reflector import Reflector
 from Plugboard import PlugBoard
 import random
@@ -26,16 +26,60 @@ class EnigmaDynamicFactory(object):
             machineConfig["ROTORS"].append(rotorConfig)
         machineConfig["REFLECTOR"]=self.createReflectorConfig(self.nextInt())
         machineConfig["PLUGBOARD"]=self.createPlugboardConfig(self.nextInt())
+
+        """swapping mechanism"""
+        machineConfig["SWAPPING"]={}
+        swappingConf=machineConfig["SWAPPING"]
+        swappingConf["L1ROTORS"]=[]
+        swappingConf["L2ROTORS"]=[]
+
+        l1swapRotorCount=self.nextInt(CharIndexMap.getRangeSize()//5,CharIndexMap.getRangeSize()//2)
+        for i in range(l1swapRotorCount):
+            l1RotorConfig=self.createRotorConfig(i) #level 1 is normal rotor size
+            swappingConf["L1ROTORS"].append(l1RotorConfig)
+
+        l2swapRotorCount=self.nextInt(CharIndexMap.getRangeSize()//5,CharIndexMap.getRangeSize()//2)
+        l2RotorSize=self.nextInt(CharIndexMap.getRangeSize()//3,2*CharIndexMap.getRangeSize()//3) # between 1/3 , 2/3
+        for i in range(l2swapRotorCount):
+            l2RotorConfig=self.createSwappingLevel2RotorConfig(i,l2RotorSize)
+            swappingConf["L2ROTORS"].append(l2RotorConfig)
+
+
+        swappingConf["L1_L2_SEPARATOR"]=self.createSwappingSeparatorConfig("L1_SEP_L2",l2RotorSize)
+        swappingConf["L2_CIPHER_MAPPER"]=self.createSwappingSeparatorConfig("L2_SEP_CIPH",rotorCount,l2RotorSize)
+
         return machineConfig
 
     def createEnigmaMachineFromConfig(self,config):
         rotorCfgList=config["ROTORS"]
         rotorStockList=[]
         for r in rotorCfgList:
-            rotorStockList.append(Rotor(r["ID"],Wiring(r["wiring"]),r["noch"]))
+            rotorStockList.append(Rotor(r["ID"],Wiring(r["wiring"]),r["notch"]))
         plugboard=PlugBoard(Wiring(config["PLUGBOARD"]["wiring"]))
         reflector=Reflector(Wiring(config["REFLECTOR"]["wiring"]))
-        mc=ModernEnigma(rotorStockList,reflector,plugboard)
+
+        "Swapping mechanism"
+        swapCfg=config["SWAPPING"]
+        l1rotorCfgList=swapCfg["L1ROTORS"]
+        l2rotorCfgList=swapCfg["L2ROTORS"]
+        l1l2SeparatorCfg=swapCfg["L1_L2_SEPARATOR"]
+        l2CiphSeparatorCfg=swapCfg["L2_CIPHER_MAPPER"]
+
+        l1SwappingRotorStockList=[]
+        for l1r in l1rotorCfgList:
+            l1SwappingRotorStockList.append(Rotor(l1r["ID"],Wiring(l1r["wiring"]),l1r["notch"]))
+
+
+        l2SwappingRotorStockList=[]
+        for l2r in l2rotorCfgList:
+            l2SwappingRotorStockList.append(Rotor(l2r["ID"],Wiring(l2r["wiring"]),l2r["notch"],len(l2r["wiring"])))
+
+
+        l1l2SeparatorSwitch=self.createSwappingSeparator(l1l2SeparatorCfg)
+        l2CipherMapper=self.createSwappingSeparator(l2CiphSeparatorCfg)
+
+        mc=ModernEnigma(rotorStockList,reflector,plugboard,l1SwappingRotorStockList,l2SwappingRotorStockList,l1l2SeparatorSwitch,l2CipherMapper)
+        mc.printMachineInformation()
         return mc
 
     def createReflectorConfig(self,id):
@@ -63,19 +107,22 @@ class EnigmaDynamicFactory(object):
     def createRotorConfig(self,id):
         rotorConfig={"ID":id}
         rotorConfig["wiring"]=self.seqToStr(self.getShuffledSequence())
-        rotorConfig["noch"]=self.seqToStr(self.getSampleNotchSeq())
+        rotorConfig["notch"]=self.seqToStr(self.getSampleNotchSeq())
         return rotorConfig
 
-    def createSwappingRotorConfig(self,id,size):
+    def createSwappingLevel2RotorConfig(self,id,size):
         rotorConfig={"ID":id}
         seqToShuffle=[]
         for i in range(size):
-            seqToShuffl.append(CharIndexMap.getRange[i])
+            seqToShuffle.append(CharIndexMap.indexToChar(i))
 
         rotorConfig["wiring"]=self.seqToStr(self.getShuffledSequence(seqToShuffle))
-        rotorConfig["noch"]=self.seqToStr(self.getSampleNotchSeq(seqToShuffle))
+        rotorConfig["notch"]=self.seqToStr(self.getSampleNotchSeq(seqToShuffle))
         return rotorConfig
-    def createSwappingSeparator(self,fromIndexRange,toIndexRange):
+    def createSwappingSeparatorConfig(self,id,toSize,fromSize=CharIndexMap.getRangeSize()):
+        rotorConfig={"ID":id}
+        fromIndexRange=range(fromSize)
+        toIndexRange=range(toSize)
         mappingTuples=[]
         coveredTo=[]
         for fromIndex in fromIndexRange:
@@ -88,10 +135,20 @@ class EnigmaDynamicFactory(object):
                 mappedFrom=random.sample(fromIndexRange,self.nextInt(1,len(fromIndexRange)))
                 for m in mappedFrom:
                     mappingTuples.append((m,toIndex))
+        rotorConfig["wiring"]=[]
+        for t in mappingTuples:
+            rotorConfig["wiring"].append([t[0],t[1]])
+        return rotorConfig
+
+    def createSwappingSeparator(self,config):
         w=Wiring()
+        mappingTuples=[]
+        for m in config["wiring"]:
+            mappingTuples.append((m[0],m[1]))
+
         w.initWiringFromTupleList(mappingTuples)
 
-        return Switch(w)
+        return SwappingSwitch(w)
 
 
 
@@ -121,7 +178,7 @@ class EnigmaDynamicFactory(object):
             result= sorted(result, key=lambda k: random.random())
         return result
     def getSampleNotchSeq(self,seq=CharIndexMap.getRange()):
-        result=random.sample(seq,self.nextInt(0,CharIndexMap.getRangeSize()//2))
+        result=random.sample(seq,self.nextInt(0,len(seq)//2))
         return result
 
 
