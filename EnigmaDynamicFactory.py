@@ -7,6 +7,9 @@ from Reflector import Reflector
 from Plugboard import PlugBoard
 import random
 class EnigmaDynamicFactory(object):
+    ROTOR_COUNT_MIN=1
+    ROTOR_COUNT_MAX=1
+
 
     def __init__(self):
         pass
@@ -17,6 +20,7 @@ class EnigmaDynamicFactory(object):
         return mc
 
     def createMachineConfig(self,modelNo):
+
         seedStr=modelNo
         random.seed(seedStr)
         machineConfig={"ROTORS":[]}
@@ -32,6 +36,9 @@ class EnigmaDynamicFactory(object):
         swappingConf=machineConfig["SWAPPING"]
         swappingConf["L1ROTORS"]=[]
         swappingConf["L2ROTORS"]=[]
+
+        fixedActiveSwapSingals=self.nextInt(1,CharIndexMap.getRangeSize()//4)
+        swappingConf["FIXED_SWAP_SIGNALS"]=self.getShuffledSequence()[0:fixedActiveSwapSingals]
 
         l1swapRotorCount=self.nextInt(CharIndexMap.getRangeSize()//5,CharIndexMap.getRangeSize()//2)
         for i in range(l1swapRotorCount):
@@ -77,9 +84,9 @@ class EnigmaDynamicFactory(object):
 
         l1l2SeparatorSwitch=self.createSwappingSeparator(l1l2SeparatorCfg)
         l2CipherMapper=self.createSwappingSeparator(l2CiphSeparatorCfg)
+        fixedSwapSignals=swapCfg["FIXED_SWAP_SIGNALS"]
 
-        mc=ModernEnigma(rotorStockList,reflector,plugboard,l1SwappingRotorStockList,l2SwappingRotorStockList,l1l2SeparatorSwitch,l2CipherMapper)
-        mc.printMachineInformation()
+        mc=ModernEnigma(rotorStockList,reflector,plugboard,fixedSwapSignals,l1SwappingRotorStockList,l2SwappingRotorStockList,l1l2SeparatorSwitch,l2CipherMapper)
         return mc
 
     def createReflectorConfig(self,id):
