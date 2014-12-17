@@ -9,18 +9,25 @@ class TestEnigmaDynamicFactory(unittest.TestCase):
     def testCreateSwappingSeparator(self):
         fromRange=[0,1,2,3,4,5,6,7,8,9]
         toRange=[0,1,2]
-        separatorConfig=self.factory.createSwappingSeparatorConfig("ID",len(fromRange),len(toRange))
-        tupleList=separatorConfig["wiring"]
+        separatorConfig=self.factory.createSwappingSeparatorConfig("ID",len(toRange),len(fromRange))
+        wiringMap=separatorConfig["wiring"]
         for f in fromRange:
-            self.assertTrue(self.existsInTuples(f,tupleList))
+            self.assertTrue(self.existsInKeys(f,wiringMap))
         for t in toRange:
-            self.assertTrue(self.existsInTuples(t,tupleList))
+            self.assertTrue(self.existsInValues(t,wiringMap))
 
-    def existsInTuples(self,x,tupleList):
+    def existsInValues(self,x,wiringMap):
         exists=False
-        for t in tupleList:
-            if x in t:
+        for pinIn,poutList in wiringMap.items():
+            if x in poutList:
                 return True
+        return exists
+    def existsInKeys(self,x,wiringMap):
+        exists=False
+        for pinIn,poutList in wiringMap.items():
+            if x == pinIn:
+                return True
+        return exists
 
     def testCreateSwappingLevel2RotorConfig(self):
         level2RotorConfig=self.factory.createSwappingLevel2RotorConfig("id",6)
