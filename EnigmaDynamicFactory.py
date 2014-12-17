@@ -163,11 +163,6 @@ class EnigmaDynamicFactory(object):
 
         return SwappingSwitch(w)
 
-
-
-
-
-
     def createPlugboardConfig(self,id):
         plugboardConfig={"ID":id}
         plugboardConfig["wiring"]=self.seqToStr(CharIndexMap.getRange())

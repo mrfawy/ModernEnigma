@@ -6,13 +6,10 @@ from LevelDecryptor import LevelDecryptor
 import json
 
 baseMachineCfg=EnigmaDynamicFactory().createMachineConfig("MCb")
-cfg=json.dumps(baseMachineCfg)
-print(cfg)
-
 baseMachine=EnigmaDynamicFactory().createEnigmaMachineFromConfig(baseMachineCfg)
 levelMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCm")
 level=Level(baseMachine.getMachineSettings(),levelMachine.getMachineSettings())
-msg="987123"
+msg="HELLOXENIGMA!"
 level.inputMsg=msg.upper()
 levelEncryptor=LevelEncryptor(baseMachine,levelMachine,level)
 encLevel=levelEncryptor.encryptLevel()
