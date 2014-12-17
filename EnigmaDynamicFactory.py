@@ -142,16 +142,22 @@ class EnigmaDynamicFactory(object):
                 mappedFrom=random.sample(fromIndexRange,self.nextInt(1,len(fromIndexRange)))
                 for m in mappedFrom:
                     mappingTuples.append((m,toIndex))
-        rotorConfig["wiring"]=[]
+        rotorConfig["wiring"]={}
+        wiringCfg=rotorConfig["wiring"]
         for t in mappingTuples:
-            rotorConfig["wiring"].append([t[0],t[1]])
+            fromPin=t[0]
+            toPin=t[1]
+            if fromPin not in wiringCfg:
+                wiringCfg[fromPin]=[]
+            wiringCfg[fromPin].append(toPin)
         return rotorConfig
 
     def createSwappingSeparator(self,config):
         w=Wiring()
         mappingTuples=[]
-        for m in config["wiring"]:
-            mappingTuples.append((m[0],m[1]))
+        for fromPin,value in config["wiring"].items():
+            for toPin in value:
+                mappingTuples.append((fromPin,toPin))
 
         w.initWiringFromTupleList(mappingTuples)
 
