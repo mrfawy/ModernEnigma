@@ -46,16 +46,17 @@ INTERNAL MODERN Enigma Protocol WORKING:
 * like in original Enigma you need only to know ( exchange) s between sender and receiver
 * each level is as following:
 * Encrypt as enigma Msg : 
-    * Generate Per Msg setting by machine Bs ->Bp
+    * Generate Per Msg setting by machine B ->Bp
     * Encrypt Per Msg Bp using Ms,o times->EBp
-    * Merge with (Encrypted Msg with Bp,p times) ->EMsg
+    * Encrypted Msg with Bp,p times ->msg_Bp
+    * Merge EBp with msg_Bp ->EMsg
 * Shuffle EMsg,s1 times->SEmsg
 * Encrypt SEMsg with Bs , i times ->x
 * Encypt x with Ms ,j time ->y
 * Encrypt as enigma Msg : 
     * Generate per msg setting in machime Mp ->MP 
     * Encrypt MP with Bs ,k times ->EMp
-    * Encrypt y with Mp , l times -> M0
+    * Encrypt y with Mp , l times -> Y_Mp
     * Merge ( join ) EMp + M0 -> W
 * Shuffle W ,s2 times->S
 * Encrypt S with Ms ,m tims ->R
