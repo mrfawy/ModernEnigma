@@ -8,8 +8,8 @@ from Plugboard import PlugBoard
 from Util import Util
 from RandomGenerator import RandomGenerator
 from Shuffler import Shuffler
-class EnigmaDynamicFactory(object):
 
+class EnigmaConfigGenerator(object):
 
     def __init__(self,seed=None):
         self.random=RandomGenerator(seed)
@@ -33,12 +33,7 @@ class EnigmaDynamicFactory(object):
         self.SWAP_ROTOR_L2_COUNT_MAX=CharIndexMap.getRangeSize()//2
         self.SWAP_ROTOR_L2_MIN_SIZE=CharIndexMap.getRangeSize()
         self.SWAP_ROTOR_L2_MAX_SIZE=CharIndexMap.getRangeSize()
-        pass
 
-    def createEnigmaMachineFromModel(self,modelNo):
-        cfg=self.createMachineConfig(modelNo)
-        mc=self.createEnigmaMachineFromConfig(cfg)
-        return mc
 
     def createRotorStockConfig(self,rotorCount,rotorSize):
         rotorStock=[]
@@ -128,41 +123,7 @@ class EnigmaDynamicFactory(object):
         machineCfg={}
         machineCfg["CIPHER_MODULE"]=self.createCipherModuleConfig()
         machineCfg["SWAPPING_MODULE"]=self.createSwappingModuleConfig()
-
-
         return machineCfg
-
-    def createEnigmaMachineFromConfig(self,config):
-        rotorCfgList=config["ROTORS"]
-        rotorStockList=[]
-        for r in rotorCfgList:
-            rotorStockList.append(Rotor(r["ID"],Wiring(r["wiring"]),r["notch"]))
-        plugboard=PlugBoard(Wiring(config["PLUGBOARD"]["wiring"]))
-        reflector=Reflector(Wiring(config["REFLECTOR"]["wiring"]))
-
-        "Swapping mechanism"
-        swapCfg=config["SWAPPING"]
-        l1rotorCfgList=swapCfg["L1ROTORS"]
-        l2rotorCfgList=swapCfg["L2ROTORS"]
-        l1l2SeparatorCfg=swapCfg["L1_L2_SEPARATOR"]
-        l2CiphSeparatorCfg=swapCfg["L2_CIPHER_MAPPER"]
-
-        l1SwappingRotorStockList=[]
-        for l1r in l1rotorCfgList:
-            l1SwappingRotorStockList.append(Rotor(l1r["ID"],Wiring(l1r["wiring"]),l1r["notch"]))
-
-
-        l2SwappingRotorStockList=[]
-        for l2r in l2rotorCfgList:
-            l2SwappingRotorStockList.append(Rotor(l2r["ID"],Wiring(l2r["wiring"]),l2r["notch"],len(l2r["wiring"])))
-
-
-        l1l2SeparatorSwitch=self.createSwappingSeparator(l1l2SeparatorCfg)
-        l2CipherMapper=self.createSwappingSeparator(l2CiphSeparatorCfg)
-        fixedSwapSignals=swapCfg["FIXED_SWAP_SIGNALS"]
-
-        mc=ModernEnigma(rotorStockList,reflector,plugboard,fixedSwapSignals,l1SwappingRotorStockList,l2SwappingRotorStockList,l1l2SeparatorSwitch,l2CipherMapper)
-        return mc
 
     def createReflectorCfg(self,id="RFLCTR",seq=CharIndexMap.getRange()):
         reflectorConfig={"ID":id}
@@ -215,16 +176,4 @@ class EnigmaDynamicFactory(object):
 
         wiringCfg=Util.convertTupleListToMap(wiringTuples)
         return wiringCfg
-
-    def createSwappingSeparator(self,config):
-        w=Wiring()
-        mappingTuples=[]
-        for fromPin,value in config["wiring"].items():
-            for toPin in value:
-                mappingTuples.append((fromPin,toPin))
-
-        w.initWiringFromTupleList(mappingTuples)
-
-        return SwappingSwitch(w)
-
 

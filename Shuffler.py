@@ -1,4 +1,4 @@
-from random import Random
+from RandomGenerator import RandomGenerator
 
 
 #This class implements  Fisher-Yates shuffle algorithm
@@ -9,14 +9,14 @@ class Shuffler(object):
         if random:
             self.random=random
         else:
-            self.random=Random()
+            self.random=RandomGenerator()
 
     def shuffleSeq(self,sequence,seed=None):
         seq=list(sequence)
         if seed:
             self.random.seed(seed)
         for i in range(len(seq)-1,0,-1):
-           j=self.random.randint(0,i)
+           j=self.random.nextInt(0,i)
            self.swap(seq,i,j)
         return seq
 
@@ -26,7 +26,7 @@ class Shuffler(object):
             self.random.seed(seed)
         changes=[]
         for i in range(len(seq)-1,0,-1):
-           changes.append(self.random.randint(0,i))
+           changes.append(self.random.nextInt(0,i))
         changes=changes[::-1]
         for i in range(1,len(seq)):
            self.swap(seq,i,changes[i-1])
