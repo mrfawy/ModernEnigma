@@ -6,7 +6,7 @@ from Wiring import Wiring
 import random
 
 class ModernEnigma:
-    def __init__(self,rotorStockList,reflector,plugboard,fixedSwapSignals,l1SwappingRotorStockList,l2SwappingRotorStockList,l1l2SeparatorSwitch,l2CipherMapper,initSetting=None):
+    def __init__(self,rotorStockList,reflector,plugboard,l1SwappingRotorStockList,l2SwappingRotorStockList,l1l2SeparatorSwitch,initSetting=None):
 
         self.rotorStockList=rotorStockList
         self.rotorsStockMap={}

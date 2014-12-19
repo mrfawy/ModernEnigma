@@ -3,6 +3,15 @@ from CharIndexMap import CharIndexMap
 from Wiring import Wiring
 class PlugBoard(Switch):
 
+    """
+    String Format:
+
+    X Y , M N
+
+    example :
+    00 01 , 03 04
+    will create wiring of : 00->01 01->00 , 03->04 04->00
+    """
     @classmethod
     def initFromString(cls,wiringStr):
         tuples=wiringStr.split(",")
