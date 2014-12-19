@@ -2,11 +2,11 @@ from CharIndexMap import CharIndexMap
 from Switch import Switch
 from Wiring import Wiring
 class Rotor(Switch):
-    def __init__(self,id,wiring,notchSeq=[],size=CharIndexMap.getRangeSize(),offset=0):
+    def __init__(self,id,wiring,notchSeq=[],offset=0):
         super().__init__(wiring)
         self.id=id
         self.offset=offset
-        self.size=size
+        self.size=wiring.inputSize
         self.notchIndexList=[]
         for n in notchSeq:
             self.notchIndexList.append(n)
@@ -21,11 +21,13 @@ class Rotor(Switch):
         output= super().reverseSignal(newReverseIndexIn)
         return (output-self.offset)%self.size
 
-    def adjustDisplay(self,char):
-        self.offset=CharIndexMap.charToIndex(char)
+    def adjustDisplay(self,offset):
+        if offset>self.size:
+            raise("Invalid offset value,greater than rotor size")
+        self.offset=offset
 
     def getDisplay(self):
-        return CharIndexMap.indexToChar(self.offset)
+        return self.offset
 
     #return True if notch touches to mark rotate next Rotor
     def rotate(self):

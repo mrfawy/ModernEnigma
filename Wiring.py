@@ -9,6 +9,7 @@ class Wiring(object):
             self.loadDefaultWiring()
 
     def loadDefaultWiring(self):
+        self.size=CharIndexMap.getRangeSize()
         for i in range(CharIndexMap.getRangeSize()):
             self.addConnection(i,i)
 
@@ -38,6 +39,7 @@ class Wiring(object):
         return None
 
     def connectByConfig(self,config):
+        self.inputSize=len(config)
         for key,value in config.items():
             fromPin=int(key)
             for toPin in value:

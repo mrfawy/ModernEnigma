@@ -1,7 +1,7 @@
 import unittest
 from Wiring import Wiring
 
-class testWiring(unittest.TestCase):
+class TestWiring(unittest.TestCase):
     def setUp(self):
         self.config={
             "0": [
