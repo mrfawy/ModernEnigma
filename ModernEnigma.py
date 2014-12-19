@@ -1,4 +1,4 @@
-from Plugboard import PlugBoard
+from PlugBoard import PlugBoard
 from Rotor import Rotor
 from Reflector import Reflector
 from CharIndexMap import CharIndexMap

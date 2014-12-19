@@ -4,7 +4,7 @@ from Wiring import Wiring
 from Rotor import Rotor
 from MapperSwitch import MapperSwitch
 from Reflector import Reflector
-from Plugboard import PlugBoard
+from PlugBoard import PlugBoard
 from Util import Util
 from RandomGenerator import RandomGenerator
 from EnigmaConfigGenerator import EnigmaConfigGenerator
