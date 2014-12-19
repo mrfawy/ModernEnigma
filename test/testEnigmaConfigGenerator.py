@@ -59,7 +59,6 @@ class TestEnigmaConfigGenerator(unittest.TestCase):
     def testCreateSwappModuleCfg(self):
         moduleCfg=self.generator.createSwappingModuleConfig()
         self.assertIsNotNone(moduleCfg)
-        self.assertIsNotNone(moduleCfg["ACTIVE_SWAP_SIGNALS"])
         self.assertIsNotNone(moduleCfg["L1_ROTOR_STOCK"])
         self.assertIsNotNone(moduleCfg["L2_ROTOR_STOCK"])
         self.assertIsNotNone(moduleCfg["L1_L2_MAPPER"])

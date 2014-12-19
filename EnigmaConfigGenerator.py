@@ -48,7 +48,6 @@ class EnigmaConfigGenerator(object):
         moduleCfg={}
         moduleCfg["L1_ROTOR_STOCK"]=self.createSwappingL1RotorStockConfig()
         moduleCfg["L2_ROTOR_STOCK"]=self.createSwappingL2RotorStockConfig()
-        moduleCfg["ACTIVE_SWAP_SIGNALS"]=self.createActiveSwapSignalsConfig()
 
         choosedL1Size=len(moduleCfg["L1_ROTOR_STOCK"][0]["wiring"])
         choosedL2Size=len(moduleCfg["L2_ROTOR_STOCK"][0]["wiring"])
@@ -100,14 +99,6 @@ class EnigmaConfigGenerator(object):
         rotorsize=self.random.nextInt(self.SWAP_ROTOR_L2_MIN_SIZE,self.SWAP_ROTOR_L2_MAX_SIZE)
 
         return self.createRotorStockConfig(rotorCount,rotorsize)
-    def createActiveSwapSignalsConfig(self,id="ACTV",count=None):
-        if not count:
-            count=self.random.nextInt(self.SWAP_ACTIVE_SIGNALS_COUNT_MIN,self.SWAP_ROTOR_L1_COUNT_MAX)
-        activeSwapCfg={}
-        activeSwapCfg["ID"]=id
-        activeSwapCfg["SIGNALS"]=self.getShuffledSequence()[0:count]
-
-        return activeSwapCfg
 
     def getShuffledSequence(self,seq=CharIndexMap.getRange()):
         shuffler=Shuffler(self.random)

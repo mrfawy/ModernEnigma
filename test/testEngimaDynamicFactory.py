@@ -128,7 +128,6 @@ class TestEnigmaDynamicFactory(unittest.TestCase):
     def testCreateSwappingModuleFromConfig(self):
         module=self.factory.createSwappingModuleFromConfig(self.machineConfig)
         self.assertIsNotNone(module)
-        self.assertIsNotNone(module["ACTIVE_SWAP_SIGNALS"])
         self.assertIsNotNone(module["L1_ROTOR_STOCK"])
         self.assertIsNotNone(module["L2_ROTOR_STOCK"])
         self.assertIsNotNone(module["L1_L2_MAPPER"])

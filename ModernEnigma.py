@@ -20,12 +20,9 @@ class ModernEnigma:
         self.l1SwappingRotorStockList=l1SwappingRotorStockList
         self.l2SwappingRotorStockList=l2SwappingRotorStockList
         self.l1l2SeparatorSwitch=l1l2SeparatorSwitch
-        self.l2CipherMapper=l2CipherMapper
         self.swapRotorsLevel1=[]
         self.swapRotorsLevel2=[]
         self.baseSwapActiveChars=[]
-        for c in fixedSwapSignals:
-            self.baseSwapActiveChars.append(c)
 
         if initSetting:
             self.adjustMachineSettings(initSetting)

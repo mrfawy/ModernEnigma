@@ -53,9 +53,7 @@ class EnigmaDynamicFactory(object):
 
 
         l1l2Mapper=self.createMapper(l1l2MapperCfg)
-        activeSwapSignals=swappingModuleCfg["ACTIVE_SWAP_SIGNALS"]
 
-        swapModule["ACTIVE_SWAP_SIGNALS"]=activeSwapSignals
         swapModule["L1_ROTOR_STOCK"]=l1SwappingRotorStockList
         swapModule["L2_ROTOR_STOCK"]=l1SwappingRotorStockList
         swapModule["L1_L2_MAPPER"]=l1l2Mapper
@@ -69,7 +67,6 @@ class EnigmaDynamicFactory(object):
         reflector=cipherModule["REFLECTOR"]
         plugboard=cipherModule["PLUGBOARD"]
 
-        activeSwapSignals=swappingModule["ACTIVE_SWAP_SIGNALS"]
         l1SwappingRotorStockList=swappingModule["L1_ROTOR_STOCK"]
         l2SwappingRotorStockList=swappingModule["L2_ROTOR_STOCK"]
         l1l2SeparatorSwitch=swappingModule["L1_L2_MAPPER"]
@@ -77,7 +74,7 @@ class EnigmaDynamicFactory(object):
 
 
 
-        mc=ModernEnigma(rotorStockList,reflector,plugboard,activeSwapSignals,l1SwappingRotorStockList,l2SwappingRotorStockList,l1l2SeparatorSwitch,l2CipherMapper)
+        mc=ModernEnigma(rotorStockList,reflector,plugboard,l1SwappingRotorStockList,l2SwappingRotorStockList,l1l2SeparatorSwitch)
         return mc
 
     def createMapper(self,config):
