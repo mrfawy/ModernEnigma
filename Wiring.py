@@ -8,11 +8,6 @@ class Wiring(object):
         else:
             self.loadDefaultWiring()
 
-    def initWiringFromTupleList(self,tupleList):
-        self.tupleList=[]
-        for t in tupleList:
-            self.addConnection(t[0],t[1])
-
     def loadDefaultWiring(self):
         for i in range(CharIndexMap.getRangeSize()):
             self.addConnection(i,i)
@@ -43,8 +38,10 @@ class Wiring(object):
         return None
 
     def connectByConfig(self,config):
-        for i in range(len(config)):
-            self.addConnection(i,CharIndexMap.charToIndex(config[i]))
+        for key,value in config.items():
+            fromPin=int(key)
+            for toPin in value:
+                self.addConnection(fromPin,toPin)
 
     def printWiring(self):
         for entry in self.tupleList:

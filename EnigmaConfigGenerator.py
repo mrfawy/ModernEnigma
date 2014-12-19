@@ -2,7 +2,7 @@ from ModernEnigma import ModernEnigma
 from CharIndexMap import CharIndexMap
 from Wiring import Wiring
 from Rotor import Rotor
-from SwappingSwitch import SwappingSwitch
+from MapperSwitch import MapperSwitch
 from Reflector import Reflector
 from Plugboard import PlugBoard
 from Util import Util
@@ -34,7 +34,34 @@ class EnigmaConfigGenerator(object):
         self.SWAP_ROTOR_L2_MIN_SIZE=CharIndexMap.getRangeSize()
         self.SWAP_ROTOR_L2_MAX_SIZE=CharIndexMap.getRangeSize()
 
+    def createMachineConfig(self,modelNo):
+        seedStr=modelNo
+        self.random.seed(seedStr)
+        machineCfg={}
+        machineCfg["CIPHER_MODULE"]=self.createCipherModuleConfig()
+        machineCfg["SWAPPING_MODULE"]=self.createSwappingModuleConfig()
+        return machineCfg
 
+    def createCipherModuleConfig(self):
+        moduleCfg={}
+        moduleCfg["ROTOR_STOCK"]=self.createCipherRotorStockConfig()
+        moduleCfg["REFLECTOR"]=self.createReflectorCfg()
+        moduleCfg["PLUGBOARD"]=self.createPlugboardCfg()
+
+        return moduleCfg
+
+    def createSwappingModuleConfig(self):
+        moduleCfg={}
+        moduleCfg["L1_ROTOR_STOCK"]=self.createSwappingL1RotorStockConfig()
+        moduleCfg["L2_ROTOR_STOCK"]=self.createSwappingL2RotorStockConfig()
+        moduleCfg["ACTIVE_SWAP_SIGNALS"]=self.createActiveSwapSignalsConfig()
+
+        choosedL1Size=len(moduleCfg["L1_ROTOR_STOCK"][0]["wiring"])
+        choosedL2Size=len(moduleCfg["L2_ROTOR_STOCK"][0]["wiring"])
+
+        moduleCfg["L1_L2_MAPPER"]=self.createMapperCfg("L1L2MPPR",range(choosedL1Size),range(choosedL2Size))
+        # moduleCfg["L2_CIPHER_MAPPER"]=self.createMapperCfg("L2CIPH_MPPR",range(choosedL2Size),range(cipherRotorsCount))
+        return moduleCfg
     def createRotorStockConfig(self,rotorCount,rotorSize):
         rotorStock=[]
         for i in range(rotorCount):
@@ -93,37 +120,6 @@ class EnigmaConfigGenerator(object):
         shSeq= shuffler.shuffleSeq(seq)
         return shSeq
 
-
-
-    def createCipherModuleConfig(self):
-        moduleCfg={}
-        moduleCfg["ROTOR_STOCK"]=self.createCipherRotorStockConfig()
-        moduleCfg["REFLECTOR"]=self.createReflectorCfg()
-        moduleCfg["PLUGBOARD"]=self.createPlugboardCfg()
-
-        return moduleCfg
-
-    def createSwappingModuleConfig(self):
-        moduleCfg={}
-        moduleCfg["L1_ROTOR_STOCK"]=self.createSwappingL1RotorStockConfig()
-        moduleCfg["L2_ROTOR_STOCK"]=self.createSwappingL2RotorStockConfig()
-        moduleCfg["ACTIVE_SWAP_SIGNALS"]=self.createActiveSwapSignalsConfig()
-
-        choosedL1Size=len(moduleCfg["L1_ROTOR_STOCK"][0]["wiring"])
-        choosedL2Size=len(moduleCfg["L2_ROTOR_STOCK"][0]["wiring"])
-
-        moduleCfg["L1_L2_MAPPER"]=self.createMapperCfg("L1L2MPPR",range(choosedL1Size),range(choosedL2Size))
-        # moduleCfg["L2_CIPHER_MAPPER"]=self.createMapperCfg("L2CIPH_MPPR",range(choosedL2Size),range(cipherRotorsCount))
-        return moduleCfg
-
-
-    def createMachineConfig(self,modelNo):
-        seedStr=modelNo
-        self.random.seed(seedStr)
-        machineCfg={}
-        machineCfg["CIPHER_MODULE"]=self.createCipherModuleConfig()
-        machineCfg["SWAPPING_MODULE"]=self.createSwappingModuleConfig()
-        return machineCfg
 
     def createReflectorCfg(self,id="RFLCTR",seq=CharIndexMap.getRange()):
         reflectorConfig={"ID":id}

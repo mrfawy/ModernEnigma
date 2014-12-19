@@ -2,7 +2,7 @@ from Wiring import Wiring
 from Switch import Switch
 
 """Extends Switch , allowing for single Pin in , and multi-Pin out"""
-class SwappingSwitch(Switch):
+class MapperSwitch(Switch):
     def __init__(self,wiring):
         super().__init__(wiring)
     def signalIn(self,indexIn):

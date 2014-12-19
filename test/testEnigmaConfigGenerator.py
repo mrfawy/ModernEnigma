@@ -69,7 +69,6 @@ class TestEnigmaConfigGenerator(unittest.TestCase):
         self.assertIsNotNone(machineCfg)
         self.assertIsNotNone(machineCfg["CIPHER_MODULE"])
         self.assertIsNotNone(machineCfg["SWAPPING_MODULE"])
-        print(Util.toJson(machineCfg))
 
 
     def testCreateMapperCfg(self):

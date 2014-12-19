@@ -3,7 +3,7 @@ class CharIndexMap(object):
 
     @classmethod
     def getRange(cls):
-        return cls.charRange
+        return range(0,len(cls.charRange))
 
     @classmethod
     def getNonAlphaNumericRange(cls):

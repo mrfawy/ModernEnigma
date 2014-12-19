@@ -2,14 +2,14 @@ from CharIndexMap import CharIndexMap
 from Switch import Switch
 from Wiring import Wiring
 class Rotor(Switch):
-    def __init__(self,id,wiring,notchChars="",size=CharIndexMap.getRangeSize(),offset=0):
+    def __init__(self,id,wiring,notchSeq=[],size=CharIndexMap.getRangeSize(),offset=0):
         super().__init__(wiring)
         self.id=id
         self.offset=offset
         self.size=size
         self.notchIndexList=[]
-        for c in notchChars:
-            self.notchIndexList.append(CharIndexMap.charToIndex(c))
+        for n in notchSeq:
+            self.notchIndexList.append(n)
 
     def signalIn(self,indexIn):
         newIndexIn=(self.offset+indexIn)%self.size
