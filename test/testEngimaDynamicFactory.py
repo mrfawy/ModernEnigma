@@ -6,6 +6,19 @@ class TestEnigmaDynamicFactory(unittest.TestCase):
     def setUp(self):
         self.factory=EnigmaDynamicFactory()
 
+    def testCreateEnigmaMachineFromModel(self):
+        pass
+
+    def testCreateRotorStockConfig(self):
+        rotorStock=self.factory.createRotorStockConfig(7,13)
+        self.assertIsNotNone(rotorStock)
+        self.assertEqual(7,len(rotorStock))
+    def testCreateMachineConfig(self):
+        pass
+
+
+
+
     def testCreateSwappingSeparator(self):
         fromRange=[0,1,2,3,4,5,6,7,8,9]
         toRange=[0,1,2]

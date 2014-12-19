@@ -9,6 +9,12 @@ class TestShuffler(unittest.TestCase):
 
     def testGetRange(self):
         self.assertIsNotNone(CharIndexMap.getRange())
+
+    def testGetNonAlphaNum(self):
+        nonAlphaRange=CharIndexMap.getNonAlphaNumericRange()
+        self.assertIsNotNone(nonAlphaRange)
+        self.assertEqual("!",nonAlphaRange[0])
+        self.assertEqual("^",nonAlphaRange[-1])
         self.assertTrue(CharIndexMap.getRangeSize()==64)
 
     def testCharIndexMapping(self):

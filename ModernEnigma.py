@@ -3,7 +3,6 @@ from Rotor import Rotor
 from Reflector import Reflector
 from CharIndexMap import CharIndexMap
 from Wiring import Wiring
-import fixedSettings
 import random
 
 class ModernEnigma:

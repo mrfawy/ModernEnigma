@@ -5,13 +5,33 @@ from Rotor import Rotor
 from SwappingSwitch import SwappingSwitch
 from Reflector import Reflector
 from Plugboard import PlugBoard
-import random
+from Util import Util
+from RandomGenerator import RandomGenerator
 class EnigmaDynamicFactory(object):
-    ROTOR_COUNT_MIN=1
-    ROTOR_COUNT_MAX=1
 
 
-    def __init__(self):
+    def __init__(self,seed=None):
+        self.random=RandomGenerator(seed)
+
+        self.CIPHER_ROTOR_COUNT_MIN=CharIndexMap.getRangeSize()//5
+        self.CIPHER_ROTOR_COUNT_MAX=CharIndexMap.getRangeSize()//2
+        self.CIPHER_ROTOR_SIZE=CharIndexMap.getRangeSize()
+
+        self.ROTOR_NOTCH_COUNT_MIN=1
+        self.ROTOR_NOTCH_COUNT_MAX=1
+
+        self.SWAP_ACTIVE_SIGNALS_COUNT_MIN=1
+        self.SWAP_ACTIVE_SIGNALS_COUNT_MAX=1
+
+        self.SWAP_ROTOR_L1_COUNT_MIN=CharIndexMap.getRangeSize()//5
+        self.SWAP_ROTOR_L1_COUNT_MAX=CharIndexMap.getRangeSize()//2
+        self.SWAP_ROTOR_L1_MIN_SIZE=CharIndexMap.getRangeSize()
+        self.SWAP_ROTOR_L1_MAX_SIZE=CharIndexMap.getRangeSize()
+
+        self.SWAP_ROTOR_L2_COUNT_MIN=CharIndexMap.getRangeSize()//5
+        self.SWAP_ROTOR_L2_COUNT_MAX=CharIndexMap.getRangeSize()//2
+        self.SWAP_ROTOR_L2_MIN_SIZE=CharIndexMap.getRangeSize()
+        self.SWAP_ROTOR_L2_MAX_SIZE=CharIndexMap.getRangeSize()
         pass
 
     def createEnigmaMachineFromModel(self,modelNo):
@@ -19,38 +39,75 @@ class EnigmaDynamicFactory(object):
         mc=self.createEnigmaMachineFromConfig(cfg)
         return mc
 
-    def createMachineConfig(self,modelNo):
-
-        seedStr=modelNo
-        random.seed(seedStr)
-        machineConfig={"ROTORS":[]}
-        rotorCount=self.nextInt(CharIndexMap.getRangeSize()//5,CharIndexMap.getRangeSize()//2)
+    def createRotorStockConfig(self,rotorCount,rotorSize):
+        rotorStock=[]
         for i in range(rotorCount):
-            rotorConfig=self.createRotorConfig(i)
-            machineConfig["ROTORS"].append(rotorConfig)
-        machineConfig["REFLECTOR"]=self.createReflectorConfig(self.nextInt())
-        machineConfig["PLUGBOARD"]=self.createPlugboardConfig(self.nextInt())
+            rotorConfig=self.createRotorConfig(i,rotorSize)
+            rotorStock.append(rotorConfig)
+        return rotorStock
 
-        """swapping mechanism"""
-        machineConfig["SWAPPING"]={}
-        swappingConf=machineConfig["SWAPPING"]
-        swappingConf["L1ROTORS"]=[]
-        swappingConf["L2ROTORS"]=[]
+    def createRotorConfig(self,id,size=None,hasNotch=True):
+        if not size:
+            size=CharIndexMap.getRangeSize()
+        rotorConfig={"ID":id}
+        rotorConfig["wiring"]=self.createWiringCfg(CharIndexMap.getRange(),CharIndexMap.getRange())
+        if hasNotch:
+            rotorConfig["notch"]=Util.seqToStr(self.getSampleNotchSeq(seqToShuffle))
+        return rotorConfig
 
-        fixedActiveSwapSingals=self.nextInt(1,CharIndexMap.getRangeSize()//4)
-        swappingConf["FIXED_SWAP_SIGNALS"]=self.getShuffledSequence()[0:fixedActiveSwapSingals]
+    def createCipherRotorStockConfig(self,rotorCount=None):
+        if not rotorCount:
+            rotorCount=self.random.nextInt(self.CIPHER_ROTOR_COUNT_MIN,self.CIPHER_ROTOR_COUNT_MAX)
 
-        l1swapRotorCount=self.nextInt(CharIndexMap.getRangeSize()//5,CharIndexMap.getRangeSize()//2)
-        for i in range(l1swapRotorCount):
-            l1RotorConfig=self.createRotorConfig(i) #level 1 is normal rotor size
-            swappingConf["L1ROTORS"].append(l1RotorConfig)
+        rotorSize=CharIndexMap.getRangeSize()
+        return self.createRotorStockConfig(rotorCount,rotorSize)
 
-        l2swapRotorCount=self.nextInt(CharIndexMap.getRangeSize()//5,CharIndexMap.getRangeSize()//2)
-        l2RotorSize=self.nextInt(CharIndexMap.getRangeSize()//3,2*CharIndexMap.getRangeSize()//3) # between 1/3 , 2/3
-        for i in range(l2swapRotorCount):
-            l2RotorConfig=self.createSwappingLevel2RotorConfig(i,l2RotorSize)
-            swappingConf["L2ROTORS"].append(l2RotorConfig)
+    def createSwappingL1RotorStockConfig(self,rotorCount=None):
+        if not rotorCount:
+            rotorCount=self.random.nextInt(self.SWAP_ROTOR_L1_COUNT_MIN,self.SWAP_ROTOR_L1_COUNT_MAX)
 
+        rotorsize=self.random.nextInt(self.SWAP_ROTOR_L1_MIN_SIZE,self.SWAP_ROTOR_L1_MAX_SIZE)
+
+        return self.createRotorStockConfig(rotorCount,rotorsize)
+
+    def createSwappingL2RotorStockConfig(self,rotorCount=None):
+        if not rotorCount:
+            rotorCount=self.random.nextInt(self.SWAP_ROTOR_L2_COUNT_MIN,self.SWAP_ROTOR_L2_COUNT_MAX)
+
+        rotorsize=self.random.nextInt(self.SWAP_ROTOR_L2_MIN_SIZE,self.SWAP_ROTOR_L2_MAX_SIZE)
+
+        return self.createRotorStockConfig(rotorCount,rotorsize)
+    def createActiveSwapSignalsConfig(self,id="ACTV",count=None):
+        if not count:
+            count=self.random.nextInt(self.SWAP_ACTIVE_SIGNALS_COUNT_MIN,self.SWAP_ROTOR_L1_COUNT_MAX)
+        activeSwapCfg={}
+        activeSwapCfg["ID"]=id
+        activeSwapCfg["SIGNALS"]=self.getShuffledSequence()[0:count]
+
+        return activeSwapCfg
+
+
+    def createCipherModuleConfig(self):
+        moduleCfg={}
+        moduleCfg["ROTOR_STOCK"]=self.createCipherRotorStockConfig()
+        moduleCfg["REFLECTOR"]=self.createReflectorConfig()
+        moduleCfg["PLUGBOARD"]=self.createPlugboardConfig()
+
+        return moduleCfg
+
+    def createSwappingModuleConfig(self):
+        moduleCfg={}
+        moduleCfg["L1_ROTOR_STOCK"]=self.createSwappingL1RotorStockConfig()
+        moduleCfg["L2_ROTOR_STOCK"]=self.createSwappingL2RotorStockConfig()
+        moduleCfg["ACTIVE_SWAP_SIGNALS"]=self.createActiveSwapSignalsConfig()
+
+
+    def createMachineConfig(self,modelNo):
+        seedStr=modelNo
+        self.random.seed(seedStr)
+        machineConfg={}
+        machineConfg["CIPHER_MODULE"]=self.createCipherModuleConfig()
+        machineConfg["SWAPPING_MODULE"]=self.createSwappingModuleConfig()
 
         swappingConf["L1_L2_SEPARATOR"]=self.createSwappingSeparatorConfig("L1_SEP_L2",l2RotorSize)
         swappingConf["L2_CIPHER_MAPPER"]=self.createSwappingSeparatorConfig("L2_SEP_CIPH",rotorCount,l2RotorSize)
@@ -89,7 +146,7 @@ class EnigmaDynamicFactory(object):
         mc=ModernEnigma(rotorStockList,reflector,plugboard,fixedSwapSignals,l1SwappingRotorStockList,l2SwappingRotorStockList,l1l2SeparatorSwitch,l2CipherMapper)
         return mc
 
-    def createReflectorConfig(self,id):
+    def createReflectorConfig(self,id="RFLCTR"):
         reflectorConfig={"ID":id}
         reflectorConfig["wiring"]=self.seqToStr(self.getValidReflectorShuffledSequence())
         return reflectorConfig
@@ -110,47 +167,33 @@ class EnigmaDynamicFactory(object):
 
         return result
 
+    def createWiringCfg(self,fromRange,toRange):
+        wiringTuples=[]
+        if fromRange==toRange:
+            shuffledToSeq=self.shuffler.shuffleSeq(toRange)
+            for f in fromRange:
+                for st in shuffledToSeq:
+                    wiringTuples.append((f,st))
+        else:
+            for fromIndex in fromRange:
+                mappedTo=self.random.sample(toIndexRange,self.nextInt(1,len(toIndexRange)))
+                for m in mappedTo:
+                    mappingTuples.append((fromIndex,m))
+                    coveredTo.append(m)
+            for toIndex in toRange:
+                if toIndex not in coveredTo:
+                    mappedFrom=self.random.sample(fromIndexRange,self.nextInt(1,len(fromIndexRange)))
+                    for m in mappedFrom:
+                        mappingTuples.append((m,toIndex))
 
-    def createRotorConfig(self,id):
-        rotorConfig={"ID":id}
-        rotorConfig["wiring"]=self.seqToStr(self.getShuffledSequence())
-        rotorConfig["notch"]=self.seqToStr(self.getSampleNotchSeq())
-        return rotorConfig
-
-    def createSwappingLevel2RotorConfig(self,id,size):
-        rotorConfig={"ID":id}
-        seqToShuffle=[]
-        for i in range(size):
-            seqToShuffle.append(CharIndexMap.indexToChar(i))
-
-        rotorConfig["wiring"]=self.seqToStr(self.getShuffledSequence(seqToShuffle))
-        rotorConfig["notch"]=self.seqToStr(self.getSampleNotchSeq(seqToShuffle))
-        return rotorConfig
-    def createSwappingSeparatorConfig(self,id,toSize,fromSize=CharIndexMap.getRangeSize()):
-        rotorConfig={"ID":id}
-        fromIndexRange=range(fromSize)
-        toIndexRange=range(toSize)
-        mappingTuples=[]
-        coveredTo=[]
-        for fromIndex in fromIndexRange:
-            mappedTo=random.sample(toIndexRange,self.nextInt(1,len(toIndexRange)))
-            for m in mappedTo:
-                mappingTuples.append((fromIndex,m))
-                coveredTo.append(m)
-        for toIndex in toIndexRange:
-            if toIndex not in coveredTo:
-                mappedFrom=random.sample(fromIndexRange,self.nextInt(1,len(fromIndexRange)))
-                for m in mappedFrom:
-                    mappingTuples.append((m,toIndex))
-        rotorConfig["wiring"]={}
-        wiringCfg=rotorConfig["wiring"]
+        wiringCfg={}
         for t in mappingTuples:
             fromPin=t[0]
             toPin=t[1]
             if fromPin not in wiringCfg:
                 wiringCfg[fromPin]=[]
             wiringCfg[fromPin].append(toPin)
-        return rotorConfig
+        return wiringCfg
 
     def createSwappingSeparator(self,config):
         w=Wiring()
@@ -163,30 +206,15 @@ class EnigmaDynamicFactory(object):
 
         return SwappingSwitch(w)
 
-    def createPlugboardConfig(self,id):
+    def createPlugboardConfig(self,id="PLGBRD"):
         plugboardConfig={"ID":id}
-        plugboardConfig["wiring"]=self.seqToStr(CharIndexMap.getRange())
+        plugboardConfig["wiring"]=self.createWiringCfg(CharIndexMap.getRange(),CharIndexMap.getRange())
         return plugboardConfig
 
-    def seqToStr(self,seq):
-        result=""
-        for item in seq:
-            result+=item
-        return result
-
-
-
-    def nextInt(self,a=0,b=CharIndexMap.getRangeSize()):
-        return random.randint(a,b)
-    def getShuffledSequence(self,seq=CharIndexMap.getRange()):
-        result=seq
-        times=self.nextInt()
-        for t in range(times):
-            #to keep the original and copy it
-            result= sorted(result, key=lambda k: random.random())
-        return result
-    def getSampleNotchSeq(self,seq=CharIndexMap.getRange()):
-        result=random.sample(seq,self.nextInt(0,len(seq)//2))
+    def createNotchConfig(self,seq=CharIndexMap.getRange(),count=None):
+        if not count:
+            count =self.random.nextInt(self.ROTOR_NOTCH_COUNT_MIN,self.ROTOR_NOTCH_COUNT_MAX)
+        result=self.random.sample(seq,self.nextInt(0,len(seq)//2))
         return result
 
 
