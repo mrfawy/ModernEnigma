@@ -3,17 +3,18 @@ from Rotor import Rotor
 from Reflector import Reflector
 from CharIndexMap import CharIndexMap
 from Wiring import Wiring
-import random
+from RandomGenerator import RandomGenerator
+from MachineSettingsMemento import MachineSettingsMemento
+from MachineSettingManager import MachineSettingManager
 
 class ModernEnigma:
-    def __init__(self,rotorStockList,reflector,plugboard,l1SwappingRotorStockList,l2SwappingRotorStockList,l1l2SeparatorSwitch,initSetting=None):
-
+    def __init__(self,rotorStockList,reflector,plugboard,l1SwappingRotorStockList,l2SwappingRotorStockList,l1l2SeparatorSwitch):
+        self.settingsReady=False
         self.rotorStockList=rotorStockList
         self.rotorsStockMap={}
         for rotorStock in rotorStockList:
             self.rotorsStockMap[str(rotorStock.id)]=rotorStock
         self.rotorList=[]
-        self.cyclePeriod=0
         self.reflector=reflector
         self.plugboard=plugboard
         """swapping settings"""
@@ -23,59 +24,18 @@ class ModernEnigma:
         self.swapRotorsLevel1=[]
         self.swapRotorsLevel2=[]
         self.baseSwapActiveChars=[]
+        self.l2CipherMapper=None
+        self.cyclePeriod=None
 
-        if initSetting:
-            self.adjustMachineSettings(initSetting)
-        else:
-            self.adjustDefaultSettings()
 
-    def adjustDefaultSettings(self):
-        for rotorStock in self.rotorStockList:
-            self.rotorList.append(rotorStock)
-        self.adjustDefaultSwappingRotorSettings()
-
-    def adjustDefaultSwappingRotorSettings(self):
-        """Load L1 , L2 in order from stock ,Create default Separator
-        Create Default Mapping from L2 to Cipher rotors"""
-        self.swapRotorsLevel1=[]
-        self.swapRotorsLevel2=[]
-        for l1Rotor in self.l1SwappingRotorStockList:
-            l1Rotor.offset=0
-            self.swapRotorsLevel1.append(l1Rotor)
-        for l2Rotor in self.l2SwappingRotorStockList:
-            l2Rotor.offset=0
-            self.swapRotorsLevel2.append(l2Rotor)
-
-    #fromat for setting line
-    #2 digitID rotor order for selected rotor set |1 char for offset |2 chars for each plugboard pair |(optional) dynamic inmsg  conf change rules
-    def adjustMachineSettings(self,settings):
-        """WILL BE REMOVED AFTER SETTING FORMAT IS DONE FOR SWAPPING"""
-        self.adjustDefaultSwappingRotorSettings()
-        settingsParts=settings.split('|')
-        rotorOrderStg=settingsParts[0]
-        rotorOffsetStg=settingsParts[1]
-
-        self.rotorList=[]
-
-        i=len(rotorOrderStg)
-        while i>0:
-            rotorId=str(int(rotorOrderStg[i-2:i]))
-            self.rotorList.append(self.rotorsStockMap[rotorId])
-            i-=2
-        j=0
-        for offsetChar in reversed(rotorOffsetStg):
-            self.rotorList[j].adjustDisplay(offsetChar)
-            j+=1
-        #setting plugboard
-        if len(settingsParts)>2:
-            plugboardStg=settingsParts[2]
-            self.plugboard=PlugBoard(plugboardStg)
-        #settingCyclePeriod
-        if len(settingsParts)>3:
-            self.cyclePeriod=int(settingsParts[3])
-
+    def adjustMachineSettings(self,settingsMemento=None):
+        if not settingsMemento:
+            settingsMemento=MachineSettingManager.generateDefaultSettingsForMachine(self)
+        MachineSettingManager.applyMachineSettings(self,settingsMemento)
 
     def processKeyPress(self,char):
+        if not self.settingsReady :
+            raise Exception("Settings are not set for this machine!!")
         indexIn=CharIndexMap.charToIndex(char)
         lastOut=self.plugboard.signalIn(indexIn)
         resultPins=self.applyActivePins(self.rotorList,[lastOut])

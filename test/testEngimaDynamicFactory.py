@@ -58,12 +58,6 @@ class TestEnigmaDynamicFactory(unittest.TestCase):
             ]
         },
         "SWAPPING_MODULE": {
-            "ACTIVE_SWAP_SIGNALS": {
-                "ID": "ACTV",
-                "SIGNALS": [
-                    "0"
-                ]
-            },
             "L1_L2_MAPPER": {
                 "ID": "L1L2MPPR",
                 "wiring": {

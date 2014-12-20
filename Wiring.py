@@ -9,7 +9,7 @@ class Wiring(object):
             self.loadDefaultWiring()
 
     def loadDefaultWiring(self):
-        self.size=CharIndexMap.getRangeSize()
+        self.inputSize=CharIndexMap.getRangeSize()
         for i in range(CharIndexMap.getRangeSize()):
             self.addConnection(i,i)
 
