@@ -52,6 +52,16 @@ class Wiring(object):
             for toPin in value:
                 self.addConnection(fromPin,toPin)
 
+    def extractAsMap(self):
+        result={}
+        for t in self.tupleList:
+            fromPin=t[0]
+            toPin=t[1]
+            if fromPin not in result:
+                result[fromPin]=[]
+            result[fromPin].append(toPin)
+        return result
+
     def printWiring(self):
         for entry in self.tupleList:
             print(str(entry))

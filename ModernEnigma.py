@@ -13,7 +13,7 @@ class ModernEnigma:
         self.rotorStockList=rotorStockList
         self.rotorsStockMap={}
         for rotorStock in rotorStockList:
-            self.rotorsStockMap[str(rotorStock.id)]=rotorStock
+            self.rotorsStockMap[rotorStock.id]=rotorStock
         self.rotorList=[]
         self.reflector=reflector
         self.plugboard=plugboard
@@ -23,7 +23,7 @@ class ModernEnigma:
         self.l1l2SeparatorSwitch=l1l2SeparatorSwitch
         self.swapRotorsLevel1=[]
         self.swapRotorsLevel2=[]
-        self.baseSwapActiveChars=[]
+        self.swapActiveSignals=[]
         self.l2CipherMapper=None
         self.cyclePeriod=None
 
@@ -33,10 +33,9 @@ class ModernEnigma:
             settingsMemento=MachineSettingManager.generateDefaultSettingsForMachine(self)
         MachineSettingManager.applyMachineSettings(self,settingsMemento)
 
-    def processKeyPress(self,char):
+    def processKeyPress(self,indexIn):
         if not self.settingsReady :
             raise Exception("Settings are not set for this machine!!")
-        indexIn=CharIndexMap.charToIndex(char)
         lastOut=self.plugboard.signalIn(indexIn)
         resultPins=self.applyActivePins(self.rotorList,[lastOut])
 
@@ -49,12 +48,12 @@ class ModernEnigma:
 
         self.processRotorSwapping(lastOut)
 
-        return CharIndexMap.indexToChar(output)
+        return output
 
     def processRotorSwapping(self,indexIn):
         lastout=indexIn
         activePins=[]
-        for c in self.baseSwapActiveChars:
+        for c in self.swapActiveSignals:
             activePins.append(CharIndexMap.charToIndex(c))
         if lastout not in activePins:
             activePins.append(lastout)
@@ -76,7 +75,10 @@ class ModernEnigma:
 
     def swapRotors(self,rotorList,swapIndexList):
         for index in swapIndexList:
-            self.swap(rotorList,index,(index+1)%len(rotorList))
+            if index==0 or index==len(rotorList):
+                self.swap(rotorList,0,len(rotorList)-1)
+                continue
+            self.swap(rotorList,index,(3*index)%len(rotorList))
 
     def applyActivePins(self,rotors,pins):
         resultPins=[]
@@ -118,7 +120,7 @@ class ModernEnigma:
 
     def getWindowDisplay(self):
         result="Window||"
-        for rotor in reversed(self.rotorList):
+        for rotor in self.rotorList:
             result+=rotor.getDisplay()+" "
         return result
     def adjustWindowDisplay(self,windowSetting):
@@ -130,16 +132,7 @@ class ModernEnigma:
 
 
     def getMachineSettings(self):
-        """settings format 2chars of rotorID  of right order | 1  char each of win display |plugboard settings|swappingSettings| (optional) cycle"""
-        """swapping Settings : 2Chars L1RotorID of right order|1 char of L1Rotor offset|2 chars ordered  L2RotorID |1 char L2Rotors offset|L2toCipher rotors mapping reversed from N rotors to K (L2 rotor size) """
-        rotorOrderStg=""
-        rotorOffsetStg=""
-        for rotor in reversed(self.rotorList):
-            rotorOrderStg+=str(rotor.id) if len(str(rotor.id))>1 else "0"+str(rotor.id)
-            rotorOffsetStg+=rotor.getDisplay()
-
-        result= rotorOrderStg+"|"+rotorOffsetStg+"|"+self.plugboard.getSettings()+"|"+str(self.cyclePeriod)
-        return result
+        return MachineSettingManager.backupMachineSettings(self)
 
     def cycleRotorsForward(self):
         lastRotor=self.rotorList[-1]

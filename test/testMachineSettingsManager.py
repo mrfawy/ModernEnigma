@@ -12,11 +12,11 @@ class TestMachineSettingManager(unittest.TestCase):
         self.manager=MachineSettingManager()
         plugboard=PlugBoard(Wiring())
         reflector=Reflector(Wiring())
-        cipherStock=self.createSampleStock(5)
+        self.cipherStock=self.createSampleStock(5)
         l1Stock=self.createSampleStock(3)
         l2Stock=self.createSampleStock(2)
         l1l2Mapper=MapperSwitch(Wiring())
-        self.machine=ModernEnigma(cipherStock,reflector,plugboard,l1Stock,l2Stock,l1l2Mapper)
+        self.machine=ModernEnigma(self.cipherStock,reflector,plugboard,l1Stock,l2Stock,l1l2Mapper)
 
     def createSampleStock(self,count):
         cipherStock=[]
@@ -31,7 +31,7 @@ class TestMachineSettingManager(unittest.TestCase):
         self.assertIsNotNone(memento.swappingL1Stg["OFFSET"])
         self.assertIsNotNone(memento.swappingL2Stg["ORDER"])
         self.assertIsNotNone(memento.swappingL2Stg["OFFSET"])
-        self.assertIsNotNone(memento.L1L2MapperStg["wiring"])
+        self.assertIsNotNone(memento.L1L2MapperStg["OFFSET"])
         self.assertIsNotNone(memento.L2CipherMapperStg["wiring"])
 
 
@@ -58,3 +58,29 @@ class TestMachineSettingManager(unittest.TestCase):
             stock.append(Rotor(i,Wiring()))
         stockStg=self.manager.generateDefaultSettingsForRotorStock(stock)
         self.assertEqual(3,len(stockStg["ORDER"]))
+
+    def testApplyMachineSetting(self):
+        defaultStg=self.manager.generateDefaultSettingsForMachine(self.machine)
+        self.machine.settingsReady=False
+        self.manager.applyMachineSettings(self.machine,defaultStg)
+        self.assertTrue(self.machine.settingsReady)
+    def testExtractRotorsSettingsFromRotorList(self):
+        result=self.manager.extractRotorSettingsFromRotorList(self.cipherStock)
+        self.assertEqual(5,len(result["ORDER"]))
+        self.assertEqual(5,len(result["OFFSET"]))
+
+    def testBackupMachineSettings(self):
+        self.machine.adjustMachineSettings()
+        memento=MachineSettingManager.backupMachineSettings(self.machine)
+
+        self.assertIsNotNone(memento.cipherRotorStg["ORDER"])
+        self.assertIsNotNone(memento.cipherRotorStg["OFFSET"])
+        self.assertIsNotNone(memento.swappingL1Stg["ORDER"])
+        self.assertIsNotNone(memento.swappingL1Stg["OFFSET"])
+        self.assertIsNotNone(memento.swappingL2Stg["ORDER"])
+        self.assertIsNotNone(memento.swappingL2Stg["OFFSET"])
+        self.assertIsNotNone(memento.L1L2MapperStg["OFFSET"])
+        self.assertIsNotNone(memento.L2CipherMapperStg["wiring"])
+
+
+

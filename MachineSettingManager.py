@@ -1,5 +1,9 @@
 from MachineSettingsMemento import MachineSettingsMemento
 from RandomGenerator import RandomGenerator
+from PlugBoard import PlugBoard
+from MapperSwitch import MapperSwitch
+from Wiring import Wiring
+
 
 class MachineSettingManager(object):
     def __init__(self,random=None):
@@ -14,13 +18,14 @@ class MachineSettingManager(object):
         memento.plugboardStg["wiring"]=[]
 
         memento.swappingL1Stg=self.generateDefaultSettingsForRotorStock(mc.l1SwappingRotorStockList)
-        memento.swappingL2Stg=self.generateDefaultSettingsForRotorStock(mc.l1SwappingRotorStockList)
+        memento.swappingL2Stg=self.generateDefaultSettingsForRotorStock(mc.l2SwappingRotorStockList)
 
         memento.L1L2MapperStg["OFFSET"]=0
 
         fromRange=range(mc.l2SwappingRotorStockList[0].size)
         toRange=range(len(mc.rotorStockList))
         memento.L2CipherMapperStg=self.gererateDefaultSettingsForMapper(fromRange,toRange)
+
         return memento
 
     """ map each pin in from Range to ToRange , cover the other end as well"""
@@ -60,8 +65,24 @@ class MachineSettingManager(object):
     @classmethod
     def backupMachineSettings(cls,mc):
         memento=MachineSettingsMemento()
-        raise Exception("Unimplemented operation")
+        memento.cipherRotorStg=MachineSettingManager.extractRotorSettingsFromRotorList(mc.rotorList)
+        memento.swappingL1Stg=MachineSettingManager.extractRotorSettingsFromRotorList(mc.swapRotorsLevel1)
+        memento.swappingL2Stg=MachineSettingManager.extractRotorSettingsFromRotorList(mc.swapRotorsLevel2)
+        memento.L1L2MapperStg={"OFFSET":mc.l1l2SeparatorSwitch.offset}
+        memento.activeSwapSignals=mc.swapActiveSignals
+        memento.cyclePeriod=mc.cyclePeriod
+        memento.L2CipherMapperStg={"wiring":mc.l2CipherMapper.wiring.extractAsMap()}
         return memento
+    @classmethod
+    def extractRotorSettingsFromRotorList(self,rotorList):
+        result={}
+        result["ORDER"]=[]
+        result["OFFSET"]=[]
+        for rotor in rotorList:
+            result["ORDER"].append(rotor.id)
+            result["OFFSET"].append(rotor.offset)
+        return result
+
     @classmethod
     def applyMachineSettings(self,mc,settingsMemento):
         if not settingsMemento:
@@ -69,26 +90,26 @@ class MachineSettingManager(object):
         mc.rotorList=[]
         for r in settingsMemento.cipherRotorStg["ORDER"]:
             mc.rotorList.append(mc.rotorsStockMap[r])
-        for i in len(settingsMemento.cipherRotorStg["OFFSET"]):
+        for i in range(len(settingsMemento.cipherRotorStg["OFFSET"])):
             mc.rotorList[i].offset=settingsMemento.cipherRotorStg["OFFSET"][i]
 
         mc.plugboard=PlugBoard(Wiring(settingsMemento.plugboardStg["wiring"]))
 
-        mc.applyActivePins=settingsMemento.activePins
+        mc.applyActivePins=settingsMemento.activeSwapSignals
 
         for r in settingsMemento.swappingL1Stg["ORDER"]:
             mc.swapRotorsLevel1.append(mc.l1SwappingRotorStockList[r])
-        for i in len(settingsMemento.swappingL1Stg["OFFSET"]):
+        for i in range(len(settingsMemento.swappingL1Stg["OFFSET"])):
             mc.swapRotorsLevel1[i].offset=settingsMemento.swappingL1Stg["OFFSET"][i]
 
         mc.l1l2SeparatorSwitch.offset=settingsMemento.L1L2MapperStg["OFFSET"]
 
         for r in settingsMemento.swappingL2Stg["ORDER"]:
             mc.swapRotorsLevel2.append(mc.l2SwappingRotorStockList[r])
-        for i in len(settingsMemento.swappingL2Stg["OFFSET"]):
+        for i in range(len(settingsMemento.swappingL2Stg["OFFSET"])):
             mc.swapRotorsLevel2[i].offset=settingsMemento.swappingL2Stg["OFFSET"][i]
 
-        mc.l2CipherMapper=MapperSwitch(Wiring(settingsMemento.l2CipherMapper["wiring"]))
+        mc.l2CipherMapper=MapperSwitch(Wiring(settingsMemento.L2CipherMapperStg["wiring"]))
 
         mc.cyclePeriod=settingsMemento.cyclePeriod
 

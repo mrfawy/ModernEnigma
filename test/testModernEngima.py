@@ -27,6 +27,19 @@ class TestModernEnigma(unittest.TestCase):
         return cipherStock
 
     def testAdjustMachineSettings(self):
+        self.assertFalse(self.machine.settingsReady)
         self.machine.adjustMachineSettings()
+        self.assertTrue(self.machine.settingsReady)
 
+
+    def testSwap(self):
+        l=[0,1,2]
+        self.machine.swap(l,0,1)
+        self.assertEqual([1,0,2],l)
+    def testSwapRotors(self):
+        l=[0,1,2,3]
+        self.machine.swapRotors(l,[1])
+        self.assertEqual([0,3,2,1],l)
+        self.machine.swapRotors(l,[0])
+        self.assertEqual([1,3,2,0],l)
 
