@@ -65,7 +65,7 @@ class EnigmaConfigGenerator(object):
     def createRotorConfig(self,id,size=None,hasNotch=True):
         if not size:
             size=CharIndexMap.getRangeSize()
-        rotorConfig={"ID":str(id)}
+        rotorConfig={"ID":id}
         rotorConfig["wiring"]=self.createWiringCfg(range(size),range(size))
         if hasNotch:
             rotorConfig["notch"]=self.createNotchConfig(range(size))

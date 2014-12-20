@@ -17,6 +17,7 @@ class EnigmaDynamicFactory(object):
         generator=EnigmaConfigGenerator(self.random)
         cfg=generator.createMachineConfig(modelNo)
         mc=self.createEnigmaMachineFromConfig(cfg)
+        mc.adjustMachineSettings()
         return mc
 
 

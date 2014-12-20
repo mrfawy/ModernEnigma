@@ -64,6 +64,8 @@ class MachineSettingManager(object):
 
     @classmethod
     def backupMachineSettings(cls,mc):
+        if not mc.settingsReady:
+            raise Exception("Can't take settings backup, this machine has no settings!!")
         memento=MachineSettingsMemento()
         memento.cipherRotorStg=MachineSettingManager.extractRotorSettingsFromRotorList(mc.rotorList)
         memento.swappingL1Stg=MachineSettingManager.extractRotorSettingsFromRotorList(mc.swapRotorsLevel1)

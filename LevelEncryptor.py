@@ -1,4 +1,4 @@
-from random import Random
+from RandomGenerator import RandomGenerator
 from CharIndexMap import CharIndexMap
 from ModernEnigma import ModernEnigma
 from Level import Level
@@ -10,25 +10,25 @@ class LevelEncryptor(object):
         self.levelMachine=levelMachine
         self.level=level
         if random==None:
-            self.random=Random()
+            self.random=RandomGenerator()
             self.random.seed(123)
         self.shuffler=Shuffler()
         self.initLevelValues()
     def initLevelValues(self):
         min=1
         max=9
-        self.level.i_firstBsEncTimes=self.random.randint(min,max)
-        self.level.j_firstMsEncTimes=self.random.randint(min,max)
-        self.level.k_PerMsgMsEncTimes=self.random.randint(min,max)
-        self.level.l_MmpEncTimes=self.random.randint(min,max)
-        self.level.m_secondMsEncTimes=self.random.randint(min,max)
-        self.level.n_secondBsEncTimes=self.random.randint(min,max)
-        self.level.o_PerMsgBpEncTimes=self.random.randint(min,max)
-        self.level.p_BpEncTimes=self.random.randint(min,max)
-        self.level.s1_shuffleSeed=self.random.randint(min,max)
-        self.level.s1t_shuffle1Times=self.random.randint(min,max)
-        self.level.s2_shuffleSeed=self.random.randint(min,max)
-        self.level.s2t_shuffle2Times=self.random.randint(min,max)
+        self.level.i_firstBsEncTimes=self.random.nextInt(min,max)
+        self.level.j_firstMsEncTimes=self.random.nextInt(min,max)
+        self.level.k_PerMsgMsEncTimes=self.random.nextInt(min,max)
+        self.level.l_MmpEncTimes=self.random.nextInt(min,max)
+        self.level.m_secondMsEncTimes=self.random.nextInt(min,max)
+        self.level.n_secondBsEncTimes=self.random.nextInt(min,max)
+        self.level.o_PerMsgBpEncTimes=self.random.nextInt(min,max)
+        self.level.p_BpEncTimes=self.random.nextInt(min,max)
+        self.level.s1_shuffleSeed=self.random.nextInt(min,max)
+        self.level.s1t_shuffle1Times=self.random.nextInt(min,max)
+        self.level.s2_shuffleSeed=self.random.nextInt(min,max)
+        self.level.s2t_shuffle2Times=self.random.nextInt(min,max)
 
 
 
@@ -84,8 +84,7 @@ class LevelEncryptor(object):
 
 
     def generatePerMsgWindowSetting(self,machine):
-        randomRange= sorted(CharIndexMap.getRange(), key=lambda k: self.random.random())
         result=""
         for i in range(len(machine.rotorList)):
-            result+=randomRange[i]
+            result+=str(self.random.sample(CharIndexMap.getRange(),1))
         return result
