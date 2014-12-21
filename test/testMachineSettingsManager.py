@@ -73,6 +73,7 @@ class TestMachineSettingManager(unittest.TestCase):
         self.machine.adjustMachineSettings()
         memento=MachineSettingManager.backupMachineSettings(self.machine)
 
+        self.assertIsNotNone(memento.plugboardStg["wiring"])
         self.assertIsNotNone(memento.cipherRotorStg["ORDER"])
         self.assertIsNotNone(memento.cipherRotorStg["OFFSET"])
         self.assertIsNotNone(memento.swappingL1Stg["ORDER"])

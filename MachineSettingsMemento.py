@@ -149,3 +149,13 @@ class MachineSettingsMemento(object):
         activeSwapCfg["SIGNALS"]=self.getShuffledSequence()[0:count]
 
         return activeSwapCfg
+    def print(self):
+        print(self.cipherRotorStg)
+        print(self.plugboardStg)
+        print(self.activeSwapSignals)
+        print(self.swappingL1Stg)
+        print(self.swappingL2Stg)
+        print(self.L1L2MapperStg)
+        print(self.L2CipherMapperStg)
+        print(self.cyclePeriod)
+

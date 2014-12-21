@@ -5,13 +5,14 @@ from Level import Level
 from Shuffler import Shuffler
 
 class LevelEncryptor(object):
-    def __init__(self,baseMachine,levelMachine,level,random=None):
+    def __init__(self,baseMachine,levelMachine,level,random=None,streamConverter=None):
         self.baseMachine=baseMachine
         self.levelMachine=levelMachine
         self.level=level
-        if random==None:
+        self.random=random
+        if not random:
             self.random=RandomGenerator()
-            self.random.seed(123)
+        self.streamConverter=streamConverter
         self.shuffler=Shuffler()
         self.initLevelValues()
     def initLevelValues(self):
@@ -34,57 +35,77 @@ class LevelEncryptor(object):
 
     def encryptLevel(self):
         msg=self.level.inputMsg
-        # print("MSG: "+msg)
+        if self.streamConverter:
+            msg=self.streamConverter.convertInput(msg)
+        print("MSG: ")
+        print(msg)
         Bp=self.generatePerMsgWindowSetting(self.baseMachine)
-        # print("Bp: "+Bp)
-        EBp=self.encryptText(Bp,self.baseMachine,self.level.o_PerMsgBpEncTimes)
-        # print("EBp: "+EBp)
-        Emsg=EBp+self.encryptText(msg,self.baseMachine,self.level.p_BpEncTimes,Bp)
-        # print("Emsg: "+Emsg)
-        SEmsg=self.shuffler.shuffle(Emsg,self.level.s1_shuffleSeed)
-        # print("SEmsg: "+SEmsg)
-        x=self.encryptText(SEmsg,self.baseMachine,self.level.i_firstBsEncTimes)
-        # print("x: "+x)
-        y=self.encryptText(x,self.levelMachine,self.level.j_firstMsEncTimes)
-        # print("y: "+y)
+        print("Bp: ")
+        print(Bp)
+        EBp=self.encryptSequence(Bp,self.baseMachine,self.level.o_PerMsgBpEncTimes)
+        print("EBp: ")
+        print(EBp)
+        Emsg=EBp+self.encryptSequence(msg,self.baseMachine,self.level.p_BpEncTimes,Bp)
+        print("Emsg: ")
+        print(Emsg)
+        SEmsg=self.shuffler.shuffleSeq(Emsg,self.level.s1_shuffleSeed)
+        print("SEmsg: ")
+        print(SEmsg)
+        x=self.encryptSequence(SEmsg,self.baseMachine,self.level.i_firstBsEncTimes)
+        print("x: ")
+        print(x)
+        y=self.encryptSequence(x,self.levelMachine,self.level.j_firstMsEncTimes)
+        print("y: ")
+        print(y)
         Mp=self.generatePerMsgWindowSetting(self.levelMachine)
-        # print("Mp: "+Mp)
-        EMp=self.encryptText(Mp,self.levelMachine,self.level.k_PerMsgMsEncTimes)
-        # print("EMp: "+EMp)
-        M0=self.encryptText(y,self.levelMachine,self.level.l_MmpEncTimes,Mp)
-        # print("M0: "+M0)
+        print("Mp: ")
+        print(Mp)
+        EMp=self.encryptSequence(Mp,self.levelMachine,self.level.k_PerMsgMsEncTimes)
+        print("EMp: ")
+        print(EMp)
+        M0=self.encryptSequence(y,self.levelMachine,self.level.l_MmpEncTimes,Mp)
+        print("M0: ")
+        print(M0)
         W=EMp+M0
-        # print("W: "+W)
-        S=self.shuffler.shuffle(W,self.level.s2_shuffleSeed)
-        # print("S: "+S)
-        R=self.encryptText(S,self.levelMachine,self.level.m_secondMsEncTimes)
-        # print("R: "+R)
-        E=self.encryptText(R,self.baseMachine,self.level.n_secondBsEncTimes)
-        # print("E: "+E)
+        print("W: ")
+        print(W)
+        S=self.shuffler.shuffleSeq(W,self.level.s2_shuffleSeed)
+        print("S: ")
+        print(S)
+        R=self.encryptSequence(S,self.levelMachine,self.level.m_secondMsEncTimes)
+        print("R: ")
+        print(R)
+        E=self.encryptSequence(R,self.baseMachine,self.level.n_secondBsEncTimes)
+        print("E: ")
+        print(E)
 
         self.level.outputMsg=E
+        print("Encrpytion:")
+        print(E)
+        if self.streamConverter:
+            self.level.outputMsg=self.streamConverter.convertOutput(E)
         return self.level
 
 
-
-
-
-    def encryptText(self,text,machine,times=1,displayStg=None):
-        result=""
+    def encryptSequence(self,seq,machine,times=1,displayStg=None):
+        result=[]
         preEncryptionStg=machine.getMachineSettings()
+        print("currnetMachine stg:")
+        preEncryptionStg.print()
         if displayStg:
             machine.adjustWindowDisplay(displayStg)
 
-        for c in text:
-            result+=machine.processKeyPress(c)
+        for c in seq:
+            result.append(machine.processKeyPress(c))
         machine.adjustMachineSettings(preEncryptionStg)
         return result
 
 
 
 
-    def generatePerMsgWindowSetting(self,machine):
-        result=""
-        for i in range(len(machine.rotorList)):
-            result+=str(self.random.sample(CharIndexMap.getRange(),1))
+    def generatePerMsgWindowSetting(self,mc):
+        result=[]
+        for i in range(mc.getCipherRotorsCount()):
+            selectedOffset=self.random.sample(range(mc.getCipherRotorsSize()),1)[0]
+            result.append(selectedOffset)
         return result

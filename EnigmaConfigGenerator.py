@@ -9,8 +9,10 @@ class EnigmaConfigGenerator(object):
         self.random=RandomGenerator(seed)
         self.shuffler=Shuffler(self.random)
 
-        self.CIPHER_ROTOR_COUNT_MIN=CharIndexMap.getRangeSize()//5
-        self.CIPHER_ROTOR_COUNT_MAX=CharIndexMap.getRangeSize()//2
+        # self.CIPHER_ROTOR_COUNT_MIN=CharIndexMap.getRangeSize()//5
+        # self.CIPHER_ROTOR_COUNT_MAX=CharIndexMap.getRangeSize()//2
+        self.CIPHER_ROTOR_COUNT_MIN=1
+        self.CIPHER_ROTOR_COUNT_MAX=2
         self.CIPHER_ROTOR_SIZE=CharIndexMap.getRangeSize()
 
         self.ROTOR_NOTCH_COUNT_MAX_RATIO=2 #will be divided
@@ -18,13 +20,17 @@ class EnigmaConfigGenerator(object):
         self.SWAP_ACTIVE_SIGNALS_COUNT_MIN=1
         self.SWAP_ACTIVE_SIGNALS_COUNT_MAX=1
 
-        self.SWAP_ROTOR_L1_COUNT_MIN=CharIndexMap.getRangeSize()//5
-        self.SWAP_ROTOR_L1_COUNT_MAX=CharIndexMap.getRangeSize()//2
+        # self.SWAP_ROTOR_L1_COUNT_MIN=CharIndexMap.getRangeSize()//5
+        # self.SWAP_ROTOR_L1_COUNT_MAX=CharIndexMap.getRangeSize()//2
+        self.SWAP_ROTOR_L1_COUNT_MIN=1
+        self.SWAP_ROTOR_L1_COUNT_MAX=2
         self.SWAP_ROTOR_L1_MIN_SIZE=CharIndexMap.getRangeSize()
         self.SWAP_ROTOR_L1_MAX_SIZE=CharIndexMap.getRangeSize()
 
-        self.SWAP_ROTOR_L2_COUNT_MIN=CharIndexMap.getRangeSize()//5
-        self.SWAP_ROTOR_L2_COUNT_MAX=CharIndexMap.getRangeSize()//2
+        # self.SWAP_ROTOR_L2_COUNT_MIN=CharIndexMap.getRangeSize()//5
+        # self.SWAP_ROTOR_L2_COUNT_MAX=CharIndexMap.getRangeSize()//2
+        self.SWAP_ROTOR_L2_COUNT_MIN=1
+        self.SWAP_ROTOR_L2_COUNT_MAX=2
         self.SWAP_ROTOR_L2_MIN_SIZE=CharIndexMap.getRangeSize()
         self.SWAP_ROTOR_L2_MAX_SIZE=CharIndexMap.getRangeSize()
 

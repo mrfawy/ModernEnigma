@@ -37,7 +37,8 @@ class ModernEnigma:
         if not self.settingsReady :
             raise Exception("Settings are not set for this machine!!")
         lastOut=self.plugboard.signalIn(indexIn)
-        resultPins=self.applyActivePins(self.rotorList,[lastOut])
+        inputPins=[lastOut]
+        resultPins=self.applyActivePins(self.rotorList,inputPins)
 
         lastReverseIn=self.reflector.signalIn(resultPins[0])
 
@@ -118,17 +119,14 @@ class ModernEnigma:
             if notchFlag:
                 notchFlag=rotor.rotate()
 
-    def getWindowDisplay(self):
-        result="Window||"
-        for rotor in self.rotorList:
-            result+=rotor.getDisplay()+" "
-        return result
+    def getCipherRotorsCount(self):
+        return len(self.rotorList)
+    def getCipherRotorsSize(self):
+        return self.rotorList[0].size
+
     def adjustWindowDisplay(self,windowSetting):
-        #reversed string order
-        i=len(windowSetting)-1
-        for c in windowSetting[::-1]:
-            self.rotorList[i].adjustDisplay(c)
-            i-=1
+        for i in range(len(windowSetting)):
+            self.rotorList[i].adjustDisplay(windowSetting[i])
 
 
     def getMachineSettings(self):
