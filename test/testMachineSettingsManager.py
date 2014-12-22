@@ -27,6 +27,8 @@ class TestMachineSettingManager(unittest.TestCase):
         memento=self.manager.generateDefaultSettingsForMachine(self.machine)
         self.assertIsNotNone(memento.cipherRotorStg["ORDER"])
         self.assertIsNotNone(memento.cipherRotorStg["OFFSET"])
+        self.assertIsNotNone(memento.activeSwapSignals["SIGNALS"])
+        self.assertIsNotNone(memento.activeSwapSignals["CYCLE_STEP"])
         self.assertIsNotNone(memento.swappingL1Stg["ORDER"])
         self.assertIsNotNone(memento.swappingL1Stg["OFFSET"])
         self.assertIsNotNone(memento.swappingL2Stg["ORDER"])

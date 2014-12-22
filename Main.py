@@ -15,7 +15,10 @@ levelMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCm")
 levelMachine.adjustMachineSettings()
 level=Level(baseMachine.getMachineSettings(),levelMachine.getMachineSettings())
 
-msg=[2,2,2,2,2]
+
+msg=[]
+for i in range(10):
+    msg.append(2)
 level.inputMsg=msg
 
 levelEncryptor=LevelEncryptor(baseMachine,levelMachine,level,RandomGenerator(123))

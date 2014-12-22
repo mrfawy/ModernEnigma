@@ -90,6 +90,14 @@ class TestModernEnigma(unittest.TestCase):
         self.assertEqual(2,self.machine.rotorList[2].id)
         self.assertEqual(0,self.machine.rotorList[3].id)
 
+    def testProcessActiveSwapSignalsCycleStep(self):
+        self.machine.swapActiveSignals=[1,3]
+        self.machine.swapActiveSignalsCycleStep=3
+        self.machine.swapRotorsLevel1=[]
+        self.machine.swapRotorsLevel1.append(Rotor(0,Wiring({0:[0],1:[1],2:[2],3:[3]})))
+        self.machine.processActiveSwapSignalsCycleStep()
+        self.assertEqual([0,2],self.machine.swapActiveSignals)
+
 
     def testAdjustWindowDisplay(self):
         rotors=[]

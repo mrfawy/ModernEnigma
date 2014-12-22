@@ -24,6 +24,7 @@ class ModernEnigma:
         self.swapRotorsLevel1=[]
         self.swapRotorsLevel2=[]
         self.swapActiveSignals=[]
+        self.swapActiveSignalsCycleStep=0
         self.l2CipherMapper=None
         self.cyclePeriod=None
 
@@ -63,6 +64,9 @@ class ModernEnigma:
         self.processStepping(self.swapRotorsLevel1)
         self.processStepping(self.swapRotorsLevel2)
 
+        #shift swappingSignalsByStep
+        self.processActiveSwapSignalsCycleStep()
+
     def swap(self,rotorList,i,j):
         tmp=rotorList[i]
         rotorList[i]=rotorList[j]
@@ -74,6 +78,15 @@ class ModernEnigma:
                 self.swap(rotorList,0,len(rotorList)-1)
                 continue
             self.swap(rotorList,index,(3*index)%len(rotorList))
+
+    def processActiveSwapSignalsCycleStep(self):
+        result=[]
+        for s in self.swapActiveSignals:
+            newSignalIndex=(s+self.swapActiveSignalsCycleStep) %self.swapRotorsLevel1[0].size
+            result.append(newSignalIndex)
+
+        self.swapActiveSignals=result
+
 
     def applyActivePins(self,rotors,pins):
         resultPins=[]

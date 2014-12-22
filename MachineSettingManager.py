@@ -21,7 +21,8 @@ class MachineSettingManager(object):
         memento.swappingL2Stg=self.generateDefaultSettingsForRotorStock(mc.l2SwappingRotorStockList)
 
         memento.L1L2MapperStg["OFFSET"]=0
-        memento.activeSwapSignals=[0]
+        memento.activeSwapSignals={"CYCLE_STEP":1,"SIGNALS":[0]}
+        memento.cyclePeriod=None
 
         fromRange=range(mc.l2SwappingRotorStockList[0].size)
         toRange=range(len(mc.rotorStockList))
@@ -73,7 +74,7 @@ class MachineSettingManager(object):
         memento.swappingL1Stg=MachineSettingManager.extractRotorSettingsFromRotorList(mc.swapRotorsLevel1)
         memento.swappingL2Stg=MachineSettingManager.extractRotorSettingsFromRotorList(mc.swapRotorsLevel2)
         memento.L1L2MapperStg={"OFFSET":mc.l1l2SeparatorSwitch.offset}
-        memento.activeSwapSignals=mc.swapActiveSignals
+        memento.activeSwapSignals={"CYCLE_STEP":mc.swapActiveSignalsCycleStep,"SIGNALS":mc.swapActiveSignals}
         memento.cyclePeriod=mc.cyclePeriod
         memento.L2CipherMapperStg={"wiring":mc.l2CipherMapper.wiring.extractAsMap()}
         return memento
@@ -99,7 +100,8 @@ class MachineSettingManager(object):
 
         mc.plugboard=PlugBoard(Wiring(settingsMemento.plugboardStg["wiring"]))
 
-        mc.swapActiveSignals=settingsMemento.activeSwapSignals
+        mc.swapActiveSignals=settingsMemento.activeSwapSignals["SIGNALS"]
+        mc.swapActiveSignalsCycleStep=settingsMemento.activeSwapSignals["CYCLE_STEP"]
 
         mc.swapRotorsLevel1=[]
         for r in settingsMemento.swappingL1Stg["ORDER"]:
