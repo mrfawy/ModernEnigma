@@ -4,13 +4,13 @@ from Wiring import Wiring
 class TestWiring(unittest.TestCase):
     def setUp(self):
         self.config={
-            "0": [
+            0: [
                 0
             ],
-            "1": [
+            1: [
                 2
             ],
-            "2": [
+            2: [
                 1,0
             ]
         }

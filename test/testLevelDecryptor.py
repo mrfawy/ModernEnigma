@@ -17,14 +17,18 @@ class TestLevelDecryptor(unittest.TestCase):
         self.level=Level(self.baseMachine.getMachineSettings(),self.levelMachine.getMachineSettings())
         self.levelDecryptor=LevelDecryptor(self.baseMachine,self.levelMachine,self.level)
     def testDualOK(self):
-        msg=[65,65,65,65,65]
+        msg=[0,0,0,0,0]
         self.level.inputMsg=msg
         levelEncryptor=LevelEncryptor(self.baseMachine,self.levelMachine,self.level,self.random)
         self.random.seed(123)
         encLevel=levelEncryptor.encryptLevel()
+        print("Encrypted:")
+        print(encLevel.outputMsg)
         encLevel.inputMsg=""
         self.levelDecryptor.level=encLevel
         resultLevel=self.levelDecryptor.decryptLevel()
+        print("Decrypted:")
+        print(resultLevel.inputMsg)
         self.assertEqual(resultLevel.inputMsg,msg)
         # print(resultLevel.toJson())
 

@@ -54,8 +54,8 @@ class ModernEnigma:
     def processRotorSwapping(self,indexIn):
         lastout=indexIn
         activePins=[]
-        for c in self.swapActiveSignals:
-            activePins.append(CharIndexMap.charToIndex(c))
+        for s in self.swapActiveSignals:
+            activePins.append(s)
         if lastout not in activePins:
             activePins.append(lastout)
 
@@ -76,7 +76,7 @@ class ModernEnigma:
 
     def swapRotors(self,rotorList,swapIndexList):
         for index in swapIndexList:
-            if index==0 or index==len(rotorList):
+            if index==0 or index==len(rotorList)-1:
                 self.swap(rotorList,0,len(rotorList)-1)
                 continue
             self.swap(rotorList,index,(3*index)%len(rotorList))
