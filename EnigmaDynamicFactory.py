@@ -56,7 +56,7 @@ class EnigmaDynamicFactory(object):
         l1l2Mapper=self.createMapper(l1l2MapperCfg)
 
         swapModule["L1_ROTOR_STOCK"]=l1SwappingRotorStockList
-        swapModule["L2_ROTOR_STOCK"]=l1SwappingRotorStockList
+        swapModule["L2_ROTOR_STOCK"]=l2SwappingRotorStockList
         swapModule["L1_L2_MAPPER"]=l1l2Mapper
 
         return swapModule

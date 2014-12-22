@@ -8,11 +8,6 @@ class CharIndexMap(object):
     @classmethod
     def getNonAlphaNumericRange(cls):
         return cls.charRange[cls.charToIndex("!"):len(cls.charRange)]
-    @classmethod
-    def getFirstNChars(cls,n):
-        if n<len(cls.charRange):
-            return clas.getRange()[0:n]
-        raise("Invaid First N character Range ")
 
     @classmethod
     def getRangeSize(cls):

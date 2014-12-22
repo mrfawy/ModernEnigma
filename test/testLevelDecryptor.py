@@ -22,13 +22,11 @@ class TestLevelDecryptor(unittest.TestCase):
         levelEncryptor=LevelEncryptor(self.baseMachine,self.levelMachine,self.level,self.random)
         self.random.seed(123)
         encLevel=levelEncryptor.encryptLevel()
-        print("Encrypted:")
-        print(encLevel.outputMsg)
+
         encLevel.inputMsg=""
         self.levelDecryptor.level=encLevel
         resultLevel=self.levelDecryptor.decryptLevel()
-        print("Decrypted:")
-        print(resultLevel.inputMsg)
+
         self.assertEqual(resultLevel.inputMsg,msg)
         # print(resultLevel.toJson())
 

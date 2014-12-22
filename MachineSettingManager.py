@@ -21,6 +21,7 @@ class MachineSettingManager(object):
         memento.swappingL2Stg=self.generateDefaultSettingsForRotorStock(mc.l2SwappingRotorStockList)
 
         memento.L1L2MapperStg["OFFSET"]=0
+        memento.activeSwapSignals=[0]
 
         fromRange=range(mc.l2SwappingRotorStockList[0].size)
         toRange=range(len(mc.rotorStockList))
@@ -100,6 +101,7 @@ class MachineSettingManager(object):
 
         mc.swapActiveSignals=settingsMemento.activeSwapSignals
 
+        mc.swapRotorsLevel1=[]
         for r in settingsMemento.swappingL1Stg["ORDER"]:
             mc.swapRotorsLevel1.append(mc.l1SwappingRotorStockList[r])
         for i in range(len(settingsMemento.swappingL1Stg["OFFSET"])):
@@ -107,6 +109,7 @@ class MachineSettingManager(object):
 
         mc.l1l2SeparatorSwitch.offset=settingsMemento.L1L2MapperStg["OFFSET"]
 
+        mc.swapRotorsLevel2=[]
         for r in settingsMemento.swappingL2Stg["ORDER"]:
             mc.swapRotorsLevel2.append(mc.l2SwappingRotorStockList[r])
         for i in range(len(settingsMemento.swappingL2Stg["OFFSET"])):

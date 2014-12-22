@@ -109,36 +109,18 @@ class MachineSettingsMemento(object):
         if len(strStg.split("|"))<10:
             return False
         return True
+    def getAsMap(self):
+        result={}
+        result["cipherRotorStg"]=self.cipherRotorStg
+        result["plugboardStg"]=self.plugboardStg
+        result["activeSwapSignals"]=self.activeSwapSignals
+        result["swappingL1Stg"]=self.swappingL1Stg
+        result["swappingL2Stg"]=self.swappingL2Stg
+        result["L1L2MapperStg"]=self.L1L2MapperStg
+        result["L2CipherMapperStg"]=self.L2CipherMapperStg
+        result["cyclePeriod"]=self.cyclePeriod
+        return Util.toJson(result)
 
-    @classmethod
-    def applyMachineSettings(self,mc,settingsMemento):
-        mc.rotorList=[]
-        for r in settingsMemento.cipherRotorStg["ORDER"]:
-            mc.rotorList.append(mc.rotorsStockMap[r])
-        for i in len(settingsMemento.cipherRotorStg["OFFSET"]):
-            mc.rotorList[i].offset=settingsMemento.cipherRotorStg["OFFSET"][i]
-
-        mc.plugboard=PlugBoard(Wiring(settingsMemento.plugboardStg["wiring"]))
-
-        mc.applyActivePins=settingsMemento.activePins
-
-        for r in settingsMemento.swappingL1Stg["ORDER"]:
-            mc.swapRotorsLevel1.append(mc.l1SwappingRotorStockList[r])
-        for i in len(settingsMemento.swappingL1Stg["OFFSET"]):
-            mc.swapRotorsLevel1[i].offset=settingsMemento.swappingL1Stg["OFFSET"][i]
-
-        mc.l1l2SeparatorSwitch.offset=settingsMemento.L1L2MapperStg["OFFSET"]
-
-        for r in settingsMemento.swappingL2Stg["ORDER"]:
-            mc.swapRotorsLevel2.append(mc.l2SwappingRotorStockList[r])
-        for i in len(settingsMemento.swappingL2Stg["OFFSET"]):
-            mc.swapRotorsLevel2[i].offset=settingsMemento.swappingL2Stg["OFFSET"][i]
-
-        mc.l2CipherMapper=MapperSwitch(Wiring(settingsMemento.l2CipherMapper["wiring"]))
-
-        mc.cyclePeriod=settingsMemento.cyclePeriod
-
-        mc.settingsReady=True
 
 
     def createActiveSwapSignalsConfig(self,id="ACTV",count=None):

@@ -52,13 +52,7 @@ class ModernEnigma:
         return output
 
     def processRotorSwapping(self,indexIn):
-        lastout=indexIn
-        activePins=[]
-        for s in self.swapActiveSignals:
-            activePins.append(s)
-        if lastout not in activePins:
-            activePins.append(lastout)
-
+        activePins=self.swapActiveSignals
         swapLevel1Result=self.applyActivePins(self.swapRotorsLevel1,activePins)
         swapLevel2Input=self.applyMappingActivePins(self.l1l2SeparatorSwitch,swapLevel1Result)
         swapLevel2Result=self.applyActivePins(self.swapRotorsLevel2,swapLevel2Input)

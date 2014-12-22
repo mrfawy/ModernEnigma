@@ -22,8 +22,8 @@ class Level(object):
 
     def toJson(self):
         jsonMap={}
-        jsonMap["baseStg"]=self.baseStg
-        jsonMap["levelStg"]=self.levelStg
+        jsonMap["baseStg"]=self.baseStg.getAsMap()
+        jsonMap["levelStg"]=self.levelStg.getAsMap()
         jsonMap["inputMsg"]=self.inputMsg
         jsonMap["outputMsg"]=self.outputMsg
         jsonMap["i_firstBsEncTimes"]=self.i_firstBsEncTimes

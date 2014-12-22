@@ -33,51 +33,65 @@ class LevelEncryptor(object):
 
 
 
-    def encryptLevel(self):
+    def encryptLevel(self,verbose=False):
         msg=self.level.inputMsg
         if self.streamConverter:
             msg=self.streamConverter.convertInput(msg)
-        # print("MSG: ")
-        # print(msg)
+        if verbose:
+            print("MSG: ")
+            print(msg)
         Bp=self.generatePerMsgWindowSetting(self.baseMachine)
-        # print("Bp: ")
-        # print(Bp)
+        if verbose:
+            print("Bp: ")
+            print(Bp)
         EBp=self.encryptSequence(Bp,self.baseMachine,self.level.o_PerMsgBpEncTimes)
-        # print("EBp: ")
-        # print(EBp)
+        if verbose:
+            print("EBp: ")
+            print(EBp)
         Emsg=EBp+self.encryptSequence(msg,self.baseMachine,self.level.p_BpEncTimes,Bp)
-        # print("Emsg: ")
-        # print(Emsg)
+        if verbose:
+            print("Emsg: ")
+            print(Emsg)
         SEmsg=self.shuffler.shuffleSeq(Emsg,self.level.s1_shuffleSeed)
-        # print("SEmsg: ")
-        # print(SEmsg)
+        if verbose:
+            print("SEmsg: ")
+            print(SEmsg)
         x=self.encryptSequence(SEmsg,self.baseMachine,self.level.i_firstBsEncTimes)
-        # print("x: ")
-        # print(x)
+        if verbose:
+            print("x: ")
+            print(x)
         y=self.encryptSequence(x,self.levelMachine,self.level.j_firstMsEncTimes)
-        # print("y: ")
-        # print(y)
+        if verbose:
+            print("y: ")
+            print(y)
         Mp=self.generatePerMsgWindowSetting(self.levelMachine)
-        # print("Mp: ")
-        # print(Mp)
+        if verbose:
+            print("Mp: ")
+            print(Mp)
         EMp=self.encryptSequence(Mp,self.levelMachine,self.level.k_PerMsgMsEncTimes)
-        # print("EMp: ")
-        # print(EMp)
+        if verbose:
+            print("EMp: ")
+            print(EMp)
         M0=self.encryptSequence(y,self.levelMachine,self.level.l_MmpEncTimes,Mp)
-        # print("M0: ")
-        # print(M0)
+        if verbose:
+            print("M0: ")
+            print(M0)
         W=EMp+M0
-        # print("W: ")
-        # print(W)
+        if verbose:
+            print("W: ")
+            print(W)
         S=self.shuffler.shuffleSeq(W,self.level.s2_shuffleSeed)
-        # print("S: ")
-        # print(S)
+        if verbose:
+            print("S: ")
+            print(S)
         R=self.encryptSequence(S,self.levelMachine,self.level.m_secondMsEncTimes)
-        # print("R: ")
-        # print(R)
+        if verbose:
+            print("R: ")
+            print(R)
         E=self.encryptSequence(R,self.baseMachine,self.level.n_secondBsEncTimes)
-        # print("E: ")
-        # print(E)
+        if verbose:
+            print("E: ")
+            print(E)
 
         self.level.outputMsg=E
         # print("Encrpytion:")
