@@ -44,10 +44,12 @@ class PlugBoard(Switch):
     def getSettings(self):
         result=""
         coveredRange=[]
-        for t in self.wiring.tupleList:
-            if t[0] not in coveredRange and t[1] not in coveredRange:
-                result+=str(t[0])+" "+str(t[1]) +","
-                coveredRange.append(t[0])
-                coveredRange.append(t[1])
+        for key,value in self.wiring.getAsMap().items():
+            fromPin=key
+            toPin=value[0]
+            if fromPin not in coveredRange and toPin not in coveredRange:
+                result+=str(fromPin)+" "+str(toPin) +","
+                coveredRange.append(fromPin)
+                coveredRange.append(toPin)
 
         return result[0:len(result)-1] #no need for last ","

@@ -38,9 +38,6 @@ FileReader().writeSeqTofile(encLevel.outputMsg,"alice.enc")
 print("Encrypted File written")
 
 encLevel.inputMsg=""
-baseMachineCfg=EnigmaConfigGenerator(RandomGenerator(123)).createMachineConfig("MCb")
-baseMachine=EnigmaDynamicFactory().createEnigmaMachineFromConfig(baseMachineCfg)
-baseMachine.adjustMachineSettings()
 
 start_time = time.time()
 levelDecryptor=LevelDecryptor(baseMachine,levelMachine,level)

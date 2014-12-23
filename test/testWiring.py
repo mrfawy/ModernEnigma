@@ -35,9 +35,9 @@ class TestWiring(unittest.TestCase):
         self.assertEqual(2,len(w.getMultiPairdPin(2)))
         self.assertTrue(0 in w.getMultiPairdPin(2))
         self.assertTrue(1 in w.getMultiPairdPin(2))
-    def testExtractAsMap(self):
+    def testGetAsMap(self):
         w=Wiring(self.config)
-        asMap=w.extractAsMap()
+        asMap=w.getAsMap()
         self.assertEqual(3,len(asMap))
         self.assertEqual(2,len(asMap[2]))
 

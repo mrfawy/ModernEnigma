@@ -70,13 +70,13 @@ class MachineSettingManager(object):
             raise Exception("Can't take settings backup, this machine has no settings!!")
         memento=MachineSettingsMemento()
         memento.cipherRotorStg=MachineSettingManager.extractRotorSettingsFromRotorList(mc.rotorList)
-        memento.plugboardStg={"wiring":mc.plugboard.wiring.extractAsMap()}
+        memento.plugboardStg={"wiring":mc.plugboard.wiring.getAsMap()}
         memento.swappingL1Stg=MachineSettingManager.extractRotorSettingsFromRotorList(mc.swapRotorsLevel1)
         memento.swappingL2Stg=MachineSettingManager.extractRotorSettingsFromRotorList(mc.swapRotorsLevel2)
         memento.L1L2MapperStg={"OFFSET":mc.l1l2SeparatorSwitch.offset}
         memento.activeSwapSignals={"CYCLE_STEP":mc.swapActiveSignalsCycleStep,"SIGNALS":mc.swapActiveSignals}
         memento.cyclePeriod=mc.cyclePeriod
-        memento.L2CipherMapperStg={"wiring":mc.l2CipherMapper.wiring.extractAsMap()}
+        memento.L2CipherMapperStg={"wiring":mc.l2CipherMapper.wiring.getAsMap()}
         return memento
     @classmethod
     def extractRotorSettingsFromRotorList(self,rotorList):
