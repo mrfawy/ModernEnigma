@@ -11,8 +11,8 @@ class EnigmaConfigGenerator(object):
 
         # self.CIPHER_ROTOR_COUNT_MIN=CharIndexMap.getRangeSize()//5
         # self.CIPHER_ROTOR_COUNT_MAX=CharIndexMap.getRangeSize()//2
-        self.CIPHER_ROTOR_COUNT_MIN=CharIndexMap.getRangeSize()//2
-        self.CIPHER_ROTOR_COUNT_MAX=CharIndexMap.getRangeSize()
+        self.CIPHER_ROTOR_COUNT_MIN=CharIndexMap.getRangeSize()//5
+        self.CIPHER_ROTOR_COUNT_MAX=CharIndexMap.getRangeSize()//2
         self.CIPHER_ROTOR_SIZE=CharIndexMap.getRangeSize()
 
         self.ROTOR_NOTCH_COUNT_MAX_RATIO=2 #will be divided

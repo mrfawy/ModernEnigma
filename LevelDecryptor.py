@@ -1,4 +1,4 @@
-from random import Random
+from RandomGenerator import RandomGenerator
 from CharIndexMap import CharIndexMap
 from ModernEnigma import ModernEnigma
 from Level import Level
@@ -11,77 +11,33 @@ class LevelDecryptor(LevelEncryptor):
         self.levelMachine=levelMachine
         self.level=level
         self.streamConverter=streamConverter
+        self.random=random
         if random==None:
-            self.random=Random()
+            self.random=RandomGenerator()
         self.shuffler=Shuffler()
+
+    def decryptPhase(self,id,machine1,machine2,seq):
+        x=self.encryptSequence(seq,machine2,self.level.l[id])
+        SEMsg=self.encryptSequence(x,machine1,self.level.k[id])
+        EMsg=self.shuffler.deshuffleSeq(SEMsg,self.level.s[id])
+        EM1p=EMsg[0:len(machine1.rotorList)]
+        Msg_M1p=EMsg[len(machine1.rotorList)::]
+        M1p=self.encryptSequence(EM1p,machine2,self.level.i[id])
+        Msg=self.encryptSequence(Msg_M1p,machine1,self.level.j[id],M1p)
+
+        return Msg
+
+
 
     def decryptLevel(self,verbose=False):
 
-        if verbose:
-            print("==========DECRYPT===========")
         E=self.level.outputMsg
         if self.streamConverter:
             E=self.streamConverter.convertInput(E)
-        if verbose:
-            print("E: ")
-            print(E)
-        R=self.encryptSequence(E,self.baseMachine,self.level.n_secondBsEncTimes)
-        if verbose:
-            print("R: ")
-            print(R)
-        S=self.encryptSequence(R,self.levelMachine,self.level.m_secondMsEncTimes)
-        if verbose:
-            print("S: ")
-            print(S)
-        W=self.shuffler.deshuffleSeq(S,self.level.s2_shuffleSeed)
-        if verbose:
-            print("W: ")
-            print(W)
-        EMp=W[0:len(self.levelMachine.rotorList)]
-        if verbose:
-            print("EMp: ")
-            print(EMp)
-        M0=W[len(self.levelMachine.rotorList)::]
-        if verbose:
-            print("M0: ")
-            print(M0)
-        Mp=self.encryptSequence(EMp,self.levelMachine,self.level.k_PerMsgMsEncTimes)
-        if verbose:
-            print("Mp: ")
-            print(Mp)
-        y=self.encryptSequence(M0,self.levelMachine,self.level.l_MmpEncTimes,Mp)
-        if verbose:
-            print("y: ")
-            print(y)
-        x=self.encryptSequence(y,self.levelMachine,self.level.j_firstMsEncTimes)
-        if verbose:
-            print("x: ")
-            print(x)
-        SEmsg=self.encryptSequence(x,self.baseMachine,self.level.i_firstBsEncTimes)
-        if verbose:
-            print("SEmsg: ")
-            print(SEmsg)
-        Emsg=self.shuffler.deshuffleSeq(SEmsg,self.level.s1_shuffleSeed)
-        if verbose:
-            print("Emsg: ")
-            print(Emsg)
-        EBp=Emsg[0:len(self.baseMachine.rotorList)]
-        if verbose:
-            print("EBp: ")
-            print(EBp)
-        restMsg=Emsg[len(self.baseMachine.rotorList):len(Emsg)]
-        if verbose:
-            print("restMsg: ")
-            print(restMsg)
-        Bp=self.encryptSequence(EBp,self.baseMachine,self.level.p_BpEncTimes)
-        if verbose:
-            print("Bp: ")
-            print(Bp)
-        msg=self.encryptSequence(restMsg,self.baseMachine,self.level.o_PerMsgBpEncTimes,Bp)
-        if verbose:
-            print("msg: ")
-            print(msg)
-        self.level.inputMsg=msg
+
+        phaseDecOut=self.decryptPhase(1,self.levelMachine,self.baseMachine,E)
+        phaseDecOut=self.decryptPhase(0,self.baseMachine,self.levelMachine,phaseDecOut)
+        self.level.inputMsg=phaseDecOut
         if self.streamConverter:
             self.level.inputMsg=self.streamConverter.convertInput(msg)
         return self.level

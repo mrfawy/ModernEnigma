@@ -18,84 +18,38 @@ class LevelEncryptor(object):
     def initLevelValues(self):
         min=1
         max=9
-        self.level.i_firstBsEncTimes=self.random.nextInt(min,max)
-        self.level.j_firstMsEncTimes=self.random.nextInt(min,max)
-        self.level.k_PerMsgMsEncTimes=self.random.nextInt(min,max)
-        self.level.l_MmpEncTimes=self.random.nextInt(min,max)
-        self.level.m_secondMsEncTimes=self.random.nextInt(min,max)
-        self.level.n_secondBsEncTimes=self.random.nextInt(min,max)
-        self.level.o_PerMsgBpEncTimes=self.random.nextInt(min,max)
-        self.level.p_BpEncTimes=self.random.nextInt(min,max)
-        self.level.s1_shuffleSeed=self.random.nextInt(min,max)
-        self.level.s1t_shuffle1Times=self.random.nextInt(min,max)
-        self.level.s2_shuffleSeed=self.random.nextInt(min,max)
-        self.level.s2t_shuffle2Times=self.random.nextInt(min,max)
+        self.level.i[0]=self.random.nextInt(min,max)
+        self.level.i[1]=self.random.nextInt(min,max)
+        self.level.j[0]=self.random.nextInt(min,max)
+        self.level.j[1]=self.random.nextInt(min,max)
+        self.level.k[0]=self.random.nextInt(min,max)
+        self.level.k[1]=self.random.nextInt(min,max)
+        self.level.l[0]=self.random.nextInt(min,max)
+        self.level.l[1]=self.random.nextInt(min,max)
+        self.level.s[0]=self.random.nextInt(min,max)
+        self.level.s[1]=self.random.nextInt(min,max)
+        self.level.st[0]=self.random.nextInt(min,max)
+        self.level.st[1]=self.random.nextInt(min,max)
 
+    def encryptPhase(self,id,machine1,machine2,seq):
+        M1p=self.generatePerMsgWindowSetting(machine1)
+        EM1p=self.encryptSequence(M1p,machine2,self.level.i[id])
+        Msg_M1p=self.encryptSequence(seq,machine1,self.level.j[id],M1p)
+        EMsg=EM1p+Msg_M1p
+        SEMsg=self.shuffler.shuffleSeq(EMsg,self.level.s[id])
+        x=self.encryptSequence(SEMsg,machine1,self.level.k[id])
+        y=self.encryptSequence(x,machine2,self.level.l[id])
+        return y
 
 
     def encryptLevel(self,verbose=False):
-        msg=self.level.inputMsg
+        seq=self.level.inputMsg
         if self.streamConverter:
-            msg=self.streamConverter.convertInput(msg)
-        if verbose:
-            print("MSG: ")
-            print(msg)
-        Bp=self.generatePerMsgWindowSetting(self.baseMachine)
-        if verbose:
-            print("Bp: ")
-            print(Bp)
-        EBp=self.encryptSequence(Bp,self.baseMachine,self.level.o_PerMsgBpEncTimes)
-        if verbose:
-            print("EBp: ")
-            print(EBp)
-        Emsg=EBp+self.encryptSequence(msg,self.baseMachine,self.level.p_BpEncTimes,Bp)
-        if verbose:
-            print("Emsg: ")
-            print(Emsg)
-        SEmsg=self.shuffler.shuffleSeq(Emsg,self.level.s1_shuffleSeed)
-        if verbose:
-            print("SEmsg: ")
-            print(SEmsg)
-        x=self.encryptSequence(SEmsg,self.baseMachine,self.level.i_firstBsEncTimes)
-        if verbose:
-            print("x: ")
-            print(x)
-        y=self.encryptSequence(x,self.levelMachine,self.level.j_firstMsEncTimes)
-        if verbose:
-            print("y: ")
-            print(y)
-        Mp=self.generatePerMsgWindowSetting(self.levelMachine)
-        if verbose:
-            print("Mp: ")
-            print(Mp)
-        EMp=self.encryptSequence(Mp,self.levelMachine,self.level.k_PerMsgMsEncTimes)
-        if verbose:
-            print("EMp: ")
-            print(EMp)
-        M0=self.encryptSequence(y,self.levelMachine,self.level.l_MmpEncTimes,Mp)
-        if verbose:
-            print("M0: ")
-            print(M0)
-        W=EMp+M0
-        if verbose:
-            print("W: ")
-            print(W)
-        S=self.shuffler.shuffleSeq(W,self.level.s2_shuffleSeed)
-        if verbose:
-            print("S: ")
-            print(S)
-        R=self.encryptSequence(S,self.levelMachine,self.level.m_secondMsEncTimes)
-        if verbose:
-            print("R: ")
-            print(R)
-        E=self.encryptSequence(R,self.baseMachine,self.level.n_secondBsEncTimes)
-        if verbose:
-            print("E: ")
-            print(E)
+            seq=self.streamConverter.convertInput(msg)
 
-        self.level.outputMsg=E
-        # print("Encrpytion:")
-        # print(E)
+        phaseEncOut=self.encryptPhase(0,self.baseMachine,self.levelMachine,seq)
+        phaseEncOut=self.encryptPhase(1,self.levelMachine,self.baseMachine,phaseEncOut)
+        self.level.outputMsg=phaseEncOut
         if self.streamConverter:
             self.level.outputMsg=self.streamConverter.convertOutput(E)
         return self.level

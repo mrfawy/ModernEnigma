@@ -119,7 +119,7 @@ class MachineSettingsMemento(object):
         result["L1L2MapperStg"]=self.L1L2MapperStg
         result["L2CipherMapperStg"]=self.L2CipherMapperStg
         result["cyclePeriod"]=self.cyclePeriod
-        return Util.toJson(result)
+        return result
 
 
 
