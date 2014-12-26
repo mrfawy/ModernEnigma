@@ -1,3 +1,4 @@
+from CharIndexMap import CharIndexMap
 class StreamConverter(object):
     def convertInput(self,inputStream):
         print("no stream converion !!")
@@ -13,11 +14,11 @@ class CharacterStreamConverter(StreamConverter):
         if not isinstance(inputStream,str):
             raise Exception("invalid stream , expecting a string !!")
         for c in inputStream:
-            result.append(ord(c))
+            result.append(CharIndexMap.charRange.index(c))
         return result
 
     def convertOutput(self,outputStream):
         result=""
         for o in outputStream:
-            result+=chr(o)
+            result+=CharIndexMap.charRange[o]
         return result

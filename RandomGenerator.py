@@ -15,5 +15,7 @@ class RandomGenerator(object):
     def sample(self,seq,k):
         return self.random.sample(seq,k)
 
-    def nextInt(self,a=0,b=CharIndexMap.getRangeSize()):
+    def nextInt(self,a=0,b=None):
+        if not b:
+            b=CharIndexMap.getRangeSize()
         return self.random.randint(a,b)

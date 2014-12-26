@@ -48,7 +48,7 @@ class ModernEnigma:
 
         self.processStepping(self.rotorList)
 
-        self.processRotorSwapping(lastOut)
+        # self.processRotorSwapping(lastOut)
 
         return output
 

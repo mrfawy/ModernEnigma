@@ -11,8 +11,8 @@ class EnigmaConfigGenerator(object):
 
         # self.CIPHER_ROTOR_COUNT_MIN=CharIndexMap.getRangeSize()//5
         # self.CIPHER_ROTOR_COUNT_MAX=CharIndexMap.getRangeSize()//2
-        self.CIPHER_ROTOR_COUNT_MIN=1
-        self.CIPHER_ROTOR_COUNT_MAX=3
+        self.CIPHER_ROTOR_COUNT_MIN=5
+        self.CIPHER_ROTOR_COUNT_MAX=10
         self.CIPHER_ROTOR_SIZE=CharIndexMap.getRangeSize()
 
         self.ROTOR_NOTCH_COUNT_MAX_RATIO=2 #will be divided
@@ -24,15 +24,15 @@ class EnigmaConfigGenerator(object):
 
         # self.SWAP_ROTOR_L1_COUNT_MIN=CharIndexMap.getRangeSize()//5
         # self.SWAP_ROTOR_L1_COUNT_MAX=CharIndexMap.getRangeSize()//2
-        self.SWAP_ROTOR_L1_COUNT_MIN=1
-        self.SWAP_ROTOR_L1_COUNT_MAX=3
+        self.SWAP_ROTOR_L1_COUNT_MIN=2
+        self.SWAP_ROTOR_L1_COUNT_MAX=5
         self.SWAP_ROTOR_L1_MIN_SIZE=CharIndexMap.getRangeSize()
         self.SWAP_ROTOR_L1_MAX_SIZE=CharIndexMap.getRangeSize()
 
         # self.SWAP_ROTOR_L2_COUNT_MIN=CharIndexMap.getRangeSize()//5
         # self.SWAP_ROTOR_L2_COUNT_MAX=CharIndexMap.getRangeSize()//2
-        self.SWAP_ROTOR_L2_COUNT_MIN=1
-        self.SWAP_ROTOR_L2_COUNT_MAX=3
+        self.SWAP_ROTOR_L2_COUNT_MIN=2
+        self.SWAP_ROTOR_L2_COUNT_MAX=5
         self.SWAP_ROTOR_L2_MIN_SIZE=CharIndexMap.getRangeSize()
         self.SWAP_ROTOR_L2_MAX_SIZE=CharIndexMap.getRangeSize()
 
@@ -79,7 +79,9 @@ class EnigmaConfigGenerator(object):
             rotorConfig["notch"]=self.createNotchConfig(range(size))
         return rotorConfig
 
-    def createNotchConfig(self,seq=CharIndexMap.getRange(),count=None):
+    def createNotchConfig(self,seq=None,count=None):
+        if not seq:
+            seq=CharIndexMap.getRange()
         if not count:
             count =self.random.nextInt(1,len(seq)//self.ROTOR_NOTCH_COUNT_MAX_RATIO)
         result=self.random.sample(seq,count)
@@ -108,18 +110,24 @@ class EnigmaConfigGenerator(object):
 
         return self.createRotorStockConfig(rotorCount,rotorsize)
 
-    def getShuffledSequence(self,seq=CharIndexMap.getRange()):
+    def getShuffledSequence(self,seq=None):
+        if not seq:
+            seq=CharIndexMap.getRange()
         shuffler=Shuffler(self.random)
         shSeq= shuffler.shuffleSeq(seq)
         return shSeq
 
 
-    def createReflectorCfg(self,id="RFLCTR",seq=CharIndexMap.getRange()):
+    def createReflectorCfg(self,id="RFLCTR",seq=None):
+        if not seq:
+            seq=CharIndexMap.getRange()
         reflectorConfig={"ID":id}
         reflectorConfig["wiring"]=self.getValidReflectorShuffledWiringCfg(seq)
         return reflectorConfig
 
-    def getValidReflectorShuffledWiringCfg(self,sequence=CharIndexMap.getRange()):
+    def getValidReflectorShuffledWiringCfg(self,sequence=None):
+        if not sequence:
+            sequence=CharIndexMap.getRange()
         wiringTuples=[]
         seq=self.shuffler.shuffleSeq(sequence)
         while len(seq)>0:
@@ -132,7 +140,9 @@ class EnigmaConfigGenerator(object):
 
         return result
 
-    def createPlugboardCfg(self,id="PLGBRD",seq=CharIndexMap.getRange()):
+    def createPlugboardCfg(self,id="PLGBRD",seq=None):
+        if not seq:
+            seq=CharIndexMap.getRange()
         plugboardConfig={"ID":id}
         plugboardConfig["wiring"]=self.getValidReflectorShuffledWiringCfg(seq)
         return plugboardConfig

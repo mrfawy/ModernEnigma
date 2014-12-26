@@ -1,5 +1,5 @@
 class CharIndexMap(object):
-    rangeTypeisCharacterBased=False
+    rangeTypeisCharacterBased=None
     charRange= ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","0","1","2","3","4","5","6","7","8","9","!","$","#","%","<",">","=","[","]",".",",",";",":","'","\"","?","(",")","&","|","~","-","+","*","/","\\","@","^"]
     binaryRangeSize=2**(1*8) # 1 bytes long range
 
@@ -7,6 +7,8 @@ class CharIndexMap(object):
 
     @classmethod
     def getRange(cls):
+        if cls.rangeTypeisCharacterBased == None :
+            raise Exception("please sepcify CharIndex range type!!")
         if cls.lastReturnedRange:
             return cls.lastReturnedRange
         result=[]

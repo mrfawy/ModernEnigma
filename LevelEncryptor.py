@@ -16,8 +16,8 @@ class LevelEncryptor(object):
         self.shuffler=Shuffler()
         self.initLevelValues()
     def initLevelValues(self):
-        min=1
-        max=9
+        min=3
+        max=16
         self.level.i[0]=self.random.nextInt(min,max)
         self.level.i[1]=self.random.nextInt(min,max)
         self.level.j[0]=self.random.nextInt(min,max)
@@ -61,10 +61,19 @@ class LevelEncryptor(object):
         if displayStg:
             machine.adjustWindowDisplay(displayStg)
 
-        for c in seq:
-            result.append(machine.processKeyPress(c))
+        result=seq
+        for t in range(times):
+            result=self.processSeq(result,machine)
+
         machine.adjustMachineSettings(preEncryptionStg)
         return result
+
+    def processSeq(self,seq,machine):
+        result=[]
+        for c in seq:
+            result.append(machine.processKeyPress(c))
+        return result
+
 
 
     def generatePerMsgWindowSetting(self,mc):
