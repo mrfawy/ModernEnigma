@@ -1,66 +1,66 @@
-Modern WWII Engima
+Modern WWII Enigma
 ========
->"If a trick is overused , it's less likely that anyone will expect us to use it again " 
+>"If a trick is overused, it's less likely that anyone will expect us to use it again” 
 
-The above motto is a qoute from a comic movie, and hence this fun project came into existance , it aims to revive the famouse (ehm, for being cracked) Enigma machine .But why bother ? 
+The above motto is a qoute from a comic movie, and hence this fun project came into existance , it aims to revive the famous (ehm, for being cracked) Enigma machine .But why bother ? 
 
-Protecting your privacy in todays world ? well, goodluck . you are using tools that you don't know it's working (you shuoldn't trust), and when they are cracked you'll know after it's too late .So if you can add an extra level or encryption of your data even if it's a homegrown technique, it'll make the problem for your attacker just a little bit harder .Modern Enigma tries to provide a step in this direction .
+Protecting your privacy today? Well, good luck. you are using tools that you don't know how it's working (you shouldn’t trust), and when they are cracked you'll barely know after it's too late .So if you can add an extra level or encryption of your data even if it's a homegrown technique, it'll make the problem for your attacker just a little bit harder .Modern Enigma tries to provide a step in this direction.
 
-Alan Turing is considered to be the father of modern computing , at his time electro-mechanical machines were used to perform computations.This is a software implementation with enhanced features to prevent some  weakness points in original Enigma .
+Alan Turing is considered to be the father of modern computing, at his time electro-mechanical machines were used to perform computations. This is a software implementation with enhanced features to prevent some weakness points in original Enigma.
 
 ###Modern Enigma is not patented and will never be
 
-What's Engima ?
+What's Enigma?
 ----
 ![Enigma](http://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/EnigmaMachineLabeled.jpg/640px-EnigmaMachineLabeled.jpg)
 
-Generally speaking it's an encryption machine used by germans during WWWII to encrypt the communication between forces , the allied were able to crack it ( Alan Turing is the most famouse team member), and that led to their defeat .Deciphering Enigma  messages is still in progress ,look for the M4 project if your intersteed !
+Generally speaking it's an encryption machine used by Germans during WWWII to encrypt the communication between forces , the allied were able to crack it ( Alan Turing is the most famous team member), and that led to their defeat .Deciphering Enigma  messages is still in progress ,look for the M4 project if your interested !
 
-what went wrong with Enigma that led to it's fall ?
+What went wrong with Enigma that led to its fall?
 ---------------------------------------------------
 
-Many Design and operating problems allowed the allied to creack it , just to name a few
+Many Design and operating problems allowed the allied to crack it, just to name a few
 
 * Design
     * No letter is mapped to itself
     * Constraints on Rotor usage in certain days of month
-    * Fixed number plugboard cables
-    * Rotor Stepping in a predictable clockwise motion, US implemented SIGABA to fix this problem
+    * Fixed number plug board cables
+    * Rotor stepping in a predictable clockwise motion, US implemented SIGABA to fix this problem
 
 * Operation
-    * Message indicator settings were choosed by operators non randomly (CIL)
-    * Predictable clear text ( Cribs)
+    * Message indicator settings were chosen by operators none randomly (CIL)
+    * Predictable clear text (Cribs)
     * Using less secured means to send the same message 
 
 * For more info:
-    * Weakness points in enigma ,[more info](http://cromwell-intl.com/security/history/enigma.html "for more info")
-    * SIGABA working ,[more info](http://ucsb.curby.net/broadcast/thesis/thesis.pdf)
+    * Weakness points in enigma, [more info](http://cromwell-intl.com/security/history/enigma.html "for more info")
+    * SIGABA working, [more info](http://ucsb.curby.net/broadcast/thesis/thesis.pdf)
 
 Modern Enigma Features:
 -------------------------
-* It's a protocol that can be implemented by many environments, currently we provide Python code  as the reference implementation 
-* Dynamic configuration of the machine based on Model Token , thus no single machine with fixed wiring that can be reverse engineered 
-* A new random per msg setting is setup for the operator , eliminating the lazy habits for not changing machine offset per message 
-* More Rotors and more larger rotor size to increase the key space   
+* It's a protocol that can be implemented by many environments; currently we provide Python code as the reference implementation 
+* Dynamic configuration of the machine based on Model Token, thus no single machine with fixed wiring that can be reverse engineered 
+* A new random per msg setting is setup for the operator, eliminating the lazy habits for not changing machine offset per message 
+* More Rotors and larger rotor size to increase the key space   
 * Non clockwise rotor stepping
 * Non linear Rotor swapping during encryption process
-* MultiLevel Encryption each conists of various rounds
-* Multiple different machines( 2 for now) , are used to encrypt a message within single level
-* After all , it's just a software ,just some lines of code ;)
+* Multilevel Encryption each consists of various rounds
+* Multiple different machines (2 for now), are used to encrypt a message within single level
+* After all, it's just software, just some lines of code ;)
 
-Example Usage :
+Example Usage:
 -------------------
 
-Mathematics of Modern Enigma :
+Mathematics of Modern Enigma:
 ----------------------------
 * Counting Equations:
-* Number of availalbe rotor wirings for a rotor of size N=N!, e.g. a rotor of size 64 =>64! ~ 1.3 x 10^9 the number of atoms in the visible universe (~ 10^80)
+* Number of available rotor wirings for a rotor of size N=N!, e.g. a rotor of size 64 =>64! ~ 1.3 x 10^9 the number of atoms in the visible universe (~ 10^80)
 * Number of ways to pick n rotors each of size of N in order =P(N,n) , e.g Wolfram couldn't calculate P(64!,3)"Result cannot be determined using current methods" 
 * Number of ways to set rotors offsets for n rotors each of size N  = N ^ n
-* Number of ways to select M pair for plugboard of size N=N! / ( (N-2M)! x M! x 2^M ) 
+* Number of ways to select M pair for plug board of size N=N! / ( (N-2M)! x M! x 2^M ) 
 * number of ways to select an integer (32 bit)=2 ^ 32
 * Cipher Module:
-    * Number of availalbe Cipher rotors per machine = n , we recommend larger n >100
+    * Number of available Cipher rotors per machine = n , we recommend larger n >100
 
 * Swapping Module:
     * Level 1 : pick l1 rotors each of size 64 (see above)
@@ -69,9 +69,9 @@ Mathematics of Modern Enigma :
     * l2 Cipher mapper as a rotor like above
     * Number of ways to select active signals of size s= C(64,s)
 
-* You can calculate the total key space and the different possible machine configurations , but don't let the number deceive you , it only works if you are trying a brute force attack .Accrdoing to Schneier's Law "Any person can invent a security system so clever that he or she can't imagine a way of breaking it.", which means that people create a cipher that they themselves can't break, and then use that as evidence they've created an unbreakable cipher.Also According to Kerckhoffs's principle "A cryptosystem should be secure even if everything about the system, except the key, is public knowledge".That's why we are still Investigating the weaknesses of this tool.
+* You can calculate the total key space and the different possible machine configurations , but don't let the number deceive you , it only works if you are trying a brute force attack .According to Schneider’s Law "Any person can invent a security system so clever that he or she can't imagine a way of breaking it.", which means that people create a cipher that they themselves can't break, and then use that as evidence they've created an unbreakable cipher. Also According to Kerckhoffs's principle "A cryptosystem should be secure even if everything about the system, except the key, is public knowledge”. That’s why we are still investigating the weaknesses of this tool.
 * Deriving A key size :
-    *To encrypt/decrypt a signle level 2 machines are needed
+    *To encrypt/decrypt a single level 2 machines are needed
     *for each machine we need :
         * n bits to represent n cipher rotors orders, and offsets
         * l1 bits to represent l2 cipher rotors orders, and offsets
@@ -85,10 +85,10 @@ Mathematics of Modern Enigma :
     * Number of bits ( Key) to store machine setting of N rotors =m(no of bit to represent N)xN +6xN
     * Result # of bits =7x100+6x100=1200 bits ( Only for this module, while a typical machine will have 2 more modules)
 * it's worth mentioning here that the key is part of the operating instructions, it's like the manual for the algorithm , Thus it'll be a large number of bits.
-* Again don't let the large key size fool you .
-* Any help from an expert on the security assestement or a peer review of this Modern Enigma is highly appreciated ,it's still in early development phase.
+* Again don't let the large key size fool you.
+* Any help from an expert on the security assessment or a peer review of this Modern Enigma is highly appreciated; it’s still in early development phase.
 
--suggessted protocol
+-Suggessted protocol
 ---
 http://hireme.geek.nz/modern-enigma-system.html
 http://digital.library.louisville.edu/utils/getfile/collection/etd/id/449/filename/450.pdf
@@ -97,44 +97,43 @@ http://www.cs.sjsu.edu/faculty/stamp/students/Sigaba298report.pdf
 
 Modern Enigma Protocol:
 ====================
-* General GuidLine :
-    * In this protocol we define a certain steps that has to be performed , for each step a certain algorithm will be choosed. As each step has it's own attack vectors and it's algorithm has it's volunerablities , each major version of this protocol will try to cope with that .Backward compatiblity is not currently one of our main design goals.
-    * Main desing Gaols :
-        * Confideintiality 
+* General Guideline:
+    * In this protocol we define a certain steps that has to be performed , for each step a certain algorithm will be choosed. As each step has it's own attack vectors and it's algorithm has it's volunerablities , each major version of this protocol will try to cope with that .Backward compatibility is not currently one of our main design goals.
+    * Main design Goals :
+        * Confidentiality 
         * Message integrity 
-        * Close to the original enigma rotor based design ( as it's main subistition box technique)
-        * Operating instructions should be part of the key , no fixed decision should be made by the machine 
+        * Close to the original enigma rotor based design (as its main substitution box technique)
+        * Operating instructions should be part of the key; no fixed decision should be made by the machine 
         * Generation of a new machine should be an easy and a low cost operation
-        * Extreme felixibility in desgining your own mahcine down to  the wiring level 
-        * Platform independece , ability to de/encrypt using any platform/environment , extremly low resources(e.g. card) are not considered
-        * Generation of human readable machine description , allowing the reconstruction of a machine 
-        * No use of patented or platform specific algorthims 
-        * It's a fun project , not the next Symmetric key polyalphabetic encryption technology , please keep this in mind 
-    * Out of scope :
+        * Extreme flexibility in designing your own machine down to  the wiring level 
+        * Platform independence, ability to de/encrypt using any platform/environment, extremely low resources (e.g. card) are not considered
+        * Generation of human readable machine description, allowing the reconstruction of a machine 
+        * No use of patented or platform specific algorithms 
+        * It's a fun project, not the next Symmetric key polyalphabetic encryption technology, please keep this in mind 
+    * Out of scope:
         * Not to be used for mission critical and/or large files 
-        * Key management/sharing process is not handled , use any key mangement technique you desire.
-            Because the keys and machine descriptions are human readable, old tricks can still work(remember our Motto) .Be creative and use overused techniques like calling your firend by phone and telling him part of the key ,SMS another part , Facebook another part,and if you are not in a hurry you can send a postal mail ;).ofcourse all of theses platform might be tracked (well ,you know it's ).If the attacker was able to track all of these communications ,well, I think this guy
-            deserves to read your messages any ways and you are tottaly screwed , nothing can help you my firend ;)
+        * Key management/sharing process is not handled , use any key management technique you desire.
+            Because the keys and machine descriptions are human readable, old tricks can still work(remember our Motto) .Be creative and use overused techniques like calling your friend by phone and telling him part of the key ,SMS another part , Facebook another part, and if you are not in a hurry you can send a postal mail ;).of course all of theses platform might be tracked (well ,you know it's ).If the attacker was able to track all of these communications ,well, I think this guy            deserves to read your messages any ways and you are totally screwed , nothing can help you my friend ;)
 
 
 
 * Message Integrity:
-    * Perfrom a secure hashing of the original message,encrypt it using a machine X 
-    * All hashing function's will use a non patented algorithm: Whirlpool is selected
-    * when exchanging the keys for the message , include this hashed value 
-    * As only Sender  and reciever knows how to decrypt this value ( the encrypted checksum), origin integrity is satisfied
-    * As checksum will be different for any changed/corrpted message , message intigrity is satisfied
-    * if Sender and reciever agree to use only certian pair of keys for each different correspondent , Ripudation of orogin can be satisfied,The probelm as with all symmetric key tools , a lot of keys will be needed which might not be practical for large parties communication
+    * Perform a secure hashing of the original message, and encrypt it using a machine X 
+    * All hashing functions will use a non patented algorithm: Whirlpool is selected
+    * When exchanging the keys for the message, include this hashed value 
+    * As only Sender and receiver knows how to decrypt this value (the encrypted checksum), origin integrity is satisfied
+    * As checksum will be different for any changed/corrupted message , message integrity is satisfied
+    * if Sender and receiver agree to use only certain pair of keys for each different correspondent , Ripudation of origin can be satisfied, The problem as with all symmetric key tools , a lot of keys will be needed which might not be practical for large parties communication
 
-* Un/padding a message :
+* Un/padding a message:
     * User will have a choice to select Block size for each level
-    * for each En/Decryption step a padding procedure shuold follow to match the block size
+    * For each En/Decryption step a padding procedure should follow to match the block size
     * Padding procedure:
-        * add a one byte in the begining of the sequence 
+        * add a one byte in the beginning of the sequence 
         * calculate the total size of the new sequence 
-        * add any extra bytes as needed , select bytes at random from sequence 
-        * set the value of the first byte to the number of added padding , 00 if no padding performed
-    * Unpadding Proedure:
+        * add any extra bytes as needed, select bytes at random from sequence 
+        * set the value of the first byte to the number of added padding, 00 if no padding performed
+    * Unpadding Procedure:
         * ignore the last number of bytes equal to the value of the first byte in the sequence 
 
 
@@ -206,5 +205,6 @@ Modern Encryption techniques:
 https://www.gnupg.org/gph/en/manual.html
 
 history : http://www.eng.utah.edu/~nmcdonal/Tutorials/EncryptionResearchReview.pdf
+
 
 
