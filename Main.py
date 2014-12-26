@@ -100,4 +100,4 @@ def encryptText():
     print("DONE !!")
 
 
-encryptFile()
+encryptText()

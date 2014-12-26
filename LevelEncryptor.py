@@ -57,7 +57,6 @@ class LevelEncryptor(object):
 
     def encryptSequence(self,seq,machine,times=1,displayStg=None):
         result=[]
-        preEncryptionStg=machine.getMachineSettings()
         if displayStg:
             machine.adjustWindowDisplay(displayStg)
 
@@ -65,13 +64,14 @@ class LevelEncryptor(object):
         for t in range(times):
             result=self.processSeq(result,machine)
 
-        machine.adjustMachineSettings(preEncryptionStg)
         return result
 
     def processSeq(self,seq,machine):
+        preEncryptionStg=machine.getMachineSettings()
         result=[]
         for c in seq:
             result.append(machine.processKeyPress(c))
+        machine.adjustMachineSettings(preEncryptionStg)
         return result
 
 

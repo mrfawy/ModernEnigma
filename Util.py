@@ -1,4 +1,5 @@
 from CharIndexMap import CharIndexMap
+from RandomGenerator import RandomGenerator
 import json
 
 class Util(object):
@@ -31,3 +32,22 @@ class Util(object):
     def toJson(cls,obj):
         return (json.dumps(obj,sort_keys=True,indent=4, separators=(',', ': ')))
 
+    @classmethod
+    def padSequence(cls,seq,blkSize):
+        seq.insert(0,0)
+        rem=len(seq)%blkSize
+        if rem >0:
+            sampleSize=blkSize-rem
+            if sampleSize>len(seq):
+                for i in range(sampleSize):
+                    seq.append(RandomGenerator().nextInt())
+            else:
+                seq.append(RandomGenerator().sample(seq,sampleSize))
+            seq[0]=sampleSize
+        return seq
+    @classmethod
+    def unpadSequence(cls,seq):
+        if seq[0]==0:
+            return seq[1::]
+        else:
+            return seq[1:len(seq)-seq[0]]

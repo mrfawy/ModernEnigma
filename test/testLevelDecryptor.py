@@ -10,6 +10,7 @@ import json
 
 class TestLevelDecryptor(unittest.TestCase):
     def setUp(self):
+        CharIndexMap.rangeTypeisCharacterBased=False
         self.random=RandomGenerator()
         self.random.seed(123)
         self.baseMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCb")
@@ -17,6 +18,7 @@ class TestLevelDecryptor(unittest.TestCase):
         self.level=Level(self.baseMachine.getMachineSettings(),self.levelMachine.getMachineSettings())
         self.levelDecryptor=LevelDecryptor(self.baseMachine,self.levelMachine,self.level)
     def testDualOK(self):
+        CharIndexMap.rangeTypeisCharacterBased=False
         msg=[0,0,0,0,0]
         self.level.inputMsg=msg
         levelEncryptor=LevelEncryptor(self.baseMachine,self.levelMachine,self.level,self.random)
