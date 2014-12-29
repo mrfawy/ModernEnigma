@@ -51,3 +51,9 @@ class Util(object):
             return seq[1::]
         else:
             return seq[1:len(seq)-seq[0]]
+
+    @classmethod
+    def removeDuplicates(cls,seq):
+        seen = set()
+        seen_add = seen.add
+        return [ x for x in seq if not (x in seen or seen_add(x))]

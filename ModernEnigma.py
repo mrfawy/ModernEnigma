@@ -6,6 +6,7 @@ from Wiring import Wiring
 from RandomGenerator import RandomGenerator
 from MachineSettingsMemento import MachineSettingsMemento
 from MachineSettingManager import MachineSettingManager
+from Util import Util
 
 class ModernEnigma:
     def __init__(self,rotorStockList,reflector,plugboard,l1SwappingRotorStockList,l2SwappingRotorStockList,l1l2SeparatorSwitch):
@@ -34,30 +35,32 @@ class ModernEnigma:
             settingsMemento=MachineSettingManager.generateDefaultSettingsForMachine(self)
         MachineSettingManager.applyMachineSettings(self,settingsMemento)
 
-    def processKeyPress(self,indexIn):
+    def processKeyListPress(self,indexInList):
         if not self.settingsReady :
             raise Exception("Settings are not set for this machine!!")
-        lastOut=self.plugboard.signalIn(indexIn)
-        inputPins=[lastOut]
+        lastOut=self.plugboard.signalIn(indexInList)
+        inputPins=lastOut
         resultPins=self.applyActivePins(self.rotorList,inputPins)
 
-        lastReverseIn=self.reflector.signalIn(resultPins[0])
+        lastReverseIn=self.reflector.signalIn(resultPins)
 
-        resultPins=self.applyActivePinsReversed(self.rotorList,[lastReverseIn])
-        output=self.plugboard.reverseSignal(resultPins[0])
+        resultPins=self.applyActivePinsReversed(self.rotorList,lastReverseIn)
+        output=self.plugboard.reverseSignal(resultPins)
 
         self.processStepping(self.rotorList)
 
-        # self.processRotorSwapping(lastOut)
+        self.processRotorSwapping()
 
         return output
 
-    def processRotorSwapping(self,indexIn):
+    def processRotorSwapping(self):
         activePins=self.swapActiveSignals
         swapLevel1Result=self.applyActivePins(self.swapRotorsLevel1,activePins)
         swapLevel2Input=self.applyMappingActivePins(self.l1l2SeparatorSwitch,swapLevel1Result)
+        swapLevel2Input=Util.removeDuplicates(swapLevel2Input)
         swapLevel2Result=self.applyActivePins(self.swapRotorsLevel2,swapLevel2Input)
         swapResult=self.applyMappingActivePins(self.l2CipherMapper,swapLevel2Result)
+        swapResult=Util.removeDuplicates(swapResult)
 
         self.swapRotors(self.rotorList,swapResult)
 
@@ -89,14 +92,10 @@ class ModernEnigma:
 
 
     def applyActivePins(self,rotors,pins):
-        resultPins=[]
-        for pin in pins:
-            lastout=pin
-            for rotor in rotors:
-                lastout=rotor.signalIn(lastout)
-            if lastout not in resultPins:
-                resultPins.append(lastout)
-        return resultPins
+        lastout=pins
+        for rotor in rotors:
+            lastout=rotor.signalIn(lastout)
+        return lastout
     def applyMappingActivePins(self,mapper,pins):
         resultPins=[]
         for pin in pins:
@@ -107,14 +106,10 @@ class ModernEnigma:
         return resultPins
 
     def applyActivePinsReversed(self,rotors,pins):
-        resultPins=[]
-        for pin in pins:
-            lastout=pin
-            for rotor in reversed(rotors):
-                lastout=rotor.reverseSignal(lastout)
-            if lastout not in resultPins:
-                resultPins.append(lastout)
-        return resultPins
+        lastout=pins
+        for rotor in reversed(rotors):
+            lastout=rotor.reverseSignal(lastout)
+        return lastout
 
     def processStepping(self,rotors):
         notchFlag=False

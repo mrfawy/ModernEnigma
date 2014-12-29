@@ -37,7 +37,7 @@ class TestModernEnigma(unittest.TestCase):
         rotors.append(Rotor(1,Wiring({1:[3],3:[2],0:[0],2:[2],4:[4],5:[5]})))
         rotors.append(Rotor(2,Wiring({3:[5],5:[3],0:[0],1:[1],2:[2],4:[4]})))
         resultPins=self.machine.applyActivePins(rotors,[0])
-        self.assertEqual(5,resultPins[0])
+        self.assertEqual([5],resultPins)
 
     def testApplyActivePinsReversed(self):
         rotors=[]
@@ -45,7 +45,7 @@ class TestModernEnigma(unittest.TestCase):
         rotors.append(Rotor(1,Wiring({1:[3],3:[2],0:[0],2:[2],4:[4],5:[5]})))
         rotors.append(Rotor(2,Wiring({3:[5],5:[3],0:[0],1:[1],2:[2],4:[4]})))
         resultPins=self.machine.applyActivePinsReversed(rotors,[0])
-        self.assertEqual(5,resultPins[0])
+        self.assertEqual([5],resultPins)
 
     def testProcessStepping(self):
         rotors=[]
@@ -84,7 +84,7 @@ class TestModernEnigma(unittest.TestCase):
 
         self.machine.swapActiveSignals=[1]
 
-        self.machine.processRotorSwapping(0)
+        self.machine.processRotorSwapping()
         self.assertEqual(3,self.machine.rotorList[0].id)
         self.assertEqual(1,self.machine.rotorList[1].id)
         self.assertEqual(2,self.machine.rotorList[2].id)

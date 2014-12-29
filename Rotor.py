@@ -11,15 +11,15 @@ class Rotor(Switch):
         for n in notchSeq:
             self.notchIndexList.append(n)
 
-    def signalIn(self,indexIn):
-        newIndexIn=(self.offset+indexIn)%self.size
+    def signalIn(self,indexInList):
+        newIndexIn=[(self.offset+x)%self.size for x in indexInList]
         output= super().signalIn(newIndexIn)
-        return (output-self.offset)%self.size
+        return [(x-self.offset)%self.size for x in output]
 
-    def reverseSignal(self,indexReverseIn):
-        newReverseIndexIn=(self.offset+indexReverseIn)%self.size
+    def reverseSignal(self,indexReverseInList):
+        newReverseIndexIn=[(self.offset+x)%self.size for x in indexReverseInList]
         output= super().reverseSignal(newReverseIndexIn)
-        return (output-self.offset)%self.size
+        return [(x-self.offset)%self.size for x in output]
 
     def adjustDisplay(self,offset):
         if offset>self.size:

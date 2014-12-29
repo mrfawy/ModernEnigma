@@ -19,7 +19,7 @@ class TestLevelDecryptor(unittest.TestCase):
         self.levelDecryptor=LevelDecryptor(self.baseMachine,self.levelMachine,self.level)
     def testDualOK(self):
         CharIndexMap.rangeTypeisCharacterBased=False
-        msg=[0,0,0,0,0]
+        msg=[1,2,3,4,5]
         self.level.inputMsg=msg
         levelEncryptor=LevelEncryptor(self.baseMachine,self.levelMachine,self.level,self.random)
         self.random.seed(123)

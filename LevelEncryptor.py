@@ -3,6 +3,7 @@ from CharIndexMap import CharIndexMap
 from ModernEnigma import ModernEnigma
 from Level import Level
 from Shuffler import Shuffler
+from Util import Util
 
 class LevelEncryptor(object):
     def __init__(self,baseMachine,levelMachine,level,random=None,streamConverter=None):
@@ -44,6 +45,7 @@ class LevelEncryptor(object):
 
     def encryptLevel(self,verbose=False):
         seq=self.level.inputMsg
+        # seq=Util.padSeq(seq,CharIndexMap.binaryRangeSize)
         if self.streamConverter:
             seq=self.streamConverter.convertInput(msg)
 
@@ -70,7 +72,7 @@ class LevelEncryptor(object):
         preEncryptionStg=machine.getMachineSettings()
         result=[]
         for c in seq:
-            result.append(machine.processKeyPress(c))
+            result=result+machine.processKeyListPress([c])
         machine.adjustMachineSettings(preEncryptionStg)
         return result
 

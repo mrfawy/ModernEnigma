@@ -29,16 +29,22 @@ class PlugBoard(Switch):
     def __init__(self,wiring):
         super().__init__(wiring)
 
-    def signalIn(self,pin):
-        if self.wiring.hasPairedPinFor(pin):
-            return super().signalIn(pin)
-        """ no wiring,just return the pin unchanged"""
-        return pin
-    def reverseSignal(self,pin):
-        if self.wiring.hasPairedPinFor(pin):
-            return super().signalIn(pin)
-        """ no wiring,just return the pin unchanged"""
-        return pin
+    def signalIn(self,pins):
+        result=[]
+        for pin in pins:
+            if self.wiring.hasPairedPinFor(pin):
+                result.append(super().signalIn([pin])[0])
+            else:
+                result.append(pin)
+        return result
+    def reverseSignal(self,pins):
+        result=[]
+        for pin in pins:
+            if self.wiring.hasPairedPinFor(pin):
+                result.append(super().signalIn([pin])[0])
+            else:
+                result.append(pin)
+        return result
 
     #return only different pairs e.g AX CD
     def getSettings(self):

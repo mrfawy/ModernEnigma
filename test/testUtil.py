@@ -32,4 +32,7 @@ class TestUtil(unittest.TestCase):
         self.assertEqual(2,len(unPadSeq))
         self.assertEqual([2,3],unPadSeq)
 
+    def testRemoveDuplicates(self):
+        seq=[1,2,1,3,1,3,4]
+        self.assertEqual([1,2,3,4],Util.removeDuplicates(seq))
 
