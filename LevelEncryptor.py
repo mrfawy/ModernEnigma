@@ -1,91 +1,120 @@
-from random import Random
+from RandomGenerator import RandomGenerator
 from CharIndexMap import CharIndexMap
 from ModernEnigma import ModernEnigma
 from Level import Level
 from Shuffler import Shuffler
+from Util import Util
 
 class LevelEncryptor(object):
-    def __init__(self,baseMachine,levelMachine,level,random=None):
+    def __init__(self,baseMachine,levelMachine,level,random=None,streamConverter=None):
         self.baseMachine=baseMachine
         self.levelMachine=levelMachine
         self.level=level
-        if random==None:
-            self.random=Random()
-            self.random.seed(123)
+        self.random=random
+        if not random:
+            self.random=RandomGenerator()
+        self.streamConverter=streamConverter
         self.shuffler=Shuffler()
         self.initLevelValues()
     def initLevelValues(self):
-        min=1
-        max=9
-        self.level.i_firstBsEncTimes=self.random.randint(min,max)
-        self.level.j_firstMsEncTimes=self.random.randint(min,max)
-        self.level.k_PerMsgMsEncTimes=self.random.randint(min,max)
-        self.level.l_MmpEncTimes=self.random.randint(min,max)
-        self.level.m_secondMsEncTimes=self.random.randint(min,max)
-        self.level.n_secondBsEncTimes=self.random.randint(min,max)
-        self.level.o_PerMsgBpEncTimes=self.random.randint(min,max)
-        self.level.p_BpEncTimes=self.random.randint(min,max)
-        self.level.s1_shuffleSeed=self.random.randint(min,max)
-        self.level.s1t_shuffle1Times=self.random.randint(min,max)
-        self.level.s2_shuffleSeed=self.random.randint(min,max)
-        self.level.s2t_shuffle2Times=self.random.randint(min,max)
+        min=3
+        max=16
+        self.level.i[0]=self.random.nextInt(min,max)
+        self.level.i[1]=self.random.nextInt(min,max)
+        self.level.j[0]=self.random.nextInt(min,max)
+        self.level.j[1]=self.random.nextInt(min,max)
+        self.level.k[0]=self.random.nextInt(min,max)
+        self.level.k[1]=self.random.nextInt(min,max)
+        self.level.l[0]=self.random.nextInt(min,max)
+        self.level.l[1]=self.random.nextInt(min,max)
+        self.level.s[0]=self.random.nextInt(min,max)
+        self.level.s[1]=self.random.nextInt(min,max)
+        self.level.st[0]=self.random.nextInt(min,max)
+        self.level.st[1]=self.random.nextInt(min,max)
+        self.level.baseMcBlkSize[0]=self.random.nextInt(1,self.baseMachine.getCipherRotorsSize())
+        self.level.baseMcBlkSize[1]=self.random.nextInt(1,self.baseMachine.getCipherRotorsSize())
+        self.level.levelMcBlkSize[0]=self.random.nextInt(1,self.levelMachine.getCipherRotorsSize())
+        self.level.levelMcBlkSize[1]=self.random.nextInt(1,self.levelMachine.getCipherRotorsSize())
+
+    def encryptPhase(self,id,machine1,machine2,m1BlkSize,m2BlkSize,seq):
+        M1p=self.generatePerMsgWindowSetting(machine1)
+        EM1p=self.encryptSequence(M1p,machine2,m2BlkSize[id],self.level.i[id])
+        Msg_M1p=self.encryptSequence(seq,machine1,m1BlkSize[id],self.level.j[id],M1p)
+        EMsg=EM1p+Msg_M1p
+        SEMsg=self.shuffler.shuffleSeq(EMsg,self.level.s[id])
+        x=self.encryptSequence(SEMsg,machine1,m1BlkSize[id],self.level.k[id])
+        y=self.encryptSequence(x,machine2,m2BlkSize[id],self.level.l[id])
+
+        # print("ENCRYPT")
+        # print("ID:"+str(id))
+        # print("M1p:")
+        # print(M1p)
+        # print("EM1p:")
+        # print(EM1p)
+        # print("Msg_M1p:")
+        # print(Msg_M1p)
+        # print("Emsg:")
+        # print(EMsg)
+        # print("SEMsg:")
+        # print(SEMsg)
+        # print("x:")
+        # print(x)
+        # print("y:")
+        # print(y)
+        return y
 
 
+    def encryptLevel(self,verbose=False):
+        seq=self.level.inputMsg
+        if self.streamConverter:
+            seq=self.streamConverter.convertInput(msg)
 
-    def encryptLevel(self):
-        msg=self.level.inputMsg
-        # print("MSG: "+msg)
-        Bp=self.generatePerMsgWindowSetting(self.baseMachine)
-        # print("Bp: "+Bp)
-        EBp=self.encryptText(Bp,self.baseMachine,self.level.o_PerMsgBpEncTimes)
-        # print("EBp: "+EBp)
-        Emsg=EBp+self.encryptText(msg,self.baseMachine,self.level.p_BpEncTimes,Bp)
-        # print("Emsg: "+Emsg)
-        SEmsg=self.shuffler.shuffle(Emsg,self.level.s1_shuffleSeed)
-        # print("SEmsg: "+SEmsg)
-        x=self.encryptText(SEmsg,self.baseMachine,self.level.i_firstBsEncTimes)
-        # print("x: "+x)
-        y=self.encryptText(x,self.levelMachine,self.level.j_firstMsEncTimes)
-        # print("y: "+y)
-        Mp=self.generatePerMsgWindowSetting(self.levelMachine)
-        # print("Mp: "+Mp)
-        EMp=self.encryptText(Mp,self.levelMachine,self.level.k_PerMsgMsEncTimes)
-        # print("EMp: "+EMp)
-        M0=self.encryptText(y,self.levelMachine,self.level.l_MmpEncTimes,Mp)
-        # print("M0: "+M0)
-        W=EMp+M0
-        # print("W: "+W)
-        S=self.shuffler.shuffle(W,self.level.s2_shuffleSeed)
-        # print("S: "+S)
-        R=self.encryptText(S,self.levelMachine,self.level.m_secondMsEncTimes)
-        # print("R: "+R)
-        E=self.encryptText(R,self.baseMachine,self.level.n_secondBsEncTimes)
-        # print("E: "+E)
-
-        self.level.outputMsg=E
+        phaseEncOut=self.encryptPhase(0,self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,seq)
+        phaseEncOut=self.encryptPhase(1,self.levelMachine,self.baseMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,phaseEncOut)
+        self.level.outputMsg=phaseEncOut
+        if self.streamConverter:
+            self.level.outputMsg=self.streamConverter.convertOutput(E)
         return self.level
 
 
-
-
-
-    def encryptText(self,text,machine,times=1,displayStg=None):
-        result=""
-        preEncryptionStg=machine.getMachineSettings()
+    def encryptSequence(self,seq,machine,blkSize,times=1,displayStg=None):
+        result=[]
         if displayStg:
             machine.adjustWindowDisplay(displayStg)
+        result=seq
+        result=self.performAdjustPadding(result,blkSize)
+        for t in range(times):
+            result=self.processSeq(result,machine,blkSize)
 
-        for c in text:
-            result+=machine.processKeyPress(c)
-        machine.adjustMachineSettings(preEncryptionStg)
         return result
 
+    def processSeq(self,seq,machine,blkSize):
+        result=[]
+        preEncryptionStg=machine.getMachineSettings()
+        startIndex=0
+        endIndex=blkSize
+        while endIndex<=len(seq):
+            currentBlk=seq[startIndex:endIndex]
+            currentBlk=self.performMappingBlockToRotor(currentBlk,machine.getCipherRotorsSize())
+            result=result+machine.processKeyListPress(currentBlk)
+            startIndex+=blkSize
+            endIndex+=blkSize
+
+        machine.adjustMachineSettings(preEncryptionStg)
+
+        return result
+
+    def performMappingBlockToRotor(self,blkSeq,rotorSize):
+         return blkSeq
+
+    def performAdjustPadding(self,seq,blkSize=1):
+        return Util.padSequence(seq,blkSize)
 
 
 
-    def generatePerMsgWindowSetting(self,machine):
-        randomRange= sorted(CharIndexMap.getRange(), key=lambda k: self.random.random())
-        result=""
-        for i in range(len(machine.rotorList)):
-            result+=randomRange[i]
+    def generatePerMsgWindowSetting(self,mc):
+        result=[]
+        for i in range(mc.getCipherRotorsCount()):
+            selectedOffset=self.random.sample(range(mc.getCipherRotorsSize()),1)[0]
+            result.append(selectedOffset)
         return result

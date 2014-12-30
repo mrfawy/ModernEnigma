@@ -1,35 +1,131 @@
 import unittest
 from EnigmaDynamicFactory import EnigmaDynamicFactory
+from Util import Util
 
 
 class TestEnigmaDynamicFactory(unittest.TestCase):
     def setUp(self):
         self.factory=EnigmaDynamicFactory()
 
-    def testCreateSwappingSeparator(self):
-        fromRange=[0,1,2,3,4,5,6,7,8,9]
-        toRange=[0,1,2]
-        separatorConfig=self.factory.createSwappingSeparatorConfig("ID",len(toRange),len(fromRange))
-        wiringMap=separatorConfig["wiring"]
-        for f in fromRange:
-            self.assertTrue(self.existsInKeys(f,wiringMap))
-        for t in toRange:
-            self.assertTrue(self.existsInValues(t,wiringMap))
+        self.machineConfig={
+        "CIPHER_MODULE": {
+            "PLUGBOARD": {
+                "ID": "PLGBRD",
+                "wiring": {
+                    "0": [
+                        "0"
+                    ],
+                    "1": [
+                        "2"
+                    ],
+                    "2": [
+                        "1"
+                    ]
+                }
+            },
+            "REFLECTOR": {
+                "ID": "RFLCTR",
+                "wiring": {
+                    "0": [
+                        "0"
+                    ],
+                    "1": [
+                        "2"
+                    ],
+                    "2": [
+                        "1"
+                    ]
+                }
+            },
+            "ROTOR_STOCK": [
+                {
+                    "ID": "0",
+                    "notch": [
+                        1
+                    ],
+                    "wiring": {
+                        "0": [
+                            0
+                        ],
+                        "1": [
+                            2
+                        ],
+                        "2": [
+                            1
+                        ]
+                    }
+                }
+            ]
+        },
+        "SWAPPING_MODULE": {
+            "L1_L2_MAPPER": {
+                "ID": "L1L2MPPR",
+                "wiring": {
+                    "0": [
+                        0
+                    ],
+                    "1": [
+                        2
+                    ],
+                    "2": [
+                        1
+                    ]
+                }
+            },
+            "L1_ROTOR_STOCK": [
+                {
+                    "ID": "0",
+                    "notch": [
+                        2
+                    ],
+                    "wiring": {
+                        "0": [
+                            0
+                        ],
+                        "1": [
+                            2
+                        ],
+                        "2": [
+                            1
+                        ]
+                    }
+                }
+            ],
+            "L2_ROTOR_STOCK": [
+                {
+                    "ID": "0",
+                    "notch": [
+                        0
+                    ],
+                    "wiring": {
+                        "0": [
+                            0
+                        ],
+                        "1": [
+                            2
+                        ],
+                        "2": [
+                            1
+                        ]
+                    }
+                }
+            ]
+        }
+    }
 
-    def existsInValues(self,x,wiringMap):
-        exists=False
-        for pinIn,poutList in wiringMap.items():
-            if x in poutList:
-                return True
-        return exists
-    def existsInKeys(self,x,wiringMap):
-        exists=False
-        for pinIn,poutList in wiringMap.items():
-            if x == pinIn:
-                return True
-        return exists
+    def testCreateCipherModuleFromConfig(self):
+        module=self.factory.createCipherModuleFromConfig(self.machineConfig)
+        self.assertIsNotNone(module)
+        self.assertIsNotNone(module["ROTOR_STOCK"])
+        self.assertIsNotNone(module["PLUGBOARD"])
+        self.assertIsNotNone(module["REFLECTOR"])
+    def testCreateSwappingModuleFromConfig(self):
+        module=self.factory.createSwappingModuleFromConfig(self.machineConfig)
+        self.assertIsNotNone(module)
+        self.assertIsNotNone(module["L1_ROTOR_STOCK"])
+        self.assertIsNotNone(module["L2_ROTOR_STOCK"])
+        self.assertIsNotNone(module["L1_L2_MAPPER"])
 
-    def testCreateSwappingLevel2RotorConfig(self):
-        level2RotorConfig=self.factory.createSwappingLevel2RotorConfig("id",6)
-        self.assertEqual(6,len(level2RotorConfig["wiring"]))
 
+    def testCreateEnigmaMachineFromConfig(self):
+        mc=self.factory.createEnigmaMachineFromConfig(self.machineConfig)

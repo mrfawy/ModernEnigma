@@ -1,45 +1,142 @@
-Modern WWII Engima
+Modern WWII Enigma
 ========
-[Enigma](http://l2.yimg.com/bt/api/res/1.2/3xLnpXMlOtk3jVr7Xx7iug--/YXBwaWQ9eW5ld3M7cT04NQ--/http://media.zenfs.com/en-US/blogs/en-us-visit-britain-travel/Enigma.jpg "Engima")
+>"If a trick is overused, it's less likely that anyone will expect us to use it again” 
 
-What's Engima ?
+The above motto is a qoute from a comic movie, and hence this fun project came into existance , it aims to revive the famous (ehm, for being cracked) Enigma machine .But why bother ? 
+
+Protecting your privacy today? Well, good luck. you are using tools that you don't know how it's working (you shouldn’t trust), and when they are cracked you'll barely know after it's too late .So if you can add an extra level or encryption of your data even if it's a homegrown technique, it'll make the problem for your attacker just a little bit harder .Modern Enigma tries to provide a step in this direction.
+
+Alan Turing is considered to be the father of modern computing, at his time electro-mechanical machines were used to perform computations. This is a software implementation with enhanced features to prevent some weakness points in original Enigma.
+
+###Modern Enigma is not patented and will never be
+
+What's Enigma?
 ----
-http://ucsb.curby.net/broadcast/thesis/thesis.pdf
+![Enigma](http://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/EnigmaMachineLabeled.jpg/640px-EnigmaMachineLabeled.jpg)
 
--suggessted protocol
+Generally speaking it's an encryption machine used by Germans during WWWII to encrypt the communication between forces , the allied were able to crack it ( Alan Turing is the most famous team member), and that led to their defeat .Deciphering Enigma  messages is still in progress ,look for the M4 project if your interested !
+
+What went wrong with Enigma that led to its fall?
+---------------------------------------------------
+
+Many Design and operating problems allowed the allied to crack it, just to name a few
+
+* Design
+    * No letter is mapped to itself
+    * Constraints on Rotor usage in certain days of month
+    * Fixed number plug board cables
+    * Rotor stepping in a predictable clockwise motion, US implemented SIGABA to fix this problem
+
+* Operation
+    * Message indicator settings were chosen by operators none randomly (CIL)
+    * Predictable clear text (Cribs)
+    * Using less secured means to send the same message 
+
+* For more info:
+    * Weakness points in enigma, [more info](http://cromwell-intl.com/security/history/enigma.html "for more info")
+    * SIGABA working, [more info](http://ucsb.curby.net/broadcast/thesis/thesis.pdf)
+
+Modern Enigma Features:
+-------------------------
+* It's a protocol that can be implemented by many environments; currently we provide Python code as the reference implementation 
+* Dynamic configuration of the machine based on Model Token, thus no single machine with fixed wiring that can be reverse engineered 
+* A new random per msg setting is setup for the operator, eliminating the lazy habits for not changing machine offset per message 
+* More Rotors and larger rotor size to increase the key space   
+* Non clockwise rotor stepping
+* Non linear Rotor swapping during encryption process
+* Multilevel Encryption each consists of various rounds
+* Multiple different machines (2 for now), are used to encrypt a message within single level
+* After all, it's just software, just some lines of code ;)
+
+Example Usage:
+-------------------
+
+Mathematics of Modern Enigma:
+----------------------------
+* Counting Equations:
+* Number of available rotor wirings for a rotor of size N=N!, e.g. a rotor of size 64 =>64! ~ 1.3 x 10^9 the number of atoms in the visible universe (~ 10^80)
+* Number of ways to pick n rotors each of size of N in order =P(N,n) , e.g Wolfram couldn't calculate P(64!,3)"Result cannot be determined using current methods" 
+* Number of ways to set rotors offsets for n rotors each of size N  = N ^ n
+* Number of ways to select M pair for plug board of size N=N! / ( (N-2M)! x M! x 2^M ) 
+* number of ways to select an integer (32 bit)=2 ^ 32
+* Cipher Module:
+    * Number of available Cipher rotors per machine = n , we recommend larger n >100
+
+* Swapping Module:
+    * Level 1 : pick l1 rotors each of size 64 (see above)
+    * Level 2 :pick l2 rotors each of size K (see above)
+    * l1 l2 mapper As a rotor like above
+    * l2 Cipher mapper as a rotor like above
+    * Number of ways to select active signals of size s= C(64,s)
+
+* You can calculate the total key space and the different possible machine configurations , but don't let the number deceive you , it only works if you are trying a brute force attack .According to Schneider’s Law "Any person can invent a security system so clever that he or she can't imagine a way of breaking it.", which means that people create a cipher that they themselves can't break, and then use that as evidence they've created an unbreakable cipher. Also According to Kerckhoffs's principle "A cryptosystem should be secure even if everything about the system, except the key, is public knowledge”. That’s why we are still investigating the weaknesses of this tool.
+* Deriving A key size :
+    *To encrypt/decrypt a single level 2 machines are needed
+    *for each machine we need :
+        * n bits to represent n cipher rotors orders, and offsets
+        * l1 bits to represent l2 cipher rotors orders, and offsets
+        * l2 bits to represent l2 cipher rotors orders, and offsets
+        * m bits to represent wiring mapping of l2 Cipher mapper
+    * around 10-12 * integer(32 bit),of various flags that alter the working of the algorithm
+
+
+* An example for a Cipher module of 100 rotors each of size of 64 :
+    * Number of bits to store the rotor offset [0-64] = 6 bits
+    * Number of bits ( Key) to store machine setting of N rotors =m(no of bit to represent N)xN +6xN
+    * Result # of bits =7x100+6x100=1200 bits ( Only for this module, while a typical machine will have 2 more modules)
+* it's worth mentioning here that the key is part of the operating instructions, it's like the manual for the algorithm , Thus it'll be a large number of bits.
+* Again don't let the large key size fool you.
+* Any help from an expert on the security assessment or a peer review of this Modern Enigma is highly appreciated; it’s still in early development phase.
+
+-Suggessted protocol
 ---
 http://hireme.geek.nz/modern-enigma-system.html
 http://digital.library.louisville.edu/utils/getfile/collection/etd/id/449/filename/450.pdf
-
-SIGABA 
 http://www.cs.sjsu.edu/faculty/stamp/students/Sigaba298report.pdf
 
-M4 Project 
-what went wrong with Enigma that led to it's fall ?
-----------------------------
-http://cromwell-intl.com/security/history/enigma.html
-http://ucsb.curby.net/broadcast/thesis/thesis.pdf
 
-WhyModern ?
------
-Alan Turing is considered to be the father of modern computing , at his time electro-mechanical machines were used to perform computations.This is a software implementation with enhanced features to prevent some  weakness points in original Enigma that allowed Turing to crack it .
-
-Features:
----
-* Dynamic configuration of the machine based on Model Token , thus no single machine with fixed wiring that can be reverse engineered 
-* A new random per msg setting is setup for the operator , eliminating the lazy habits for not changing machine offset per message 
-* More Rotors and more special characters used , to increase the key space   
-* After all , it's just a software you can curry easily , it's just some lines of code ;)
-
-Mathematics of Modern Enigma :
-----------------------------
-* Number of availalbe rotor wiring=64! ~ 1.3 x 10^9 the number of atoms in the visible universe (~ 10^80)
-* Number of availalbe rotors per machine = N , we recommend larger n >100
-* Number of bits to store the rotor offset [0-64] = 6 bits
-* Number of bits ( Key) to store machine setting of N rotors =m(no of bit to represent N)xN +6xN
-* e.g. for a 100 rotors machine =7x100+6x100=1200 bits
-INTERNAL MODERN Enigma Protocol WORKING:
+Modern Enigma Protocol:
 ====================
+* General Guideline:
+    * In this protocol we define a certain steps that has to be performed , for each step a certain algorithm will be choosed. As each step has it's own attack vectors and it's algorithm has it's volunerablities , each major version of this protocol will try to cope with that .Backward compatibility is not currently one of our main design goals.
+    * Main design Goals :
+        * Confidentiality 
+        * Message integrity 
+        * Close to the original enigma rotor based design (as its main substitution box technique)
+        * Operating instructions should be part of the key; no fixed decision should be made by the machine 
+        * Generation of a new machine should be an easy and a low cost operation
+        * Extreme flexibility in designing your own machine down to  the wiring level 
+        * Platform independence, ability to de/encrypt using any platform/environment, extremely low resources (e.g. card) are not considered
+        * Generation of human readable machine description, allowing the reconstruction of a machine 
+        * No use of patented or platform specific algorithms 
+        * It's a fun project, not the next Symmetric key polyalphabetic encryption technology, please keep this in mind 
+    * Out of scope:
+        * Not to be used for mission critical and/or large files 
+        * Key management/sharing process is not handled , use any key management technique you desire.
+            Because the keys and machine descriptions are human readable, old tricks can still work(remember our Motto) .Be creative and use overused techniques like calling your friend by phone and telling him part of the key ,SMS another part , Facebook another part, and if you are not in a hurry you can send a postal mail ;).of course all of theses platform might be tracked (well ,you know it's ).If the attacker was able to track all of these communications ,well, I think this guy            deserves to read your messages any ways and you are totally screwed , nothing can help you my friend ;)
+
+
+
+* Message Integrity:
+    * Perform a secure hashing of the original message, and encrypt it using a machine X 
+    * All hashing functions will use a non patented algorithm: Whirlpool is selected
+    * When exchanging the keys for the message, include this hashed value 
+    * As only Sender and receiver knows how to decrypt this value (the encrypted checksum), origin integrity is satisfied
+    * As checksum will be different for any changed/corrupted message , message integrity is satisfied
+    * if Sender and receiver agree to use only certain pair of keys for each different correspondent , Ripudation of origin can be satisfied, The problem as with all symmetric key tools , a lot of keys will be needed which might not be practical for large parties communication
+
+* Un/padding a message:
+    * User will have a choice to select Block size for each level
+    * For each En/Decryption step a padding procedure should follow to match the block size
+    * Padding procedure:
+        * add a one byte in the beginning of the sequence 
+        * calculate the total size of the new sequence 
+        * add any extra bytes as needed, select bytes at random from sequence 
+        * set the value of the first byte to the number of added padding, 00 if no padding performed
+    * Unpadding Procedure:
+        * ignore the last number of bytes equal to the value of the first byte in the sequence 
+
+
 * Multi level , each level needs 2 machines , the first one needs a base machine , and a chosen one 
 * we will refer to base machine as B , and level machine as M
 * we will refer to  machine settings as s , and it's per message settings as p
@@ -74,11 +171,21 @@ INTERNAL MODERN Enigma Protocol WORKING:
     * n , int 
     * s , int shuffle seed number ,to be able to deshuffle back
 
+* Block mechanism
+    * Cipher rotor size can take range of 1 byte to 4 bytes ( int 32 bit range)
+    * for selected Rotor size , determine how many bytes needed (e.g 2 bytes)
+    * now for each input byte , output will use 2 bytes
+    * according to setting , determines number of bytes to be batch procesed from range 1 to rotorsize/256
+    * each byte will be maaped to corresponing place 1>0,255 , 2 ->256,512,..
+    
+
+* TODO : generate  random machine name of size n, hashit , machine model is the first m numbers from the hashed value , use this number as seed to build machine
+
 * For extra level of scrambling , you can take the output of one level , feed it into other level as many times you need,
 each level will need a different machine though
 
 
-
+* http://www.larc.usp.br/~pbarreto/WhirlpoolPage.html
 * for shuffling , and reverse shuffling , there is a key 
 http://stackoverflow.com/questions/3541378/reversible-shuffle-algorithm-using-a-key
 
@@ -108,5 +215,6 @@ Modern Encryption techniques:
 https://www.gnupg.org/gph/en/manual.html
 
 history : http://www.eng.utah.edu/~nmcdonal/Tutorials/EncryptionResearchReview.pdf
+
 
 

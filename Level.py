@@ -1,5 +1,4 @@
 from ModernEnigma import ModernEnigma
-import json
 
 class Level(object):
     def __init__(self,baseMachineStg,levelMachineStg):
@@ -7,36 +6,27 @@ class Level(object):
         self.levelStg=levelMachineStg
         self.inputMsg=""
         self.outputMsg=""
-        self.i_firstBsEncTimes=0
-        self.j_firstMsEncTimes=0
-        self.k_PerMsgMsEncTimes=0
-        self.l_MmpEncTimes=0
-        self.m_secondMsEncTimes=0
-        self.n_secondBsEncTimes=0
-        self.o_PerMsgBpEncTimes=0
-        self.p_BpEncTimes=0
-        self.s1t_shuffle1Times=0
-        self.s2t_shuffle2Times=0
-        self.s1_shuffleSeed=0
-        self.s2_shuffleSeed=0
+        self.i={0:[],1:[]}
+        self.j={0:[],1:[]}
+        self.k={0:[],1:[]}
+        self.l={0:[],1:[]}
+        self.s={0:[],1:[]}
+        self.st={0:[],1:[]}
+        self.baseMcBlkSize={0:4,1:3}
+        self.levelMcBlkSize={0:1,1:2}
 
-    def toJson(self):
-        jsonMap={}
-        jsonMap["baseStg"]=self.baseStg
-        jsonMap["levelStg"]=self.levelStg
-        jsonMap["inputMsg"]=self.inputMsg
-        jsonMap["outputMsg"]=self.outputMsg
-        jsonMap["i_firstBsEncTimes"]=self.i_firstBsEncTimes
-        jsonMap["j_firstMsEncTimes"]=self.j_firstMsEncTimes
-        jsonMap["k_PerMsgMsEncTimes"]=self.k_PerMsgMsEncTimes
-        jsonMap["l_MmpEncTimes"]=self.l_MmpEncTimes
-        jsonMap["m_secondMsEncTimes"]=self.m_secondMsEncTimes
-        jsonMap["n_secondBsEncTimes"]=self.n_secondBsEncTimes
-
-        jsonMap["o_PerMsgBpEncTimes"]=self.o_PerMsgBpEncTimes
-        jsonMap["p_BpEncTimes"]=self.p_BpEncTimes
-        jsonMap["s1t_shuffle1Times"]=self.s1t_shuffle1Times
-        jsonMap["s2t_shuffle2Times"]=self.s2t_shuffle2Times
-        jsonMap["s1_shuffleSeed"]=self.s1_shuffleSeed
-        jsonMap["s2_shuffleSeed"]=self.s2_shuffleSeed
-        return (json.dumps(jsonMap,sort_keys=True,indent=4, separators=(',', ': ')))
+    def getAsMap(self):
+        result={}
+        result["baseStg"]=self.baseStg.getAsMap()
+        result["levelStg"]=self.levelStg.getAsMap()
+        result["inputMsg"]=self.inputMsg
+        result["outputMsg"]=self.outputMsg
+        result["i"]=self.i
+        result["j"]=self.j
+        result["k"]=self.k
+        result["l"]=self.l
+        result["s"]=self.s
+        result["st"]=self.st
+        result["baseMcBlkSize"]=self.baseMcBlkSize
+        result["levelMcBlkSizse"]=self.levelMcBlkSize
+        return result

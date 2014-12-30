@@ -1,4 +1,4 @@
-from random import Random
+from RandomGenerator import RandomGenerator
 
 
 #This class implements  Fisher-Yates shuffle algorithm
@@ -9,47 +9,31 @@ class Shuffler(object):
         if random:
             self.random=random
         else:
-            self.random=Random()
+            self.random=RandomGenerator()
 
-    def shuffle(self,msg,seed):
-        self.random.seed(seed)
-        msgSeq=self.strToSeq(msg)
-        for i in range(len(msgSeq)-1,0,-1):
-           j=self.random.randint(0,i)
-           self.swap(msgSeq,i,j)
-        return self.SeqToStr(msgSeq)
+    def shuffleSeq(self,sequence,seed=None):
+        seq=list(sequence)
+        if seed:
+            self.random.seed(seed)
+        for i in range(len(seq)-1,0,-1):
+           j=self.random.nextInt(0,i)
+           self.swap(seq,i,j)
+        return seq
 
-    def deshuffle(self,msg,seed):
-        self.random.seed(seed)
-        msgSeq=self.strToSeq(msg)
+    def deshuffleSeq(self,sequence,seed=None):
+        seq=list(sequence)
+        if seed:
+            self.random.seed(seed)
         changes=[]
-        for i in range(len(msgSeq)-1,0,-1):
-           changes.append(self.random.randint(0,i))
+        for i in range(len(seq)-1,0,-1):
+           changes.append(self.random.nextInt(0,i))
         changes=changes[::-1]
-        for i in range(1,len(msgSeq)):
-           self.swap(msgSeq,i,changes[i-1])
+        for i in range(1,len(seq)):
+           self.swap(seq,i,changes[i-1])
 
-        return self.SeqToStr(msgSeq)
-
+        return seq
 
     def swap(self,seq,i,j):
         tmp=seq[i]
         seq[i]=seq[j]
         seq[j]=tmp
-    def strToSeq(self,s):
-        result=[]
-        for c in s:
-            result.append(c)
-        return result
-    def SeqToStr(self,seq):
-        result=""
-        for c in seq:
-            result+=c
-        return result
-
-# m="abcdef"
-# s=Shuffler()
-# ms=s.shuffle(m,123)
-# print(m)
-# print(ms)
-# print(s.deshuffle(ms,123))

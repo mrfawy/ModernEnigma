@@ -1,5 +1,6 @@
 import unittest
 from Shuffler import Shuffler
+from Util import Util
 
 class TestShuffler(unittest.TestCase):
 
@@ -8,20 +9,20 @@ class TestShuffler(unittest.TestCase):
         self.shuffler=Shuffler()
 
     def testShuffle(self):
-        msg="abcdef"
-        smsg=self.shuffler.shuffle(msg,123)
-        self.assertNotEqual(msg,smsg)
-        self.assertEqual(len(msg),len(smsg))
+        seq=[0,1,2]
+        shSeq=self.shuffler.shuffleSeq(seq,123)
+        self.assertNotEqual(seq,shSeq)
+        self.assertEqual(len(seq),len(shSeq))
 
     def testDeshuffle(self):
-        smsg="debfca"
-        msg=self.shuffler.deshuffle(smsg,123)
-        self.assertNotEqual(msg,smsg)
-        self.assertEqual(len(msg),len(smsg))
-        self.assertEqual(msg,"abcdef")
+        shSeq=[3,4,1,5,2,0]
+        seq=self.shuffler.deshuffleSeq(shSeq,123)
+        self.assertNotEqual(shSeq,seq)
+        self.assertEqual(len(shSeq),len(seq))
+        self.assertEqual(seq,[0,1,2,3,4,5])
 
     def testDuality(self):
-        msg="abcdef"
-        smsg=self.shuffler.shuffle(msg,123)
-        dmsg=self.shuffler.deshuffle(smsg,123)
+        msg=[0,1,2,3,4,5]
+        smsg=self.shuffler.shuffleSeq(msg,123)
+        dmsg=self.shuffler.deshuffleSeq(smsg,123)
         self.assertEqual(msg,dmsg)

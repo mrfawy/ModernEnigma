@@ -2,30 +2,32 @@ from CharIndexMap import CharIndexMap
 from Switch import Switch
 from Wiring import Wiring
 class Rotor(Switch):
-    def __init__(self,id,wiring,notchChars="",size=CharIndexMap.getRangeSize(),offset=0):
+    def __init__(self,id,wiring,notchSeq=[],offset=0):
         super().__init__(wiring)
         self.id=id
         self.offset=offset
-        self.size=size
+        self.size=wiring.inputSize
         self.notchIndexList=[]
-        for c in notchChars:
-            self.notchIndexList.append(CharIndexMap.charToIndex(c))
+        for n in notchSeq:
+            self.notchIndexList.append(n)
 
-    def signalIn(self,indexIn):
-        newIndexIn=(self.offset+indexIn)%self.size
+    def signalIn(self,indexInList):
+        newIndexIn=[(self.offset+x)%self.size for x in indexInList]
         output= super().signalIn(newIndexIn)
-        return (output-self.offset)%self.size
+        return [(x-self.offset)%self.size for x in output]
 
-    def reverseSignal(self,indexReverseIn):
-        newReverseIndexIn=(self.offset+indexReverseIn)%self.size
+    def reverseSignal(self,indexReverseInList):
+        newReverseIndexIn=[(self.offset+x)%self.size for x in indexReverseInList]
         output= super().reverseSignal(newReverseIndexIn)
-        return (output-self.offset)%self.size
+        return [(x-self.offset)%self.size for x in output]
 
-    def adjustDisplay(self,char):
-        self.offset=CharIndexMap.charToIndex(char)
+    def adjustDisplay(self,offset):
+        if offset>self.size:
+            raise("Invalid offset value,greater than rotor size")
+        self.offset=offset
 
     def getDisplay(self):
-        return CharIndexMap.indexToChar(self.offset)
+        return self.offset
 
     #return True if notch touches to mark rotate next Rotor
     def rotate(self):
