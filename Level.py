@@ -12,6 +12,8 @@ class Level(object):
         self.l={0:[],1:[]}
         self.s={0:[],1:[]}
         self.st={0:[],1:[]}
+        self.baseMcBlkSize={0:4,1:3}
+        self.levelMcBlkSize={0:1,1:2}
 
     def getAsMap(self):
         result={}
@@ -25,4 +27,6 @@ class Level(object):
         result["l"]=self.l
         result["s"]=self.s
         result["st"]=self.st
+        result["baseMcBlkSize"]=self.baseMcBlkSize
+        result["levelMcBlkSizse"]=self.levelMcBlkSize
         return result

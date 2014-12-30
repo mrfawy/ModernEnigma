@@ -171,6 +171,16 @@ Modern Enigma Protocol:
     * n , int 
     * s , int shuffle seed number ,to be able to deshuffle back
 
+* Block mechanism
+    * Cipher rotor size can take range of 1 byte to 4 bytes ( int 32 bit range)
+    * for selected Rotor size , determine how many bytes needed (e.g 2 bytes)
+    * now for each input byte , output will use 2 bytes
+    * according to setting , determines number of bytes to be batch procesed from range 1 to rotorsize/256
+    * each byte will be maaped to corresponing place 1>0,255 , 2 ->256,512,..
+    
+
+* TODO : generate  random machine name of size n, hashit , machine model is the first m numbers from the hashed value , use this number as seed to build machine
+
 * For extra level of scrambling , you can take the output of one level , feed it into other level as many times you need,
 each level will need a different machine though
 

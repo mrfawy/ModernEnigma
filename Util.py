@@ -34,23 +34,24 @@ class Util(object):
 
     @classmethod
     def padSequence(cls,seq,blkSize):
-        seq.insert(0,0)
-        rem=len(seq)%blkSize
+        result=list(seq)
+        result.insert(0,0)
+        rem=len(result)%blkSize
         if rem >0:
             sampleSize=blkSize-rem
-            if sampleSize>len(seq):
+            if sampleSize>len(result):
                 for i in range(sampleSize):
-                    seq.append(RandomGenerator().nextInt())
+                    result.append(RandomGenerator().nextInt())
             else:
-                seq.append(RandomGenerator().sample(seq,sampleSize))
-            seq[0]=sampleSize
-        return seq
+                result=result+RandomGenerator().sample(result,sampleSize)
+            result[0]=sampleSize
+        return result
     @classmethod
     def unpadSequence(cls,seq):
         if seq[0]==0:
-            return seq[1::]
+            return list(seq[1::])
         else:
-            return seq[1:len(seq)-seq[0]]
+            return list(seq[1:len(seq)-seq[0]])
 
     @classmethod
     def removeDuplicates(cls,seq):
