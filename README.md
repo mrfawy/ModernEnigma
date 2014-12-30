@@ -88,12 +88,6 @@ Mathematics of Modern Enigma:
 * Again don't let the large key size fool you.
 * Any help from an expert on the security assessment or a peer review of this Modern Enigma is highly appreciated; it’s still in early development phase.
 
--Suggessted protocol
----
-http://hireme.geek.nz/modern-enigma-system.html
-http://digital.library.louisville.edu/utils/getfile/collection/etd/id/449/filename/450.pdf
-http://www.cs.sjsu.edu/faculty/stamp/students/Sigaba298report.pdf
-
 
 Modern Enigma Protocol:
 ====================
@@ -203,6 +197,11 @@ http://www.cryptomuseum.com/crypto/enigma/working.htm
 https://www.youtube.com/watch?v=ncL2Fl6prH8
 http://en.wikipedia.org/wiki/Enigma_machine
 
+
+* Suggessted protocol
+http://hireme.geek.nz/modern-enigma-system.html
+http://digital.library.louisville.edu/utils/getfile/collection/etd/id/449/filename/450.pdf
+http://www.cs.sjsu.edu/faculty/stamp/students/Sigaba298report.pdf
 
 what's wrong with it ?
 https://www.youtube.com/watch?v=V4V2bpZlqx8
