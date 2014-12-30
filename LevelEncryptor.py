@@ -31,6 +31,10 @@ class LevelEncryptor(object):
         self.level.s[1]=self.random.nextInt(min,max)
         self.level.st[0]=self.random.nextInt(min,max)
         self.level.st[1]=self.random.nextInt(min,max)
+        self.level.baseMcBlkSize[0]=self.random.nextInt(1,self.baseMachine.getCipherRotorsSize())
+        self.level.baseMcBlkSize[1]=self.random.nextInt(1,self.baseMachine.getCipherRotorsSize())
+        self.level.levelMcBlkSize[0]=self.random.nextInt(1,self.levelMachine.getCipherRotorsSize())
+        self.level.levelMcBlkSize[1]=self.random.nextInt(1,self.levelMachine.getCipherRotorsSize())
 
     def encryptPhase(self,id,machine1,machine2,m1BlkSize,m2BlkSize,seq):
         M1p=self.generatePerMsgWindowSetting(machine1)

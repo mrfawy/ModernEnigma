@@ -73,7 +73,7 @@ def encryptText():
     elapsed_time = time.time() - start_time
     print("2 MAchines were created in :"+str(elapsed_time))
 
-    msg=CharacterStreamConverter().convertInput("HELLO")
+    msg=CharacterStreamConverter().convertInput("HELLOXENINGMA")
     level.inputMsg=msg
 
 
@@ -100,4 +100,4 @@ def encryptText():
     print("DONE !!")
 
 
-encryptText()
+encryptFile()
