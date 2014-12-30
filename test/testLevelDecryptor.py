@@ -21,8 +21,8 @@ class TestLevelDecryptor(unittest.TestCase):
         CharIndexMap.rangeTypeisCharacterBased=False
         msg=[1,2,3,4,5]
         self.level.inputMsg=msg
-        levelEncryptor=LevelEncryptor(self.baseMachine,self.levelMachine,self.level,self.random)
         self.random.seed(123)
+        levelEncryptor=LevelEncryptor(self.baseMachine,self.levelMachine,self.level,self.random)
         encLevel=levelEncryptor.encryptLevel()
 
         encLevel.inputMsg=""

@@ -27,7 +27,7 @@ def encryptFile():
     print("2 MAchines were created in :"+str(elapsed_time))
 
     start_time = time.time()
-    msg=FileReader().readSeqFromFile("alice.txt")
+    msg=FileReader().readSeqFromFile("tst.txt")
     elapsed_time = time.time() - start_time
     print("Parsed File to read Seq in : "+str(elapsed_time))
     level.inputMsg=msg
@@ -39,7 +39,7 @@ def encryptFile():
     elapsed_time = time.time() - start_time
     print("Encrypted Seq in : "+str(elapsed_time))
 
-    FileReader().writeSeqTofile(encLevel.outputMsg,"alice.enc")
+    FileReader().writeSeqTofile(encLevel.outputMsg,"tst.enc",True)
     print("Encrypted File written")
 
     encLevel.inputMsg=""
@@ -51,7 +51,7 @@ def encryptFile():
     elapsed_time = time.time() - start_time
     print("Decrypted Sequence in :"+str(elapsed_time))
 
-    FileReader().writeSeqTofile(resultLevel.inputMsg,"alice.dec")
+    FileReader().writeSeqTofile(resultLevel.inputMsg,"tst.dec",False)
     print("Decrypted File written")
 
     print("DONE !!")
@@ -100,4 +100,4 @@ def encryptText():
     print("DONE !!")
 
 
-encryptText()
+encryptFile()

@@ -1,6 +1,7 @@
 from CharIndexMap import CharIndexMap
 from RandomGenerator import RandomGenerator
 import json
+# import whirlpool
 
 class Util(object):
 
@@ -58,3 +59,13 @@ class Util(object):
         seen = set()
         seen_add = seen.add
         return [ x for x in seq if not (x in seen or seen_add(x))]
+
+    @classmethod
+    def hashString(cls,string,salt=None):
+        # wp = whirlpool.new(string.encoding('utf-8'))
+        # if salt:
+        #     wp.update(salt)
+        # hashed_string = wp.hexdigest()
+        # return hashed_string
+        return None
+

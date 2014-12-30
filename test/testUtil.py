@@ -35,4 +35,6 @@ class TestUtil(unittest.TestCase):
     def testRemoveDuplicates(self):
         seq=[1,2,1,3,1,3,4]
         self.assertEqual([1,2,3,4],Util.removeDuplicates(seq))
+    def testHashing(self):
+        self.assertIsNotNone(Util.hashString("My String"))
 

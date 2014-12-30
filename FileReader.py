@@ -1,9 +1,12 @@
+import base64
 
 class FileReader(object):
-    def writeSeqTofile(self,seq,f):
-        byteStream=bytes(seq)
+    def writeSeqTofile(self,seq,f,asHex=True):
+        output=bytes(seq)
+        if asHex:
+            output=base64.b64encode(output)
         with open(f,"wb") as f:
-            f.write(byteStream)
+            f.write(output)
     def readSeqFromFile(self,f):
         result=[]
         with open(f, "rb") as f:

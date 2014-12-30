@@ -13,7 +13,7 @@ class CharIndexMap(object):
             return cls.lastReturnedRange
         result=[]
         if cls.rangeTypeisCharacterBased:
-            result=range(0,len(cls.charRange))
+            result=range(len(cls.charRange))
         else:
             result=range(cls.binaryRangeSize)
         cls.lastReturnedRange=result
