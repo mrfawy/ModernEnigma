@@ -95,7 +95,6 @@ class LevelEncryptor(object):
         endIndex=blkSize
         while endIndex<=len(seq):
             currentBlk=seq[startIndex:endIndex]
-            currentBlk=self.performMappingBlockToRotor(currentBlk,machine.getCipherRotorsSize())
             result=result+machine.processKeyListPress(currentBlk)
             startIndex+=blkSize
             endIndex+=blkSize
@@ -103,9 +102,6 @@ class LevelEncryptor(object):
         machine.adjustMachineSettings(preEncryptionStg)
 
         return result
-
-    def performMappingBlockToRotor(self,blkSeq,rotorSize):
-         return blkSeq
 
     def performAdjustPadding(self,seq,blkSize=1):
         return Util.padSequence(seq,blkSize)

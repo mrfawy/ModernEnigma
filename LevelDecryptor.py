@@ -62,7 +62,6 @@ class LevelDecryptor(LevelEncryptor):
         E=self.level.outputMsg
         if self.streamConverter:
             E=self.streamConverter.convertInput(E)
-
         phaseDecOut=self.decryptPhase(1,self.levelMachine,self.baseMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,E)
         phaseDecOut=self.decryptPhase(0,self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,phaseDecOut)
         self.level.inputMsg=phaseDecOut

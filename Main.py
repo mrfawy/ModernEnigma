@@ -7,8 +7,10 @@ from EnigmaConfigGenerator import EnigmaConfigGenerator
 from RandomGenerator import RandomGenerator
 from FileReader import FileReader
 from CharIndexMap import CharIndexMap
+from Util import Util
 from StreamConverter import CharacterStreamConverter
 import json
+import codecs
 import time
 
 def encryptFile():
@@ -56,8 +58,8 @@ def encryptFile():
 
     print("DONE !!")
 
-def encryptText():
-    CharIndexMap.rangeTypeisCharacterBased=True
+def encryptTextAsBin():
+    CharIndexMap.rangeTypeisCharacterBased=False
 
     start_time = time.time()
 
@@ -73,8 +75,9 @@ def encryptText():
     elapsed_time = time.time() - start_time
     print("2 MAchines were created in :"+str(elapsed_time))
 
-    msg=CharacterStreamConverter().convertInput("HELLOXENINGMA")
-    level.inputMsg=msg
+    msg="Hello Enigma !"
+    msgSeq=Util.encodeStringIntoByteList(msg)
+    level.inputMsg=msgSeq
 
 
     start_time = time.time()
@@ -83,7 +86,7 @@ def encryptText():
     elapsed_time = time.time() - start_time
     print("Encrypted Seq in : "+str(elapsed_time))
     print("ENC:")
-    print(CharacterStreamConverter().convertOutput(encLevel.outputMsg))
+    print(Util.convertByteListIntoHexString(encLevel.outputMsg))
 
     encLevel.inputMsg=""
 
@@ -94,10 +97,9 @@ def encryptText():
     elapsed_time = time.time() - start_time
     print("Decrypted Sequence in :"+str(elapsed_time))
     print("DEC:")
-    print(CharacterStreamConverter().convertOutput(resultLevel.inputMsg))
+    print(resultLevel.inputMsg)
+    print(Util.decodeByteListIntoString(resultLevel.inputMsg))
 
 
     print("DONE !!")
-
-
-encryptFile()
+encryptTextAsBin()

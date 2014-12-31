@@ -35,6 +35,28 @@ class TestUtil(unittest.TestCase):
     def testRemoveDuplicates(self):
         seq=[1,2,1,3,1,3,4]
         self.assertEqual([1,2,3,4],Util.removeDuplicates(seq))
+    def testEncodeStringIntoBytsList(self):
+        msg="helLo World!!"
+        result=Util.encodeStringIntoByteList(msg)
+        self.assertEqual([104, 101, 108, 76, 111, 32, 87, 111, 114, 108, 100, 33, 33],result)
+
+    def testConvertByteListIntoHexString(self):
+        l=[104, 101, 108, 76, 111, 32, 87, 111, 114, 108, 100, 33, 33]
+        self.assertEqual("68656C4C6F20576F726C642121",Util.convertByteListIntoHexString(l))
+
+    def testConvertHexStringIntoByteList(self):
+        string="68656C4C6F20576F726C642121"
+        result=[104, 101, 108, 76, 111, 32, 87, 111, 114, 108, 100, 33, 33]
+        self.assertEqual(result,Util.convertHexStringIntoByteList(string))
+
+    def testDecodeListtoString(self):
+        l=[72, 101, 108, 108, 111, 32, 69, 110, 105, 103, 109, 97, 32, 33]
+        self.assertEqual("Hello Enigma !",Util.decodeByteListIntoString(l))
+
+
+
     def testHashing(self):
-        self.assertIsNotNone(Util.hashString("My String"))
+        hashed=Util.hashString("My String")
+        print(hashed)
+        self.assertIsNotNone(hashed)
 

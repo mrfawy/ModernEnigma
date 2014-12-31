@@ -1,6 +1,7 @@
 from CharIndexMap import CharIndexMap
 from RandomGenerator import RandomGenerator
 import json
+import codecs
 # import whirlpool
 
 class Util(object):
@@ -68,4 +69,23 @@ class Util(object):
         # hashed_string = wp.hexdigest()
         # return hashed_string
         return None
+
+    @classmethod
+    def encodeStringIntoByteList(cls,string,encoding="utf_8"):
+        return list(codecs.encode(string,encoding))
+    @classmethod
+    def decodeByteListIntoString(cls,byteList,encoding="utf_8"):
+        result=""
+        for s in byteList:
+            x=''.join('{:02X}'.format(s))
+            result+=bytes.fromhex(x).decode(encoding)
+        return result
+    @classmethod
+    def convertByteListIntoHexString(cls,byteList):
+        resultStr=''.join('{:02X}'.format(a) for a in byteList)
+        return resultStr
+    @classmethod
+    def convertHexStringIntoByteList(cls,string):
+        return list(bytes.fromhex(string))
+
 

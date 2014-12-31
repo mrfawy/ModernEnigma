@@ -24,4 +24,8 @@ class TestLevelEncryptor(unittest.TestCase):
     def testGeneratePerMsgWindowSetting(self):
         out=self.levelEncryptor.generatePerMsgWindowSetting(self.baseMachine)
         self.assertEqual(len(self.baseMachine.rotorList),len(out))
+    def testPerformMappingBlockToRotor(self):
+        seq=[1,1,1,1,1,1,1,1]
+        result=[1,257,513,769,1,257,513,769]
+        self.assertEqual(result,self.levelEncryptor.performMappingBlockToRotor(seq,4*256))
 
