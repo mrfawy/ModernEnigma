@@ -2,6 +2,7 @@ from CharIndexMap import CharIndexMap
 from Util import Util
 from RandomGenerator import RandomGenerator
 from Shuffler import Shuffler
+import hashlib
 
 class EnigmaConfigGenerator(object):
 
@@ -36,17 +37,36 @@ class EnigmaConfigGenerator(object):
         self.SWAP_ROTOR_L2_MIN_SIZE=CharIndexMap.getRangeSize()
         self.SWAP_ROTOR_L2_MAX_SIZE=CharIndexMap.getRangeSize()
 
+    def createRandomModelName(self,length=100,cipherRotorCount=None):
+        charSeq=""
+        for i in range(length):
+            randomChar=self.random.sample(CharIndexMap.charRange,1)[0]
+            while(randomChar=="|"):
+                randomChar=self.random.sample(CharIndexMap.charRange,1)[0]
+            charSeq+=randomChar
+        if cipherRotorCount:
+            charSeq+="|"+str(cipherRotorCount)
+
+        return Util.seqToStr(charSeq)
+
+
     def createMachineConfig(self,modelNo):
-        seedStr=modelNo
-        self.random.seed(seedStr)
+        model=modelNo
+        cipherRotorCount=None
+        if "|" in modelNo:
+            tokens=modelNo.split("|")
+            model=tokens[0]
+            cipherRotorCount=int(tokens[1])
+        seedStr=hashlib.sha512(model.encode("utf_8")).hexdigest()
+        self.random=RandomGenerator(seedStr)
         machineCfg={}
-        machineCfg["CIPHER_MODULE"]=self.createCipherModuleConfig()
+        machineCfg["CIPHER_MODULE"]=self.createCipherModuleConfig(cipherRotorCount)
         machineCfg["SWAPPING_MODULE"]=self.createSwappingModuleConfig()
         return machineCfg
 
-    def createCipherModuleConfig(self):
+    def createCipherModuleConfig(self,cipherRotorCount=None):
         moduleCfg={}
-        moduleCfg["ROTOR_STOCK"]=self.createCipherRotorStockConfig()
+        moduleCfg["ROTOR_STOCK"]=self.createCipherRotorStockConfig(cipherRotorCount)
         moduleCfg["REFLECTOR"]=self.createReflectorCfg()
         moduleCfg["PLUGBOARD"]=self.createPlugboardCfg()
 
@@ -114,7 +134,7 @@ class EnigmaConfigGenerator(object):
         if not seq:
             seq=CharIndexMap.getRange()
         shuffler=Shuffler(self.random)
-        shSeq= shuffler.shuffleSeq(seq)
+        shSeq= shuffler.shuffleSeq(seq,self.random.nextInt())
         return shSeq
 
 
@@ -129,7 +149,7 @@ class EnigmaConfigGenerator(object):
         if not sequence:
             sequence=CharIndexMap.getRange()
         wiringTuples=[]
-        seq=self.shuffler.shuffleSeq(sequence)
+        seq=self.shuffler.shuffleSeq(sequence,self.random.nextInt())
         while len(seq)>0:
             selectedPair=self.random.sample(seq,2)
             wiringTuples.append((selectedPair[0],selectedPair[1]))

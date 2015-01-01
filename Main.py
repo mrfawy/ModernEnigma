@@ -13,6 +13,8 @@ import json
 import codecs
 import time
 
+
+
 def encryptFile():
     CharIndexMap.rangeTypeisCharacterBased=False
     start_time = time.time()
@@ -62,15 +64,20 @@ def encryptTextAsBin():
     CharIndexMap.rangeTypeisCharacterBased=False
 
     start_time = time.time()
+    seed=123
 
-    baseMachineCfg=EnigmaConfigGenerator(RandomGenerator(123)).createMachineConfig("MCb")
-    baseMachine=EnigmaDynamicFactory().createEnigmaMachineFromConfig(baseMachineCfg)
+    baseMachineModelName=EnigmaConfigGenerator().createRandomModelName()
+    print("BaseModel:"+baseMachineModelName)
+    baseMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel(baseMachineModelName)
     baseMachine.adjustMachineSettings()
 
-    levelMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCm")
+    levelMachineModelName=EnigmaConfigGenerator().createRandomModelName()
+    print("LevelModel:"+levelMachineModelName)
+    levelMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel(levelMachineModelName)
     levelMachine.adjustMachineSettings()
 
     level=Level(baseMachine.getMachineSettings(),levelMachine.getMachineSettings())
+
 
     elapsed_time = time.time() - start_time
     print("2 MAchines were created in :"+str(elapsed_time))
@@ -81,7 +88,7 @@ def encryptTextAsBin():
 
 
     start_time = time.time()
-    levelEncryptor=LevelEncryptor(baseMachine,levelMachine,level,RandomGenerator(123))
+    levelEncryptor=LevelEncryptor(baseMachine,levelMachine,level)
     encLevel=levelEncryptor.encryptLevel()
     elapsed_time = time.time() - start_time
     print("Encrypted Seq in : "+str(elapsed_time))
@@ -102,4 +109,6 @@ def encryptTextAsBin():
 
 
     print("DONE !!")
+
 encryptTextAsBin()
+

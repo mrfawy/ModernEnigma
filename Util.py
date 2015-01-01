@@ -2,7 +2,7 @@ from CharIndexMap import CharIndexMap
 from RandomGenerator import RandomGenerator
 import json
 import codecs
-# import whirlpool
+import hashlib
 
 class Util(object):
 
@@ -35,7 +35,8 @@ class Util(object):
         return (json.dumps(obj,sort_keys=True,indent=4, separators=(',', ': ')))
 
     @classmethod
-    def padSequence(cls,seq,blkSize):
+    def padSequence(cls,seq,blkSize,seed=None):
+        random=RandomGenerator(seed)
         result=list(seq)
         result.insert(0,0)
         rem=len(result)%blkSize
@@ -43,9 +44,10 @@ class Util(object):
             sampleSize=blkSize-rem
             if sampleSize>len(result):
                 for i in range(sampleSize):
-                    result.append(RandomGenerator().nextInt())
+                    byteRange=range(256)
+                    result.append(random.sample(byteRange,1)[0])
             else:
-                result=result+RandomGenerator().sample(result,sampleSize)
+                result=result+random.sample(result,sampleSize)
             result[0]=sampleSize
         return result
     @classmethod
@@ -63,12 +65,8 @@ class Util(object):
 
     @classmethod
     def hashString(cls,string,salt=None):
-        # wp = whirlpool.new(string.encoding('utf-8'))
-        # if salt:
-        #     wp.update(salt)
-        # hashed_string = wp.hexdigest()
-        # return hashed_string
-        return None
+        hashed=hashlib.sha512(string.encode("utf_8")).hexdigest()
+        return hashed
 
     @classmethod
     def encodeStringIntoByteList(cls,string,encoding="utf_8"):

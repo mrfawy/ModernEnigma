@@ -1,9 +1,11 @@
 from ModernEnigma import ModernEnigma
+from RandomGenerator import RandomGenerator
 
 class Level(object):
-    def __init__(self,baseMachineStg,levelMachineStg):
+    def __init__(self,baseMachineStg,levelMachineStg,random=RandomGenerator()):
         self.baseStg=baseMachineStg
         self.levelStg=levelMachineStg
+        self.random=random
         self.inputMsg=""
         self.outputMsg=""
         self.i={0:[],1:[]}
@@ -12,8 +14,27 @@ class Level(object):
         self.l={0:[],1:[]}
         self.s={0:[],1:[]}
         self.st={0:[],1:[]}
-        self.baseMcBlkSize={0:4,1:3}
-        self.levelMcBlkSize={0:1,1:2}
+        self.baseMcBlkSize={}
+        self.levelMcBlkSize={}
+        self.initLevelValues()
+
+    def initLevelValues(self,min=5,max=15,minBlkSize=4,maxBlkSize=400):
+        self.i[0]=self.random.nextInt(min,max)
+        self.i[1]=self.random.nextInt(min,max)
+        self.j[0]=self.random.nextInt(min,max)
+        self.j[1]=self.random.nextInt(min,max)
+        self.k[0]=self.random.nextInt(min,max)
+        self.k[1]=self.random.nextInt(min,max)
+        self.l[0]=self.random.nextInt(min,max)
+        self.l[1]=self.random.nextInt(min,max)
+        self.s[0]=self.random.nextInt(min,max)
+        self.s[1]=self.random.nextInt(min,max)
+        self.st[0]=self.random.nextInt(min,max)
+        self.st[1]=self.random.nextInt(min,max)
+        self.baseMcBlkSize[0]=self.random.nextInt(minBlkSize,maxBlkSize)
+        self.baseMcBlkSize[1]=self.random.nextInt(minBlkSize,maxBlkSize)
+        self.levelMcBlkSize[0]=self.random.nextInt(minBlkSize,maxBlkSize)
+        self.levelMcBlkSize[1]=self.random.nextInt(minBlkSize,maxBlkSize)
 
     def getAsMap(self):
         result={}

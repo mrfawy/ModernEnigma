@@ -122,15 +122,6 @@ class MachineSettingsMemento(object):
         return result
 
 
-
-    def createActiveSwapSignalsConfig(self,id="ACTV",count=None):
-        if not count:
-            count=self.random.nextInt(self.SWAP_ACTIVE_SIGNALS_COUNT_MIN,self.SWAP_ROTOR_L1_COUNT_MAX)
-        activeSwapCfg={}
-        activeSwapCfg["ID"]=id
-        activeSwapCfg["SIGNALS"]=self.getShuffledSequence()[0:count]
-
-        return activeSwapCfg
     def print(self):
         print(self.cipherRotorStg)
         print(self.plugboardStg)

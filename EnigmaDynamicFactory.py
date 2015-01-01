@@ -10,6 +10,7 @@ from RandomGenerator import RandomGenerator
 from EnigmaConfigGenerator import EnigmaConfigGenerator
 class EnigmaDynamicFactory(object):
     def __init__(self,random=None):
+        self.random=random
         if not random:
             self.random=RandomGenerator()
 

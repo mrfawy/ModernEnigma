@@ -11,19 +11,17 @@ class Shuffler(object):
         else:
             self.random=RandomGenerator()
 
-    def shuffleSeq(self,sequence,seed=None):
+    def shuffleSeq(self,sequence,seed):
         seq=list(sequence)
-        if seed:
-            self.random.seed(seed)
+        self.random.seed(seed)
         for i in range(len(seq)-1,0,-1):
            j=self.random.nextInt(0,i)
            self.swap(seq,i,j)
         return seq
 
-    def deshuffleSeq(self,sequence,seed=None):
+    def deshuffleSeq(self,sequence,seed):
         seq=list(sequence)
-        if seed:
-            self.random.seed(seed)
+        self.random.seed(seed)
         changes=[]
         for i in range(len(seq)-1,0,-1):
            changes.append(self.random.nextInt(0,i))

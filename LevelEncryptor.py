@@ -15,26 +15,12 @@ class LevelEncryptor(object):
             self.random=RandomGenerator()
         self.streamConverter=streamConverter
         self.shuffler=Shuffler()
-        self.initLevelValues()
-    def initLevelValues(self):
-        min=3
-        max=16
-        self.level.i[0]=self.random.nextInt(min,max)
-        self.level.i[1]=self.random.nextInt(min,max)
-        self.level.j[0]=self.random.nextInt(min,max)
-        self.level.j[1]=self.random.nextInt(min,max)
-        self.level.k[0]=self.random.nextInt(min,max)
-        self.level.k[1]=self.random.nextInt(min,max)
-        self.level.l[0]=self.random.nextInt(min,max)
-        self.level.l[1]=self.random.nextInt(min,max)
-        self.level.s[0]=self.random.nextInt(min,max)
-        self.level.s[1]=self.random.nextInt(min,max)
-        self.level.st[0]=self.random.nextInt(min,max)
-        self.level.st[1]=self.random.nextInt(min,max)
-        self.level.baseMcBlkSize[0]=self.random.nextInt(1,self.baseMachine.getCipherRotorsSize())
-        self.level.baseMcBlkSize[1]=self.random.nextInt(1,self.baseMachine.getCipherRotorsSize())
-        self.level.levelMcBlkSize[0]=self.random.nextInt(1,self.levelMachine.getCipherRotorsSize())
-        self.level.levelMcBlkSize[1]=self.random.nextInt(1,self.levelMachine.getCipherRotorsSize())
+        self.resetMachniesSettings()
+
+    def resetMachniesSettings(self):
+        self.baseMachine.adjustMachineSettings(self.level.baseStg)
+        self.levelMachine.adjustMachineSettings(self.level.levelStg)
+
 
     def encryptPhase(self,id,machine1,machine2,m1BlkSize,m2BlkSize,seq):
         M1p=self.generatePerMsgWindowSetting(machine1)
@@ -44,9 +30,11 @@ class LevelEncryptor(object):
         SEMsg=self.shuffler.shuffleSeq(EMsg,self.level.s[id])
         x=self.encryptSequence(SEMsg,machine1,m1BlkSize[id],self.level.k[id])
         y=self.encryptSequence(x,machine2,m2BlkSize[id],self.level.l[id])
-
+        #
         # print("ENCRYPT")
         # print("ID:"+str(id))
+        # print("Msg:")
+        # print(seq)
         # print("M1p:")
         # print(M1p)
         # print("EM1p:")
@@ -70,6 +58,7 @@ class LevelEncryptor(object):
             seq=self.streamConverter.convertInput(msg)
 
         phaseEncOut=self.encryptPhase(0,self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,seq)
+        self.resetMachniesSettings()
         phaseEncOut=self.encryptPhase(1,self.levelMachine,self.baseMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,phaseEncOut)
         self.level.outputMsg=phaseEncOut
         if self.streamConverter:
@@ -78,6 +67,7 @@ class LevelEncryptor(object):
 
 
     def encryptSequence(self,seq,machine,blkSize,times=1,displayStg=None):
+        self.resetMachniesSettings()
         result=[]
         if displayStg:
             machine.adjustWindowDisplay(displayStg)
@@ -104,13 +94,14 @@ class LevelEncryptor(object):
         return result
 
     def performAdjustPadding(self,seq,blkSize=1):
-        return Util.padSequence(seq,blkSize)
+        return Util.padSequence(seq,blkSize,self.random.nextInt())
 
 
 
     def generatePerMsgWindowSetting(self,mc):
         result=[]
         for i in range(mc.getCipherRotorsCount()):
-            selectedOffset=self.random.sample(range(mc.getCipherRotorsSize()),1)[0]
+            rotorOffsetRange=range(mc.getCipherRotorsSize())
+            selectedOffset=self.random.sample(rotorOffsetRange,1)[0]
             result.append(selectedOffset)
         return result

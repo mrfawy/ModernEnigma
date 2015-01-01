@@ -1,4 +1,3 @@
-from RandomGenerator import RandomGenerator
 from CharIndexMap import CharIndexMap
 from ModernEnigma import ModernEnigma
 from Level import Level
@@ -7,15 +6,13 @@ from LevelEncryptor import LevelEncryptor
 from Util import Util
 
 class LevelDecryptor(LevelEncryptor):
-    def __init__(self,baseMachine,levelMachine,level,random=None,streamConverter=None):
+    def __init__(self,baseMachine,levelMachine,level,streamConverter=None):
         self.baseMachine=baseMachine
         self.levelMachine=levelMachine
         self.level=level
         self.streamConverter=streamConverter
-        self.random=random
-        if random==None:
-            self.random=RandomGenerator()
         self.shuffler=Shuffler()
+        self.resetMachniesSettings()
 
     def decryptPhase(self,id,machine1,machine2,m1BlkSize,m2BlkSize,seq):
         x=self.decryptSequence(seq,machine2,m2BlkSize[id],self.level.l[id])
@@ -28,6 +25,8 @@ class LevelDecryptor(LevelEncryptor):
         Msg=self.decryptSequence(Msg_M1p,machine1,m1BlkSize[id],self.level.j[id],M1p)
         # print("DECRYPT")
         # print("ID:"+str(id))
+        # print("y:")
+        # print(seq)
         # print("x:")
         # print(x)
         # print("SEMsg:")
@@ -53,16 +52,17 @@ class LevelDecryptor(LevelEncryptor):
         result=seq
         for t in range(times):
             result=self.processSeq(result,machine,blkSize)
+
         result=self.performAdjustPadding(result,blkSize)
 
         return result
 
     def decryptLevel(self,verbose=False):
-
         E=self.level.outputMsg
         if self.streamConverter:
             E=self.streamConverter.convertInput(E)
         phaseDecOut=self.decryptPhase(1,self.levelMachine,self.baseMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,E)
+        self.resetMachniesSettings()
         phaseDecOut=self.decryptPhase(0,self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,phaseDecOut)
         self.level.inputMsg=phaseDecOut
         if self.streamConverter:
@@ -70,6 +70,8 @@ class LevelDecryptor(LevelEncryptor):
         return self.level
 
     def performAdjustPadding(self,seq,blkSize=1):
+        if(len(seq)==0):
+            return seq
         return Util.unpadSequence(seq)
 
 

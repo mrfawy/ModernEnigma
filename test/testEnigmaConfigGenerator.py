@@ -7,6 +7,12 @@ class TestEnigmaConfigGenerator(unittest.TestCase):
     def setUp(self):
         self.generator=EnigmaConfigGenerator()
         self.seq=["0","1","2","3"]
+    def testCreateRandomModelName(self):
+        name=self.generator.createRandomModelName(30)
+        self.assertEqual(30,len(name))
+        name=self.generator.createRandomModelName(3,100)
+        self.assertEqual(7,len(name))
+        self.assertEqual("|100",name[3::])
 
     def testCreateEnigmaMachineFromModel(self):
         pass
