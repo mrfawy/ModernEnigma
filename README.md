@@ -56,8 +56,11 @@ Here We will explain the minimum code to use the machine , a lot of defaults wil
     * Here we let the tool create a random model for us , use it to create a machine of this model , a model is a string that we could use to create the exact same machine on sender and reciever  
 
 ```Python
+    #Create a random name 
     baseMachineModelName=EnigmaConfigGenerator().createRandomModelName()
+    #Create a Machine 
     baseMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel(baseMachineModelName)
+    #For now just set default settings 
     baseMachine.adjustMachineSettings()
 ```
 ### How secure Is Modern Enigma?
