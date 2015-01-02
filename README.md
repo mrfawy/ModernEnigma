@@ -1,11 +1,11 @@
 #Modern WWII Enigma
->"If a trick is overused, it's less likely that anyone will expect us to use it againø 
+>"If a trick is overused, it's less likely that anyone will expect us to use it again‚Äù 
 
 ##Introduction
 
 The above motto is a quote from a comic movie, and hence this fun project came into existence, it aims to revive the famous (ehm, for being cracked) Enigma machine .But why bother? 
 
-Protecting your privacy today? Well, good luck. you are using tools that you don't know how it's working (you shouldnøt trust), and when they are cracked you'll barely know after it's too late .So if you can add an extra level or encryption of your data even if it's a homegrown technique, it'll make the problem for your attacker just a little bit harder .Modern Enigma tries to provide a step in this direction.
+Protecting your privacy today? Well, good luck. you are using tools that you don't know how it's working (you shouldn‚Äôt trust), and when they are cracked you'll barely know after it's too late .So if you can add an extra level or encryption of your data even if it's a homegrown technique, it'll make the problem for your attacker just a little bit harder .Modern Enigma tries to provide a step in this direction.
 
 Alan Turing is considered to be the father of modern computing, at his time electro-mechanical machines were used to perform computations. This is a software implementation with enhanced features to prevent some weakness points in original Enigma.
 
@@ -130,7 +130,7 @@ A plug board is like a rotor, but it doesn't move, and you can configure the wir
 ####Mapper
 Mapper is like a rotor as it rotates and you can set it's offset , but it maps 2 ranges of different sizes , like input M can be mapped to N pins, it can have multiple output for the same pin input at the same time
 ####Keyboard and screen
-Itøs here just for historical reasons, but files, strings will be used instead
+It‚Äôs here just for historical reasons, but files, strings will be used instead
 ####Swapping Module
 We have 2 levels of rotors of different sizes, 2 mappers, the output of second mapper is connected to cipher rotors, based on this signal (could be many), Cipher rotors will be swapped. As per settings some active signals will activate this module for its working.
 ####Inside a machine 
@@ -156,14 +156,14 @@ specs. Speaking in modern terms it's like Feistel cipher network.
 ![Protocol](https://github.com/mrfawy/ModernEnigma/blob/master/documentation/diagrams/EncryptionProtocol.jpg)
 
 ### How secure Is Modern Enigma?
-According to Schneiderøs Law "Any person can invent a security system so clever that he or she can't imagine a way of breaking it.", which means that people create a cipher that they themselves can't break, and then use that as evidence they've created an unbreakable cipher. Also According to Kerckhoffs's principle "A cryptosystem should be secure even if everything about the system, except the key, is public knowledgeø.
+According to Schneider‚Äôs Law "Any person can invent a security system so clever that he or she can't imagine a way of breaking it.", which means that people create a cipher that they themselves can't break, and then use that as evidence they've created an unbreakable cipher. Also According to Kerckhoffs's principle "A cryptosystem should be secure even if everything about the system, except the key, is public knowledge‚Äù.
 
 Based on these 2 principles we provided an open source machine and tried to make it's security based on the key that will have many parameters to alter the machine working.
 We tried to fix the original Machine problems , provided a new protocol with different machines needed for multiple level , minimized any component dependency in the machine ,we simplified a machine creation operation so you can use a new set of machines for each message ,you can use it even as a one time pad if it's works for you.
 
 So the right question should be is it secure enough for your needs ? You descide,we are still investigating the weaknesses points  of this tool.
 
-##### Any help from an expert on the security assessment or cryptanalysis of this Modern Enigma is highly appreciated; itøs still in early development phase.
+##### Any help from an expert on the security assessment or cryptanalysis of this Modern Enigma is highly appreciated; it‚Äôs still in early development phase.
 
 ###Mathematics of Modern Enigma:
 Security can be largely affected by a key size  and available states the machine can take (key space ) , here we show how you can calculate key space for sample machine:
@@ -203,27 +203,26 @@ Security can be largely affected by a key size  and available states the machine
 
 * it's worth mentioning here that the key is part of the operating instructions, it's like the manual for the algorithm , Thus it'll be a large number of bits.
 
-####Please don't let the large key size fool you. Any help from an expert is appreciated
+####Please don't let the large key size fool you. it works for brute force attacks , any help from an expert is appreciated
 
 
-Modern Enigma Protocol:
-====================
-* General Guideline:
+##Modern Enigma Protocol Details:
+#### General Guideline:
     * In this protocol we define a certain steps that has to be performed, for each step a certain algorithm will be chosen. As each step has it's own attack vectors and it's algorithm has it's vulnerabilities, each major version of this protocol will try to cope with that .Backward compatibility is not currently one of our main design goals.
-    * Main design Goals :
-        * Confidentiality 
-        * Message integrity 
-        * Close to the original enigma rotor based design (as its main substitution box technique)
-        * Operating instructions should be part of the key; no fixed decision should be made by the machine 
-        * Generation of a new machine should be an easy and a low cost operation
-        * Extreme flexibility in designing your own machine down to  the wiring level 
-        * Platform independence, ability to de/encrypt using any platform/environment, extremely low resources (e.g. card) are not considered
-        * Generation of human readable machine description, allowing the reconstruction of a machine 
-        * No use of patented or platform specific algorithms 
-        * It's a fun project, not the next Symmetric key polyalphabetic encryption technology, please keep this in mind 
-    * Out of scope:
-        * Not to be used for mission critical and/or large files 
-        * Key management/sharing process is not handled , use any key management technique you desire.
+#### Main design Goals :
+    * Confidentiality 
+    * Message integrity 
+    * Close to the original enigma rotor based design (as its main substitution box technique)
+    * Operating instructions should be part of the key; no fixed decision should be made by the machine 
+    * Generation of a new machine should be an easy and a low cost operation
+    * Extreme flexibility in designing your own machine down to  the wiring level 
+    * Platform independence, ability to de/encrypt using any platform/environment, extremely low resources (e.g. card) are not considered
+    * Generation of human readable machine description, allowing the reconstruction of a machine 
+    * No use of patented or platform specific algorithms 
+    * It's a fun project, not the next Symmetric key polyalphabetic encryption technology, please keep this in mind 
+#### Out of scope:
+    * Not to be used for mission critical and/or large files 
+    * Key management/sharing process is not handled , use any key management technique you desire.
             Because the keys and machine descriptions are human readable, old tricks can still work(remember our Motto) .Be creative and use overused techniques like calling your friend by phone and telling him part of the key ,SMS another part , Facebook another part, and if you are not in a hurry you can send a postal mail ;).of course all of theses platform might be tracked (well ,you know it's ).If the attacker was able to track all of these communications ,well, I think this guy            deserves to read your messages any ways and you are totally screwed , nothing can help you my friend ;)
 
 
@@ -327,7 +326,5 @@ Modern Encryption techniques:
 https://www.gnupg.org/gph/en/manual.html
 
 history : http://www.eng.utah.edu/~nmcdonal/Tutorials/EncryptionResearchReview.pdf
-
-
 
 
