@@ -56,13 +56,60 @@ Here We will explain the minimum code to use the machine , a lot of defaults wil
     * Here we let the tool create a random model for us , use it to create a machine of this model , a model is a string that we could use to create the exact same machine on sender and reciever  
 
 ```Python
-    #Create a random name 
+    #Create a random model name 
     baseMachineModelName=EnigmaConfigGenerator().createRandomModelName()
     #Create a Machine 
     baseMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel(baseMachineModelName)
     #For now just set default settings 
     baseMachine.adjustMachineSettings()
 ```
+
+* We need to a minimum 2 machines for each Level, let's create another one
+```Python
+    levelMachineModelName=EnigmaConfigGenerator().createRandomModelName()
+    levelMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel(levelMachineModelName)
+    levelMachine.adjustMachineSettings()
+```
+
+* Create a level settings , you can think of a level as a unit of encryption , it uses two machines to encrypt some text/stream , levels can be cascaded for further security. For now let's use the current machine settings , we could generate any settings we want , but let's be simple for now 
+```Python
+    level=Level(baseMachine.getMachineSettings(),levelMachine.getMachineSettings())
+```
+
+* Cool,Now lets create a sample message "Hello Enigma !" , convert it to byte stream and set it as the level input 
+
+```Python
+    msg="Hello Enigma !"
+    #Util Class provides many useful methods , we will see later , for now lets convert this string into bytes suitable to be processed
+    msgSeq=Util.encodeStringIntoByteList(msg)
+    level.inputMsg=msgSeq
+```
+
+* OK , let's Encrypt some text !, use a LevelEncryptor, it needs the level and the actual machines to do the work
+
+```Python
+    levelEncryptor=LevelEncryptor(baseMachine,levelMachine,level)
+    level=levelEncryptor.encryptLevel()
+```
+* let's see the output , use Util to convert the byte stream into hex string
+```Python
+    encryptedMsg=Util.convertByteListIntoHexString(level.outputMsg)
+```
+    * Sample output ( it'll be different each time )
+    05F5112B6A010B4FC3632217DB2919617D21C514FEC150A86776359E5A7A2DE59B66A6807889C3D6EAFDB6316360230AAC4F2D446BE938D0D692B06D97522634D272AED7546CD04FBEAE52689A5E5336DB6C7DB2712FEB3B3529FEADB93679067218DC021E649AB91AED39447998830ACFC9F8AB9151A6D80EA45F2EF972EC9499CB1EE91958C8BA940377A92A2DD55D5692A6CD261B12E94483F20EAB53F835E01DB6F4D18C6759EEB01917519F2BC93EF63974FAEA13CDCBFC0AAE84E2C63F4F9B033F95BC1F877C9D7DB43E2C4A39460408518EE30ADB293CF64318DB3A6199B4717AEE74647FDBA5B4DC02CCC270CB17D7EA10AC591BA1CA3B4486FFE7EAD4F24B98A2769E2DDC669C640D77D12EF6398551BBBF0FBBD082DFFAC2BA55C3CA0445A9E3CAE9FD
+
+* OK let's try to decrypt this back into the original msg,use a LevelDecryptor
+```Python
+    levelDecryptor=LevelDecryptor(baseMachine,levelMachine,level)
+    resultLevel=levelDecryptor.decryptLevel()
+```
+* Let's print the result(decrypted) level msg
+```Python
+    print(Util.decodeByteListIntoString(resultLevel.inputMsg))
+```
+    * Output
+        Hello Enigma !
+#### Congratulations !!, that was your first Modern Enigma encrypted communication!
 ### How secure Is Modern Enigma?
 According to Schneider’s Law "Any person can invent a security system so clever that he or she can't imagine a way of breaking it.", which means that people create a cipher that they themselves can't break, and then use that as evidence they've created an unbreakable cipher. Also According to Kerckhoffs's principle "A cryptosystem should be secure even if everything about the system, except the key, is public knowledge”.
 
