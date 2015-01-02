@@ -52,7 +52,7 @@ Many Design and operating problems allowed the allied to crack it, just to name 
 ##Sample Usage:
 Here We will explain the minimum code to use the machine , a lot of defaults will be selected for you , The tool is very flexibe and many intesting scenarios could be applied
 
-* First things first create a machine 
+* First things first , let's create a machine 
     * Here we let the tool create a random model for us , use it to create a machine of this model , a model is a string that we could use to create the exact same machine on sender and reciever  
 
 ```Python
@@ -64,7 +64,7 @@ Here We will explain the minimum code to use the machine , a lot of defaults wil
     baseMachine.adjustMachineSettings()
 ```
 
-* We need to a minimum 2 machines for each Level, let's create another one
+* We need to a minimum of  2 machines for each Level, let's create another one
 ```Python
     levelMachineModelName=EnigmaConfigGenerator().createRandomModelName()
     levelMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel(levelMachineModelName)
@@ -109,7 +109,17 @@ Here We will explain the minimum code to use the machine , a lot of defaults wil
 ```
     * Output
         Hello Enigma !
-#### Congratulations !!, that was your first Modern Enigma encrypted communication!
+##### Congratulations !!, that was your first Modern Enigma encrypted communication!, Please read further into documentation to understand what's going on and customize the tool to best suit your needs
+
+### Main Concepts 
+You need to understand the idea of Rotors, Reflectors, Swapping and stepping
+####Rotor
+####Reflector
+####Inside a machine 
+for the image belows follow the number to get an idea about how signal is transfered into different machine modules
+![Main signal path](https://github.com/mrfawy/ModernEnigma/blob/master/documentation/diagrams/signalPath.jpg)
+####Level overview
+####Inside a Level
 ### How secure Is Modern Enigma?
 According to Schneider’s Law "Any person can invent a security system so clever that he or she can't imagine a way of breaking it.", which means that people create a cipher that they themselves can't break, and then use that as evidence they've created an unbreakable cipher. Also According to Kerckhoffs's principle "A cryptosystem should be secure even if everything about the system, except the key, is public knowledge”.
 
