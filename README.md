@@ -1,11 +1,11 @@
 #Modern WWII Enigma
->"If a trick is overused, it's less likely that anyone will expect us to use it again” 
+>"If a trick is overused, it's less likely that anyone will expect us to use it again¿ 
 
 ##Introduction
 
-The above motto is a qoute from a comic movie, and hence this fun project came into existance , it aims to revive the famous (ehm, for being cracked) Enigma machine .But why bother ? 
+The above motto is a quote from a comic movie, and hence this fun project came into existence, it aims to revive the famous (ehm, for being cracked) Enigma machine .But why bother? 
 
-Protecting your privacy today? Well, good luck. you are using tools that you don't know how it's working (you shouldn’t trust), and when they are cracked you'll barely know after it's too late .So if you can add an extra level or encryption of your data even if it's a homegrown technique, it'll make the problem for your attacker just a little bit harder .Modern Enigma tries to provide a step in this direction.
+Protecting your privacy today? Well, good luck. you are using tools that you don't know how it's working (you shouldn¿t trust), and when they are cracked you'll barely know after it's too late .So if you can add an extra level or encryption of your data even if it's a homegrown technique, it'll make the problem for your attacker just a little bit harder .Modern Enigma tries to provide a step in this direction.
 
 Alan Turing is considered to be the father of modern computing, at his time electro-mechanical machines were used to perform computations. This is a software implementation with enhanced features to prevent some weakness points in original Enigma.
 
@@ -36,7 +36,7 @@ Many Design and operating problems allowed the allied to crack it, just to name 
     * Weakness points in enigma, [more info](http://cromwell-intl.com/security/history/enigma.html "for more info")
     * SIGABA working, [more info](http://ucsb.curby.net/broadcast/thesis/thesis.pdf)
 
-##Modern Engima
+##Modern Enigma
 
 ###Modern Enigma Features:
 * It's a protocol that can be implemented by many environments; currently we provide Python code as the reference implementation 
@@ -50,10 +50,10 @@ Many Design and operating problems allowed the allied to crack it, just to name 
 * After all, it's just software, just some lines of code ;)
 
 ##Sample Usage:
-Here We will explain the minimum code to use the machine , a lot of defaults will be selected for you , The tool is very flexibe and many intesting scenarios could be applied
+Here We will explain the minimum code to use the machine, a lot of defaults will be selected for you, The tool is very flexible and many interesting scenarios could be applied
 
-* First things first , let's create a machine 
-    * Here we let the tool create a random model for us , use it to create a machine of this model , a model is a string that we could use to create the exact same machine on sender and reciever  
+* First things first, let's create a machine 
+    * Here we let the tool create a random model for us, use it to create a machine of this model, a model is a string that we could use to create the exact same machine on sender and receiver  
 
 ```Python
     #Create a random model name 
@@ -64,14 +64,14 @@ Here We will explain the minimum code to use the machine , a lot of defaults wil
     baseMachine.adjustMachineSettings()
 ```
 
-* We need to a minimum of  2 machines for each Level, let's create another one
+* We need to a minimum of 2 machines for each Level, let's create another one
 ```Python
     levelMachineModelName=EnigmaConfigGenerator().createRandomModelName()
     levelMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel(levelMachineModelName)
     levelMachine.adjustMachineSettings()
 ```
 
-* Create a level settings , you can think of a level as a unit of encryption , it uses two machines to encrypt some text/stream , levels can be cascaded for further security. For now let's use the current machine settings , we could generate any settings we want , but let's be simple for now 
+* Create level settings, you can think of a level as a unit of encryption, it uses two machines to encrypt some text/stream; levels can be cascaded for further security. For now let's use the current machine settings, we could generate any settings we want, but let's be simple for now 
 ```Python
     level=Level(baseMachine.getMachineSettings(),levelMachine.getMachineSettings())
 ```
@@ -85,7 +85,7 @@ Here We will explain the minimum code to use the machine , a lot of defaults wil
     level.inputMsg=msgSeq
 ```
 
-* OK , let's Encrypt some text !, use a LevelEncryptor, it needs the level and the actual machines to do the work
+* OK, let's Encrypt some text!, use a LevelEncryptor, it needs the level and the actual machines to do the work
 
 ```Python
     levelEncryptor=LevelEncryptor(baseMachine,levelMachine,level)
@@ -116,49 +116,54 @@ You need to understand some components to understand how a machine works
 Here is an overview of the main components of a machine
 ![Main components](https://github.com/mrfawy/ModernEnigma/blob/master/documentation/diagrams/main%20components.jpg)
 ####Rotor
-A rotor is a like a switch , historically , rotor was a cylnder with internal wirings , depending on the wiring each input signal will be mapped to some output pin.In modern terms a set of rotors works as a subsitution box.it rotates meaning each new position(offset) can result to a different output for the same pin.
+A rotor is a like a switch, historically, rotor was a cylinder with internal wirings; depending on the wiring each input signal will be mapped to some output pin. In modern terms a set of rotors works as a substitution box. It rotates meaning each new position (offset) can result to a different output for the same pin.
 
 Here is a sample wiring 
 ![Rotor Wiring](https://github.com/mrfawy/ModernEnigma/blob/master/documentation/diagrams/inside%20Rotor.jpg)
 
-And as rotor rotates(stepping) , different output can result for same input
+And as rotor rotates (stepping), different output can result for same input
 ![Rotor stepping](https://github.com/mrfawy/ModernEnigma/blob/master/documentation/diagrams/rotor%20stepping.jpg)
 ####Reflector
-Reflector is like a rotor but it doesn't move and the wiring has a certail rule that it can wire to same pin or reflect the wiring A->X THEN X->A
-####PlugBoard
-A plugboard is like a rotor ,but it doesn't move , and you can configure the wiring per as you need per setting
+Reflector is like a rotor but it doesn't move and the wiring has a certain rule that it can wire to same pin or reflect the wiring A->X THEN X->A
+####Plug Board
+A plug board is like a rotor, but it doesn't move, and you can configure the wiring per as you need per setting
 ####Mapper
-Mapper is like a rotor as it rotates and you can set it's offset , but it mappes 2 ranges of different sizes , like input M can be mapped to N pins, it can have multiple output for the same pin input at the same time
+Mapper is like a rotor as it rotates and you can set it's offset , but it maps 2 ranges of different sizes , like input M can be mapped to N pins, it can have multiple output for the same pin input at the same time
 ####Keyboard and screen
-it's here just for historical reasons , but files, strings will be used instead
+It¿s here just for historical reasons, but files, strings will be used instead
 ####Swapping Module
-We have 2 levels of rotors of different sizes , 2 mappers , the output of second mapper is connected to cipher rotors , based on this signal ( could be many), Cipher rotors will be swapped.As per settings some active signals will activate this module for it's working .
+We have 2 levels of rotors of different sizes, 2 mappers, the output of second mapper is connected to cipher rotors, based on this signal (could be many), Cipher rotors will be swapped. As per settings some active signals will activate this module for its working.
 ####Inside a machine 
-for the image below please follow numberes to get an idea about how signal is propagated into different machine modules
+for the image below please follow numbers to get an idea about how signal is propagated into different machine modules during operation
 ![Main signal path](https://github.com/mrfawy/ModernEnigma/blob/master/documentation/diagrams/signalPath.jpg)
 
-### What's a level and how it works ?
+### What's a level and how it works?
 ####Level overview
-A level is a unit of work , we choosed this to force 2 machines to work on the same message together , so to crack it now you need to figure out 2 Enigmas!!, and if you cascaded many levels the problem becomes even harder, it'll take more time of course but it's a tradeoff between time and security
+A level is a unit of work, we choose this to force 2 machines to work on the same message together, so to crack it now you need to figure out 2 Enigmas!. Levels can be chained into many levels making the problem even harder, it'll take more time of course but it's a tradeoff between time and security
 
 * Encryption
+
 ![Enc Level](https://github.com/mrfawy/ModernEnigma/blob/master/documentation/diagrams/LevelEncrypt.jpg)
+
 * Decryption
+
 ![Dec Level](https://github.com/mrfawy/ModernEnigma/blob/master/documentation/diagrams/LevelDecrypt.jpg)
+
 ####Inside a Level
-This is the most complicated part , but think of it as many rules that allows to machines to work on the message in interleaving manner that it'll become more difficult to determine each machine effect , internally many rounds are applied , a new settings per message are generated automatically , padding with certain block size, shuffling and so on . Each one of those operations are reversable and params needed to perform this bidirectional operations are defined into level specs.
+This is the most complicated part , but think of it as many rules that allows to machines to work on the message in interleaving manner that it'll become more difficult to determine each machine effect , internally many rounds are applied , a new settings per message are generated automatically , padding with certain block size, shuffling and so on . Each one of those operations is reversible and the params needed to perform this bidirectional operations are defined into level
+specs. Speaking in modern terms it's like Feistel cipher network.
 
 ![Protocol](https://github.com/mrfawy/ModernEnigma/blob/master/documentation/diagrams/EncryptionProtocol.jpg)
 
 ### How secure Is Modern Enigma?
-According to Schneider’s Law "Any person can invent a security system so clever that he or she can't imagine a way of breaking it.", which means that people create a cipher that they themselves can't break, and then use that as evidence they've created an unbreakable cipher. Also According to Kerckhoffs's principle "A cryptosystem should be secure even if everything about the system, except the key, is public knowledge”.
+According to Schneider¿s Law "Any person can invent a security system so clever that he or she can't imagine a way of breaking it.", which means that people create a cipher that they themselves can't break, and then use that as evidence they've created an unbreakable cipher. Also According to Kerckhoffs's principle "A cryptosystem should be secure even if everything about the system, except the key, is public knowledge¿.
 
 Based on these 2 principles we provided an open source machine and tried to make it's security based on the key that will have many parameters to alter the machine working.
-We tried to fix the original Machine problems , provided a new protocol with different machines needed for multiple level , minimized any component dependcy in the machine ,we simplified a machine creation operation so you can use a new set of machines for each message ,you can use it even as a one time pad if it's works for you.
+We tried to fix the original Machine problems , provided a new protocol with different machines needed for multiple level , minimized any component dependency in the machine ,we simplified a machine creation operation so you can use a new set of machines for each message ,you can use it even as a one time pad if it's works for you.
 
 So the right question should be is it secure enough for your needs ? You descide,we are still investigating the weaknesses points  of this tool.
 
-##### Any help from an expert on the security assessment or cryptoanalysis of this Modern Enigma is highly appreciated; it’s still in early development phase.
+##### Any help from an expert on the security assessment or cryptanalysis of this Modern Enigma is highly appreciated; it¿s still in early development phase.
 
 ###Mathematics of Modern Enigma:
 Security can be largely affected by a key size  and available states the machine can take (key space ) , here we show how you can calculate key space for sample machine:
@@ -204,7 +209,7 @@ Security can be largely affected by a key size  and available states the machine
 Modern Enigma Protocol:
 ====================
 * General Guideline:
-    * In this protocol we define a certain steps that has to be performed , for each step a certain algorithm will be choosed. As each step has it's own attack vectors and it's algorithm has it's volunerablities , each major version of this protocol will try to cope with that .Backward compatibility is not currently one of our main design goals.
+    * In this protocol we define a certain steps that has to be performed, for each step a certain algorithm will be chosen. As each step has it's own attack vectors and it's algorithm has it's vulnerabilities, each major version of this protocol will try to cope with that .Backward compatibility is not currently one of our main design goals.
     * Main design Goals :
         * Confidentiality 
         * Message integrity 
@@ -285,15 +290,15 @@ Modern Enigma Protocol:
     * each byte will be maaped to corresponing place 1>0,255 , 2 ->256,512,..
     
 
-* TODO : generate  random machine name of size n, hashit , machine model is the first m numbers from the hashed value , use this number as seed to build machine
+* generate  random machine name of size n, hashit , machine model is the first m numbers from the hashed value , use this number as seed to build machine
 
 * For extra level of scrambling , you can take the output of one level , feed it into other level as many times you need,
 each level will need a different machine though
 
-License Terms disclaimer:
+License Terms and disclaimer:
 -------------------------
 Modern Enigma is licensed under MIT terms .Modern Engima is not patented and will never be . Like any tool it can be used for good or the bad 
-The main goal was to enhance user privacy for good means ,Project Team holds no responsiblitiy for any illegal use or damage .
+The main goal was to enhance user privacy for good means ,Project Team holds no responsibility for any illegal use or damage .
 
 References:
 ----------------
@@ -322,6 +327,7 @@ Modern Encryption techniques:
 https://www.gnupg.org/gph/en/manual.html
 
 history : http://www.eng.utah.edu/~nmcdonal/Tutorials/EncryptionResearchReview.pdf
+
 
 
 
