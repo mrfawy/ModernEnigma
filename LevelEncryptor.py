@@ -57,6 +57,7 @@ class LevelEncryptor(object):
         if self.streamConverter:
             seq=self.streamConverter.convertInput(msg)
 
+        self.resetMachniesSettings()
         phaseEncOut=self.encryptPhase(0,self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,seq)
         self.resetMachniesSettings()
         phaseEncOut=self.encryptPhase(1,self.levelMachine,self.baseMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,phaseEncOut)

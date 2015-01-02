@@ -1,6 +1,7 @@
-Modern WWII Enigma
-========
+#Modern WWII Enigma
 >"If a trick is overused, it's less likely that anyone will expect us to use it again” 
+
+##Introduction
 
 The above motto is a qoute from a comic movie, and hence this fun project came into existance , it aims to revive the famous (ehm, for being cracked) Enigma machine .But why bother ? 
 
@@ -8,17 +9,16 @@ Protecting your privacy today? Well, good luck. you are using tools that you don
 
 Alan Turing is considered to be the father of modern computing, at his time electro-mechanical machines were used to perform computations. This is a software implementation with enhanced features to prevent some weakness points in original Enigma.
 
-###Modern Enigma is not patented and will never be
+#####Modern Enigma is not patented and will never be
 
-What's Enigma?
-----
+#Enigma Background
+
+###What's Enigma?
 ![Enigma](http://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/EnigmaMachineLabeled.jpg/640px-EnigmaMachineLabeled.jpg)
 
 Generally speaking it's an encryption machine used by Germans during WWWII to encrypt the communication between forces , the allied were able to crack it ( Alan Turing is the most famous team member), and that led to their defeat .Deciphering Enigma  messages is still in progress ,look for the M4 project if your interested !
 
-What went wrong with Enigma that led to its fall?
----------------------------------------------------
-
+###What went wrong with Enigma that led to its fall?
 Many Design and operating problems allowed the allied to crack it, just to name a few
 
 * Design
@@ -36,8 +36,9 @@ Many Design and operating problems allowed the allied to crack it, just to name 
     * Weakness points in enigma, [more info](http://cromwell-intl.com/security/history/enigma.html "for more info")
     * SIGABA working, [more info](http://ucsb.curby.net/broadcast/thesis/thesis.pdf)
 
-Modern Enigma Features:
--------------------------
+##Modern Engima
+
+###Modern Enigma Features:
 * It's a protocol that can be implemented by many environments; currently we provide Python code as the reference implementation 
 * Dynamic configuration of the machine based on Model Token, thus no single machine with fixed wiring that can be reverse engineered 
 * A new random per msg setting is setup for the operator, eliminating the lazy habits for not changing machine offset per message 
@@ -48,17 +49,36 @@ Modern Enigma Features:
 * Multiple different machines (2 for now), are used to encrypt a message within single level
 * After all, it's just software, just some lines of code ;)
 
-Example Usage:
--------------------
+##Sample Usage:
+Here We will explain the minimum code to use the machine , a lot of defaults will be selected for you , The tool is very flexibe and many intesting scenarios could be applied
 
-Mathematics of Modern Enigma:
-----------------------------
+* First things first create a machine 
+    * Here we let the tool create a random model for us , use it to create a machine of this model , a model is a string that we could use to create the exact same machine on sender and reciever  
+
+```Python
+    baseMachineModelName=EnigmaConfigGenerator().createRandomModelName()
+    baseMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel(baseMachineModelName)
+    baseMachine.adjustMachineSettings()
+```
+### How secure Is Modern Enigma?
+According to Schneider’s Law "Any person can invent a security system so clever that he or she can't imagine a way of breaking it.", which means that people create a cipher that they themselves can't break, and then use that as evidence they've created an unbreakable cipher. Also According to Kerckhoffs's principle "A cryptosystem should be secure even if everything about the system, except the key, is public knowledge”.
+
+Based on these 2 principles we provided an open source machine and tried to make it's security based on the key that will have many parameters to alter the machine working.
+We tried to fix the original Machine problems , provided a new protocol with different machines needed for multiple level , minimized any component dependcy in the machine ,we simplified a machine creation operation so you can use a new set of machines for each message ,you can use it even as a one time pad if it's works for you.
+
+So the right question should be is it secure enough for your needs ? You descide,we are still investigating the weaknesses points  of this tool.
+
+##### Any help from an expert on the security assessment or cryptoanalysis of this Modern Enigma is highly appreciated; it’s still in early development phase.
+
+###Mathematics of Modern Enigma:
+Security can be largely affected by a key size  and available states the machine can take (key space ) , here we show how you can calculate key space for sample machine:
+
 * Counting Equations:
-* Number of available rotor wirings for a rotor of size N=N!, e.g. a rotor of size 64 =>64! ~ 1.3 x 10^9 the number of atoms in the visible universe (~ 10^80)
-* Number of ways to pick n rotors each of size of N in order =P(N,n) , e.g Wolfram couldn't calculate P(64!,3)"Result cannot be determined using current methods" 
-* Number of ways to set rotors offsets for n rotors each of size N  = N ^ n
-* Number of ways to select M pair for plug board of size N=N! / ( (N-2M)! x M! x 2^M ) 
-* number of ways to select an integer (32 bit)=2 ^ 32
+    * Number of available rotor wirings for a rotor of size N=N!, e.g. a rotor of size 64 =>64! ~ 1.3 x 10^9 the number of atoms in the visible universe (~ 10^80)
+    * Number of ways to pick n rotors each of size of N in order =P(N,n) , e.g Wolfram couldn't calculate P(64!,3)"Result cannot be determined using current methods" 
+    * Number of ways to set rotors offsets for n rotors each of size N  = N ^ n
+    * Number of ways to select M pair for plug board of size N=N! / ( (N-2M)! x M! x 2^M ) 
+    * number of ways to select an integer (32 bit)=2 ^ 32
 * Cipher Module:
     * Number of available Cipher rotors per machine = n , we recommend larger n >100
 
@@ -69,10 +89,11 @@ Mathematics of Modern Enigma:
     * l2 Cipher mapper as a rotor like above
     * Number of ways to select active signals of size s= C(64,s)
 
-* You can calculate the total key space and the different possible machine configurations , but don't let the number deceive you , it only works if you are trying a brute force attack .According to Schneider’s Law "Any person can invent a security system so clever that he or she can't imagine a way of breaking it.", which means that people create a cipher that they themselves can't break, and then use that as evidence they've created an unbreakable cipher. Also According to Kerckhoffs's principle "A cryptosystem should be secure even if everything about the system, except the key, is public knowledge”. That’s why we are still investigating the weaknesses of this tool.
+* You can calculate the total key space and the different possible machine configurations , but don't let the number deceive you , it only works if you are trying a brute force attack .
+
 * Deriving A key size :
-    *To encrypt/decrypt a single level 2 machines are needed
-    *for each machine we need :
+    * To encrypt/decrypt a single level 2 machines are needed
+    * for each machine we need :
         * n bits to represent n cipher rotors orders, and offsets
         * l1 bits to represent l2 cipher rotors orders, and offsets
         * l2 bits to represent l2 cipher rotors orders, and offsets
@@ -84,9 +105,10 @@ Mathematics of Modern Enigma:
     * Number of bits to store the rotor offset [0-64] = 6 bits
     * Number of bits ( Key) to store machine setting of N rotors =m(no of bit to represent N)xN +6xN
     * Result # of bits =7x100+6x100=1200 bits ( Only for this module, while a typical machine will have 2 more modules)
+
 * it's worth mentioning here that the key is part of the operating instructions, it's like the manual for the algorithm , Thus it'll be a large number of bits.
-* Again don't let the large key size fool you.
-* Any help from an expert on the security assessment or a peer review of this Modern Enigma is highly appreciated; it’s still in early development phase.
+
+####Please don't let the large key size fool you. Any help from an expert is appreciated
 
 
 Modern Enigma Protocol:
@@ -178,14 +200,10 @@ Modern Enigma Protocol:
 * For extra level of scrambling , you can take the output of one level , feed it into other level as many times you need,
 each level will need a different machine though
 
-
-* http://www.larc.usp.br/~pbarreto/WhirlpoolPage.html
-* for shuffling , and reverse shuffling , there is a key 
-http://stackoverflow.com/questions/3541378/reversible-shuffle-algorithm-using-a-key
-
-USer our implementation of PRNG 
-http://www0.cs.ucl.ac.uk/staff/d.jones/GoodPracticeRNG.pdf
-
+License Terms disclaimer:
+-------------------------
+Modern Enigma is licensed under MIT terms .Modern Engima is not patented and will never be . Like any tool it can be used for good or the bad 
+The main goal was to enhance user privacy for good means ,Project Team holds no responsiblitiy for any illegal use or damage .
 
 References:
 ----------------
