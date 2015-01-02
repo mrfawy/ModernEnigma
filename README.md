@@ -207,9 +207,9 @@ Security can be largely affected by a key size  and available states the machine
 
 
 ##Modern Enigma Protocol Details:
-#### General Guideline:
+* General Guideline:
     * In this protocol we define a certain steps that has to be performed, for each step a certain algorithm will be chosen. As each step has it's own attack vectors and it's algorithm has it's vulnerabilities, each major version of this protocol will try to cope with that .Backward compatibility is not currently one of our main design goals.
-#### Main design Goals :
+* Main design Goals :
     * Confidentiality 
     * Message integrity 
     * Close to the original enigma rotor based design (as its main substitution box technique)
@@ -220,7 +220,7 @@ Security can be largely affected by a key size  and available states the machine
     * Generation of human readable machine description, allowing the reconstruction of a machine 
     * No use of patented or platform specific algorithms 
     * It's a fun project, not the next Symmetric key polyalphabetic encryption technology, please keep this in mind 
-#### Out of scope:
+* Out of scope:
     * Not to be used for mission critical and/or large files 
     * Key management/sharing process is not handled , use any key management technique you desire.
             Because the keys and machine descriptions are human readable, old tricks can still work(remember our Motto) .Be creative and use overused techniques like calling your friend by phone and telling him part of the key ,SMS another part , Facebook another part, and if you are not in a hurry you can send a postal mail ;).of course all of theses platform might be tracked (well ,you know it's ).If the attacker was able to track all of these communications ,well, I think this guy            deserves to read your messages any ways and you are totally screwed , nothing can help you my friend ;)
