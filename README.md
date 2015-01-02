@@ -296,8 +296,7 @@ each level will need a different machine though
 
 License Terms and disclaimer:
 -------------------------
-Modern Enigma is licensed under MIT terms .Modern Engima is not patented and will never be . Like any tool it can be used for good or the bad 
-The main goal was to enhance user privacy for good means ,Project Team holds no responsibility for any illegal use or damage .
+Modern Enigma is licensed under MIT terms .Modern Engima is not patented and will never be . Like any tool it can be used for good or any thing else .The main goal was to enhance user privacy means. Project Team holds no responsibility for any illegal use or damage .
 
 References:
 ----------------
