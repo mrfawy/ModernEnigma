@@ -24,12 +24,12 @@ class LevelEncryptor(object):
 
     def encryptPhase(self,id,machine1,machine2,m1BlkSize,m2BlkSize,seq):
         M1p=self.generatePerMsgWindowSetting(machine1)
-        EM1p=self.encryptSequence(M1p,machine2,m2BlkSize[id],self.level.i[id])
-        Msg_M1p=self.encryptSequence(seq,machine1,m1BlkSize[id],self.level.j[id],M1p)
+        EM1p=self.encryptSequence(M1p,machine2,m2BlkSize[id],self.level.i[id],self.level.xor[id])
+        Msg_M1p=self.encryptSequence(seq,machine1,m1BlkSize[id],self.level.j[id],self.level.xor[id],M1p)
         EMsg=EM1p+Msg_M1p
         SEMsg=self.shuffler.shuffleSeq(EMsg,self.level.s[id])
-        x=self.encryptSequence(SEMsg,machine1,m1BlkSize[id],self.level.k[id])
-        y=self.encryptSequence(x,machine2,m2BlkSize[id],self.level.l[id])
+        x=self.encryptSequence(SEMsg,machine1,m1BlkSize[id],self.level.k[id],self.level.xor[id])
+        y=self.encryptSequence(x,machine2,m2BlkSize[id],self.level.l[id],self.level.xor[id])
         #
         # print("ENCRYPT")
         # print("ID:"+str(id))
@@ -67,13 +67,14 @@ class LevelEncryptor(object):
         return self.level
 
 
-    def encryptSequence(self,seq,machine,blkSize,times=1,displayStg=None):
+    def encryptSequence(self,seq,machine,blkSize,times=1,xorValue=0,displayStg=None):
         self.resetMachniesSettings()
         result=[]
         if displayStg:
             machine.adjustWindowDisplay(displayStg)
         result=seq
         result=self.performAdjustPadding(result,blkSize)
+        result=self.applyXor(result,xorValue)
         for t in range(times):
             result=self.processSeq(result,machine,blkSize)
 
@@ -96,6 +97,14 @@ class LevelEncryptor(object):
 
     def performAdjustPadding(self,seq,blkSize=1):
         return Util.padSequence(seq,blkSize,self.random.nextInt())
+
+    def applyXor(self,seq,xorValue):
+        result=[]
+        for s in seq:
+            result.append(s^xorValue)
+            xorValue=(xorValue+1)%255
+        return result
+
 
 
 

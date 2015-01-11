@@ -14,6 +14,7 @@ class Level(object):
         self.l={0:[],1:[]}
         self.s={0:[],1:[]}
         self.st={0:[],1:[]}
+        self.xor={0:[],1:[]}
         self.baseMcBlkSize={}
         self.levelMcBlkSize={}
         self.initLevelValues()
@@ -31,6 +32,8 @@ class Level(object):
         self.s[1]=self.random.nextInt(min,max)
         self.st[0]=self.random.nextInt(min,max)
         self.st[1]=self.random.nextInt(min,max)
+        self.xor[0]=self.random.nextInt()
+        self.xor[1]=self.random.nextInt()
         self.baseMcBlkSize[0]=self.random.nextInt(minBlkSize,maxBlkSize)
         self.baseMcBlkSize[1]=self.random.nextInt(minBlkSize,maxBlkSize)
         self.levelMcBlkSize[0]=self.random.nextInt(minBlkSize,maxBlkSize)
@@ -48,6 +51,7 @@ class Level(object):
         result["l"]=self.l
         result["s"]=self.s
         result["st"]=self.st
+        result["xor"]=self.xor
         result["baseMcBlkSize"]=self.baseMcBlkSize
         result["levelMcBlkSizse"]=self.levelMcBlkSize
         return result

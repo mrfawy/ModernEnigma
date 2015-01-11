@@ -15,14 +15,14 @@ class LevelDecryptor(LevelEncryptor):
         self.resetMachniesSettings()
 
     def decryptPhase(self,id,machine1,machine2,m1BlkSize,m2BlkSize,seq):
-        x=self.decryptSequence(seq,machine2,m2BlkSize[id],self.level.l[id])
-        SEMsg=self.decryptSequence(x,machine1,m1BlkSize[id],self.level.k[id])
+        x=self.decryptSequence(seq,machine2,m2BlkSize[id],self.level.l[id],self.level.xor[id])
+        SEMsg=self.decryptSequence(x,machine1,m1BlkSize[id],self.level.k[id],self.level.xor[id])
         EMsg=self.shuffler.deshuffleSeq(SEMsg,self.level.s[id])
         paddedM1pLength=len(Util.padSequence(range(machine1.getCipherRotorsCount()),m2BlkSize[id]))
         EM1p=EMsg[0:paddedM1pLength]
         Msg_M1p=EMsg[paddedM1pLength::]
-        M1p=self.decryptSequence(EM1p,machine2,m2BlkSize[id],self.level.i[id])
-        Msg=self.decryptSequence(Msg_M1p,machine1,m1BlkSize[id],self.level.j[id],M1p)
+        M1p=self.decryptSequence(EM1p,machine2,m2BlkSize[id],self.level.i[id],self.level.xor[id])
+        Msg=self.decryptSequence(Msg_M1p,machine1,m1BlkSize[id],self.level.j[id],self.level.xor[id],M1p)
         # print("DECRYPT")
         # print("ID:"+str(id))
         # print("y:")
@@ -45,7 +45,7 @@ class LevelDecryptor(LevelEncryptor):
         return Msg
 
 
-    def decryptSequence(self,seq,machine,blkSize,times=1,displayStg=None):
+    def decryptSequence(self,seq,machine,blkSize,times=1,xorValue=0,displayStg=None):
         result=[]
         if displayStg:
             machine.adjustWindowDisplay(displayStg)
@@ -53,6 +53,7 @@ class LevelDecryptor(LevelEncryptor):
         for t in range(times):
             result=self.processSeq(result,machine,blkSize)
 
+        result=self.applyXor(result,xorValue)
         result=self.performAdjustPadding(result,blkSize)
 
         return result
