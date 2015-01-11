@@ -102,7 +102,7 @@ class LevelEncryptor(object):
         result=[]
         for s in seq:
             result.append(s^xorValue)
-            xorValue=(xorValue+1)%255
+            xorValue=(xorValue+1)%CharIndexMap.getRangeSize()
         return result
 
 

@@ -3,7 +3,7 @@ from CharIndexMap import CharIndexMap
 from EnigmaDynamicFactory import EnigmaDynamicFactory
 from Level import Level
 from LevelEncryptor import LevelEncryptor
-from StreamConverter import CharacterStreamConverter
+from Util import Util
 import json
 
 class TestLevelEncryptor(unittest.TestCase):
@@ -12,14 +12,13 @@ class TestLevelEncryptor(unittest.TestCase):
         self.levelMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCm")
         self.level=Level(self.baseMachine.getMachineSettings(),self.levelMachine.getMachineSettings())
         self.levelEncryptor=LevelEncryptor(self.baseMachine,self.levelMachine,self.level)
-        self.levelEncryptor.streamConverter=CharacterStreamConverter()
-    # def testOK(self):
-    #     msg="AAAAA"
-    #     self.level.inputMsg=msg
-    #     resultLevel=self.levelEncryptor.encryptLevel()
-    #     ENC="""BS=IV5K,R-K5~3,9U?K<'\"XCBVW~?N?D'P9<#?8T[^/X[X"""
-    #     self.assertEqual(len(resultLevel.outputMsg),len(ENC))
-    #     # print(resultLevel.toJson())
+    def testOK(self):
+        msg="AAAAA"
+        msgSeq=Util.encodeStringIntoByteList(msg)
+        self.level.inputMsg=msgSeq
+        resultLevel=self.levelEncryptor.encryptLevel()
+        decMsg=Util.decodeByteListIntoString(resultLevel.inputMsg)
+        self.assertEqual(msg,decMsg)
 
     def testGeneratePerMsgWindowSetting(self):
         out=self.levelEncryptor.generatePerMsgWindowSetting(self.baseMachine)
