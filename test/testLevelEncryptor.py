@@ -25,3 +25,10 @@ class TestLevelEncryptor(unittest.TestCase):
         out=self.levelEncryptor.generatePerMsgWindowSetting(self.baseMachine)
         self.assertEqual(len(self.baseMachine.rotorList),len(out))
 
+    def testApplyXor(self):
+        seq=[1,2,3,4]
+        result=self.levelEncryptor.applyXor(seq,40)
+        self.assertNotEqual(result,seq)
+        "if xored again should return original value"
+        self.assertEqual(seq,self.levelEncryptor.applyXor(result,40))
+
