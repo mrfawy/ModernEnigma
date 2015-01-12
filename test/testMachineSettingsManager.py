@@ -37,6 +37,18 @@ class TestMachineSettingManager(unittest.TestCase):
         self.assertIsNotNone(memento.L2CipherMapperStg["wiring"])
 
 
+    def testRandomSettingsForMachine(self):
+        memento=self.manager.generateRandomSettingsForMachine(self.machine)
+        self.assertIsNotNone(memento.cipherRotorStg["ORDER"])
+        self.assertIsNotNone(memento.cipherRotorStg["OFFSET"])
+        self.assertIsNotNone(memento.activeSwapSignals["SIGNALS"])
+        self.assertIsNotNone(memento.activeSwapSignals["CYCLE_STEP"])
+        self.assertIsNotNone(memento.swappingL1Stg["ORDER"])
+        self.assertIsNotNone(memento.swappingL1Stg["OFFSET"])
+        self.assertIsNotNone(memento.swappingL2Stg["ORDER"])
+        self.assertIsNotNone(memento.swappingL2Stg["OFFSET"])
+        self.assertIsNotNone(memento.L1L2MapperStg["OFFSET"])
+        self.assertIsNotNone(memento.L2CipherMapperStg["wiring"])
     def testGenerateDefaultSettingsForMapper_LargeToSmall(self):
         fromRange=range(5)
         toRange=range(2)
@@ -53,6 +65,21 @@ class TestMachineSettingManager(unittest.TestCase):
         self.assertEqual(2,len(mappingStg))
         self.assertEqual(3,len(mappingStg[0]))
         self.assertEqual(2,len(mappingStg[1]))
+
+    def testGenerateRandomSettingsForMapper(self):
+        fromRange=[0,1,2,3,4,5,6]
+        toRange=[0,1,2,3]
+        result=self.manager.generateRandomSettingsForMapper(fromRange,toRange)
+        for f in fromRange:
+            self.assertTrue(f in result["wiring"])
+    def testGenerateRandomSettingsForRotorStock(self):
+        stock=[]
+        for i in range(3):
+            stock.append(Rotor(i,Wiring()))
+        stockStg=self.manager.generateRandomSettingsForRotorStock(stock)
+        self.assertIsNotNone(stockStg["ORDER"])
+        self.assertIsNotNone(stockStg["OFFSET"])
+
 
     def testGenerateDefaultSettingsForRotorStock(self):
         stock=[]

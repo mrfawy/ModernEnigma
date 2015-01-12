@@ -64,7 +64,7 @@ def encryptTextAsBin():
     CharIndexMap.rangeTypeisCharacterBased=False
 
     start_time = time.time()
-    seed=123
+    # seed=123
 
     baseMachineModelName=EnigmaConfigGenerator().createRandomModelName()
     print("BaseModel:"+baseMachineModelName)

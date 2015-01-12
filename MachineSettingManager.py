@@ -3,6 +3,7 @@ from RandomGenerator import RandomGenerator
 from PlugBoard import PlugBoard
 from MapperSwitch import MapperSwitch
 from Wiring import Wiring
+from CharIndexMap import CharIndexMap
 
 
 class MachineSettingManager(object):
@@ -51,6 +52,23 @@ class MachineSettingManager(object):
             lastFromIndex=(lastFromIndex+1)%len(fromRange)
 
         return result
+    def generateRandomSettingsForMapper(self,fromRange,toRange):
+        result={"wiring":{}}
+        wiringMap=result["wiring"]
+        coveredTo=[]
+        for fromPin in fromRange:
+            wiringMap[fromPin]=[]
+            k=self.random.nextInt(1,len(toRange)//4)
+            toPins=self.random.sample(toRange,k)
+            for toPin in toPins:
+                wiringMap[fromPin].append(toPin)
+                if toPin not in coveredTo:
+                    coveredTo.append(toPin)
+        for toPin in toRange:
+            if toPin not in coveredTo:
+                selectedFromPin=self.random.sample(fromRange,1)[0]
+                wiringMap[selectedFromPin].append(toPin)
+        return result
 
     @classmethod
     def generateDefaultSettingsForRotorStock(self,rotorStock):
@@ -61,8 +79,58 @@ class MachineSettingManager(object):
             result["ORDER"].append(int(rotor.id))
             result["OFFSET"].append(0)
         return result
-    def generateRandomSettingsForMachine(self):
-        raise Exception("Unimplemented operation")
+    def generateRandomSettingsForRotorStock(self,rotorStock):
+        result={}
+        result["ORDER"]=[]
+        result["OFFSET"]=[]
+        k=self.random.nextInt(len(rotorStock)*3//4,len(rotorStock))
+        rotorIds=[]
+        for r in rotorStock:
+            rotorIds.append(int(r.id))
+        selectedRotorNumbers=self.random.sample(range(len(rotorIds)),k)
+        for i in selectedRotorNumbers:
+            result["ORDER"].append(i)
+            result["OFFSET"]=self.random.nextInt(0,rotorStock[i].size)
+        return result
+
+    def generateRandomSettingsForMachine(self,mc):
+        memento=MachineSettingsMemento()
+
+        memento.cipherRotorStg=self.generateRandomSettingsForRotorStock(mc.rotorStockList)
+        memento.plugboardStg["wiring"]=self.generateRandomWiringForPlugBoard()
+
+        memento.swappingL1Stg=self.generateRandomSettingsForRotorStock(mc.l1SwappingRotorStockList)
+        memento.swappingL2Stg=self.generateRandomSettingsForRotorStock(mc.l2SwappingRotorStockList)
+
+        memento.L1L2MapperStg["OFFSET"]=self.random.nextInt(0,mc.l1l2SeparatorSwitch.size)
+        memento.activeSwapSignals=self.generateRandomActiveSwapSignalStg(mc)
+        memento.cyclePeriod=None
+
+        fromRange=range(mc.l2SwappingRotorStockList[0].size)
+        toRange=range(len(mc.rotorStockList))
+        memento.L2CipherMapperStg=self.generateRandomSettingsForMapper(fromRange,toRange)
+
+        return memento
+    def generateRandomActiveSwapSignalStg(self,mc):
+        cycleStep=self.random.nextInt()
+        l1SwapRotorSize=mc.l1SwappingRotorStockList[0].size
+        k=self.random.nextInt(1,l1SwapRotorSize//4)
+        signals=self.random.sample(range(l1SwapRotorSize),k)
+        result={"CYCLE_STEP":cycleStep,"SIGNALS":signals}
+        return result
+    def generateRandomWiringForPlugBoard(self):
+        result={"wiring":{}}
+        k=self.random.nextInt(0,CharIndexMap.getRangeSize()//2)
+        totalRange=list(CharIndexMap.getRange())
+        for i in range(k):
+            selctedPair=self.random.sample(totalRange,2)
+            fromPin=selctedPair[0]
+            toPin=selctedPair[1]
+            totalRange.remove(fromPin)
+            totalRange.remove(toPin)
+            result["wiring"][fromPin]=[toPin]
+            result["wiring"][toPin]=[fromPin]
+        return result
 
     @classmethod
     def backupMachineSettings(cls,mc):

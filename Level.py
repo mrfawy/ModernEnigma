@@ -19,7 +19,7 @@ class Level(object):
         self.levelMcBlkSize={}
         self.initLevelValues()
 
-    def initLevelValues(self,min=3,max=9,minBlkSize=4,maxBlkSize=8):
+    def initLevelValues(self,min=3,max=9,minBlkSize=8,maxBlkSize=64):
         self.i[0]=self.random.nextInt(min,max)
         self.i[1]=self.random.nextInt(min,max)
         self.j[0]=self.random.nextInt(min,max)
