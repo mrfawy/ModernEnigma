@@ -22,8 +22,6 @@ class Rotor(Switch):
         return [(x-self.offset)%self.size for x in output]
 
     def adjustDisplay(self,offset):
-        if offset>self.size:
-            raise("Invalid offset value,greater than rotor size")
         self.offset=offset
 
     def getDisplay(self):

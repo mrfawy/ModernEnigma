@@ -45,7 +45,7 @@ class LevelDecryptor(LevelEncryptor):
         return Msg
 
 
-    def decryptSequence(self,seq,machine,blkSize,times=1,xorValue=0,displayStg=None):
+    def decryptSequence(self,seq,machine,blkSize,times=1,xorSeedValue=0,displayStg=None):
         result=[]
         if displayStg:
             machine.adjustWindowDisplay(displayStg)
@@ -53,7 +53,7 @@ class LevelDecryptor(LevelEncryptor):
         for t in range(times):
             result=self.processSeq(result,machine,blkSize)
 
-        result=self.applyXor(result,xorValue)
+        result=self.applyXor(result,xorSeedValue)
         result=self.performAdjustPadding(result,blkSize)
 
         return result

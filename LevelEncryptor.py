@@ -67,14 +67,14 @@ class LevelEncryptor(object):
         return self.level
 
 
-    def encryptSequence(self,seq,machine,blkSize,times=1,xorValue=0,displayStg=None):
+    def encryptSequence(self,seq,machine,blkSize,times=1,xorSeedValue=0,displayStg=None):
         self.resetMachniesSettings()
         result=[]
         if displayStg:
             machine.adjustWindowDisplay(displayStg)
         result=seq
         result=self.performAdjustPadding(result,blkSize)
-        result=self.applyXor(result,xorValue)
+        result=self.applyXor(result,xorSeedValue)
         for t in range(times):
             result=self.processSeq(result,machine,blkSize)
 
@@ -98,11 +98,12 @@ class LevelEncryptor(object):
     def performAdjustPadding(self,seq,blkSize=1):
         return Util.padSequence(seq,blkSize,self.random.nextInt())
 
-    def applyXor(self,seq,xorValue):
+    def applyXor(self,seq,xorSeedValue):
+        randomXor=RandomGenerator(xorSeedValue)
         result=[]
         for s in seq:
+            xorValue=randomXor.nextInt()
             result.append(s^xorValue)
-            xorValue=(xorValue+1)%CharIndexMap.getRangeSize()
         return result
 
 

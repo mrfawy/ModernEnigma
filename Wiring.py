@@ -46,8 +46,9 @@ class Wiring(object):
         return result[0]
 
     def connectByConfig(self,config):
-        self.inputSize=len(config)
-        for key,value in config.items():
+        items=config.items()
+        self.inputSize=len(items)
+        for key,value in items:
             fromPin=int(key)
             for toPin in value:
                 self.addConnection(fromPin,toPin)
