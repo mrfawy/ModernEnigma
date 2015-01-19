@@ -90,14 +90,14 @@ class MachineSettingManager(object):
         selectedRotorNumbers=self.random.sample(range(len(rotorIds)),k)
         for i in selectedRotorNumbers:
             result["ORDER"].append(i)
-            result["OFFSET"]=self.random.nextInt(0,rotorStock[i].size)
+            result["OFFSET"].append(self.random.nextInt(0,rotorStock[i].size))
         return result
 
     def generateRandomSettingsForMachine(self,mc):
         memento=MachineSettingsMemento()
 
         memento.cipherRotorStg=self.generateRandomSettingsForRotorStock(mc.rotorStockList)
-        memento.plugboardStg["wiring"]=self.generateRandomWiringForPlugBoard()
+        memento.plugboardStg=self.generateRandomWiringForPlugBoard()
 
         memento.swappingL1Stg=self.generateRandomSettingsForRotorStock(mc.l1SwappingRotorStockList)
         memento.swappingL2Stg=self.generateRandomSettingsForRotorStock(mc.l2SwappingRotorStockList)
@@ -107,7 +107,7 @@ class MachineSettingManager(object):
         memento.cyclePeriod=None
 
         fromRange=range(mc.l2SwappingRotorStockList[0].size)
-        toRange=range(len(mc.rotorStockList))
+        toRange=range(len(memento.cipherRotorStg["ORDER"]))
         memento.L2CipherMapperStg=self.generateRandomSettingsForMapper(fromRange,toRange)
 
         return memento
