@@ -41,16 +41,17 @@ class LevelDecryptor(LevelEncryptor):
         # print(M1p)
         # print("Msg:")
         # print(Msg)
-
+        #
         return Msg
 
 
     def decryptSequence(self,seq,machine,blkSize,times=1,xorSeedValue=0,displayStg=None):
         result=[]
-        if displayStg:
-            machine.adjustWindowDisplay(displayStg)
         result=seq
         for t in range(times):
+            self.resetMachniesSettings()
+            if displayStg:
+                machine.adjustWindowDisplay(displayStg)
             result=self.processSeq(result,machine,blkSize)
 
         result=self.applyXor(result,xorSeedValue)

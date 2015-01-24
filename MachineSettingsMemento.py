@@ -121,14 +121,18 @@ class MachineSettingsMemento(object):
         result["cyclePeriod"]=self.cyclePeriod
         return result
 
+    @classmethod
+    def loadFromMap(cls,inputMap):
+        memento=MachineSettingsMemento()
+        memento.cipherRotorStg=inputMap["cipherRotorStg"]
+        memento.plugboardStg=inputMap["plugboardStg"]
+        memento.activeSwapSignals=inputMap["activeSwapSignals"]
+        memento.swappingL1Stg=inputMap["swappingL1Stg"]
+        memento.swappingL2Stg=inputMap["swappingL2Stg"]
+        memento.L1L2MapperStg=inputMap["L1L2MapperStg"]
+        memento.L2CipherMapperStg=inputMap["L2CipherMapperStg"]
+        memento.cyclePeriod=inputMap["cyclePeriod"]
+        return memento
 
-    def print(self):
-        print(self.cipherRotorStg)
-        print(self.plugboardStg)
-        print(self.activeSwapSignals)
-        print(self.swappingL1Stg)
-        print(self.swappingL2Stg)
-        print(self.L1L2MapperStg)
-        print(self.L2CipherMapperStg)
-        print(self.cyclePeriod)
+
 

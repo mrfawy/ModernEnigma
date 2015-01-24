@@ -6,13 +6,11 @@ from Shuffler import Shuffler
 from Util import Util
 
 class LevelEncryptor(object):
-    def __init__(self,baseMachine,levelMachine,level,random=None,streamConverter=None):
+    def __init__(self,baseMachine,levelMachine,level,seed=None,streamConverter=None):
         self.baseMachine=baseMachine
         self.levelMachine=levelMachine
         self.level=level
-        self.random=random
-        if not random:
-            self.random=RandomGenerator()
+        self.random=RandomGenerator(seed)
         self.streamConverter=streamConverter
         self.shuffler=Shuffler()
         self.resetMachniesSettings()
@@ -24,6 +22,7 @@ class LevelEncryptor(object):
 
     def encryptPhase(self,id,machine1,machine2,m1BlkSize,m2BlkSize,seq):
         M1p=self.generatePerMsgWindowSetting(machine1)
+        import pdb; pdb.set_trace()
         EM1p=self.encryptSequence(M1p,machine2,m2BlkSize[id],self.level.i[id],self.level.xor[id])
         Msg_M1p=self.encryptSequence(seq,machine1,m1BlkSize[id],self.level.j[id],self.level.xor[id],M1p)
         EMsg=EM1p+Msg_M1p
@@ -68,21 +67,20 @@ class LevelEncryptor(object):
 
 
     def encryptSequence(self,seq,machine,blkSize,times=1,xorSeedValue=0,displayStg=None):
-        self.resetMachniesSettings()
         result=[]
-        if displayStg:
-            machine.adjustWindowDisplay(displayStg)
         result=seq
         result=self.performAdjustPadding(result,blkSize)
         result=self.applyXor(result,xorSeedValue)
         for t in range(times):
+            self.resetMachniesSettings()
+            if displayStg:
+                machine.adjustWindowDisplay(displayStg)
             result=self.processSeq(result,machine,blkSize)
 
         return result
 
     def processSeq(self,seq,machine,blkSize):
         result=[]
-        preEncryptionStg=machine.getMachineSettings()
         startIndex=0
         endIndex=blkSize
         while endIndex<=len(seq):
@@ -91,7 +89,6 @@ class LevelEncryptor(object):
             startIndex+=blkSize
             endIndex+=blkSize
 
-        machine.adjustMachineSettings(preEncryptionStg)
 
         return result
 

@@ -12,30 +12,34 @@ class EnigmaConfigGenerator(object):
 
         # self.CIPHER_ROTOR_COUNT_MIN=CharIndexMap.getRangeSize()//5
         # self.CIPHER_ROTOR_COUNT_MAX=CharIndexMap.getRangeSize()//2
-        self.CIPHER_ROTOR_COUNT_MIN=100
-        self.CIPHER_ROTOR_COUNT_MAX=150
+        self.CIPHER_ROTOR_COUNT_MIN=2
+        self.CIPHER_ROTOR_COUNT_MAX=3
         self.CIPHER_ROTOR_SIZE=CharIndexMap.getRangeSize()
 
         self.ROTOR_NOTCH_COUNT_MAX_RATIO=2 #will be divided
 
+        self.SWAP_ACTIVE_SIGNALS_COUNT_MIN=2
+        self.SWAP_ACTIVE_SIGNALS_COUNT_MAX=3
         # self.SWAP_ACTIVE_SIGNALS_COUNT_MIN=CharIndexMap.getRangeSize()//5
         # self.SWAP_ACTIVE_SIGNALS_COUNT_MAX=CharIndexMap.getRangeSize()//2
-        self.SWAP_ACTIVE_SIGNALS_COUNT_MIN=CharIndexMap.getRangeSize()//5
-        self.SWAP_ACTIVE_SIGNALS_COUNT_MAX=CharIndexMap.getRangeSize()//2
 
         # self.SWAP_ROTOR_L1_COUNT_MIN=CharIndexMap.getRangeSize()//5
         # self.SWAP_ROTOR_L1_COUNT_MAX=CharIndexMap.getRangeSize()//2
         self.SWAP_ROTOR_L1_COUNT_MIN=2
-        self.SWAP_ROTOR_L1_COUNT_MAX=5
-        self.SWAP_ROTOR_L1_MIN_SIZE=CharIndexMap.getRangeSize()
-        self.SWAP_ROTOR_L1_MAX_SIZE=CharIndexMap.getRangeSize()
+        self.SWAP_ROTOR_L1_COUNT_MAX=2
+        # self.SWAP_ROTOR_L1_MIN_SIZE=CharIndexMap.getRangeSize()
+        # self.SWAP_ROTOR_L1_MAX_SIZE=CharIndexMap.getRangeSize()
+        self.SWAP_ROTOR_L1_MIN_SIZE=5
+        self.SWAP_ROTOR_L1_MAX_SIZE=5
 
         # self.SWAP_ROTOR_L2_COUNT_MIN=CharIndexMap.getRangeSize()//5
         # self.SWAP_ROTOR_L2_COUNT_MAX=CharIndexMap.getRangeSize()//2
         self.SWAP_ROTOR_L2_COUNT_MIN=2
-        self.SWAP_ROTOR_L2_COUNT_MAX=5
-        self.SWAP_ROTOR_L2_MIN_SIZE=CharIndexMap.getRangeSize()
-        self.SWAP_ROTOR_L2_MAX_SIZE=CharIndexMap.getRangeSize()
+        self.SWAP_ROTOR_L2_COUNT_MAX=3
+        # self.SWAP_ROTOR_L2_MIN_SIZE=CharIndexMap.getRangeSize()
+        # self.SWAP_ROTOR_L2_MIN_SIZE=CharIndexMap.getRangeSize()
+        self.SWAP_ROTOR_L2_MIN_SIZE=5
+        self.SWAP_ROTOR_L2_MAX_SIZE=5
 
     def createRandomModelName(self,length=100,cipherRotorCount=None):
         charSeq=""
@@ -68,7 +72,6 @@ class EnigmaConfigGenerator(object):
         moduleCfg={}
         moduleCfg["ROTOR_STOCK"]=self.createCipherRotorStockConfig(cipherRotorCount)
         moduleCfg["REFLECTOR"]=self.createReflectorCfg()
-        moduleCfg["PLUGBOARD"]=self.createPlugboardCfg()
 
         return moduleCfg
 
@@ -81,7 +84,6 @@ class EnigmaConfigGenerator(object):
         choosedL2Size=len(moduleCfg["L2_ROTOR_STOCK"][0]["wiring"])
 
         moduleCfg["L1_L2_MAPPER"]=self.createMapperCfg("L1L2MPPR",range(choosedL1Size),range(choosedL2Size))
-        # moduleCfg["L2_CIPHER_MAPPER"]=self.createMapperCfg("L2CIPH_MPPR",range(choosedL2Size),range(cipherRotorsCount))
         return moduleCfg
     def createRotorStockConfig(self,rotorCount,rotorSize):
         rotorStock=[]
@@ -160,12 +162,6 @@ class EnigmaConfigGenerator(object):
 
         return result
 
-    def createPlugboardCfg(self,id="PLGBRD",seq=None):
-        if not seq:
-            seq=CharIndexMap.getRange()
-        plugboardConfig={"ID":id}
-        plugboardConfig["wiring"]=self.getValidReflectorShuffledWiringCfg(seq)
-        return plugboardConfig
 
     def createMapperCfg(self,id,fromRange,toRange):
         mapperCfg={"ID":str(id)}

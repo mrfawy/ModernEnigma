@@ -49,7 +49,7 @@ class ModernEnigma:
 
         self.processStepping(self.rotorList)
 
-        self.processRotorSwapping()
+        # self.processRotorSwapping()
 
         return output
 
@@ -127,7 +127,7 @@ class ModernEnigma:
         return self.rotorList[0].size
 
     def adjustWindowDisplay(self,windowSetting):
-        for i in range(len(windowSetting)):
+        for i in range(len(self.rotorList)):
             self.rotorList[i].adjustDisplay(windowSetting[i])
 
 

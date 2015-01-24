@@ -7,9 +7,8 @@ from CharIndexMap import CharIndexMap
 
 
 class MachineSettingManager(object):
-    def __init__(self,random=None):
-        if not random:
-            self.random=RandomGenerator()
+    def __init__(self,seed=None):
+        self.random=RandomGenerator(seed)
 
     @classmethod
     def generateDefaultSettingsForMachine(self,mc):
@@ -58,7 +57,11 @@ class MachineSettingManager(object):
         coveredTo=[]
         for fromPin in fromRange:
             wiringMap[fromPin]=[]
-            k=self.random.nextInt(1,len(toRange)//4)
+            sampleToRangeSize=len(toRange)//4
+            if sampleToRangeSize>0:
+                k=self.random.nextInt(1,len(toRange)//4)
+            else:
+                k=1
             toPins=self.random.sample(toRange,k)
             for toPin in toPins:
                 wiringMap[fromPin].append(toPin)
@@ -84,6 +87,9 @@ class MachineSettingManager(object):
         result["ORDER"]=[]
         result["OFFSET"]=[]
         k=self.random.nextInt(len(rotorStock)*3//4,len(rotorStock))
+        #must select at least one
+        if k==0:
+            k=1
         rotorIds=[]
         for r in rotorStock:
             rotorIds.append(int(r.id))

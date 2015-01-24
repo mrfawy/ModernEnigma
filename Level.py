@@ -1,11 +1,12 @@
 from ModernEnigma import ModernEnigma
 from RandomGenerator import RandomGenerator
+from MachineSettingsMemento import MachineSettingsMemento
 
 class Level(object):
-    def __init__(self,baseMachineStg,levelMachineStg,random=RandomGenerator()):
+    def __init__(self,baseMachineStg,levelMachineStg,seed=None):
         self.baseStg=baseMachineStg
         self.levelStg=levelMachineStg
-        self.random=random
+        self.random=RandomGenerator(seed)
         self.inputMsg=""
         self.outputMsg=""
         self.i={0:[],1:[]}
@@ -19,7 +20,7 @@ class Level(object):
         self.levelMcBlkSize={}
         self.initLevelValues()
 
-    def initLevelValues(self,min=3,max=9,minBlkSize=8,maxBlkSize=64):
+    def initLevelValues(self,min=1,max=2,minBlkSize=2,maxBlkSize=64):
         self.i[0]=self.random.nextInt(min,max)
         self.i[1]=self.random.nextInt(min,max)
         self.j[0]=self.random.nextInt(min,max)
@@ -55,3 +56,20 @@ class Level(object):
         result["baseMcBlkSize"]=self.baseMcBlkSize
         result["levelMcBlkSizse"]=self.levelMcBlkSize
         return result
+    @classmethod
+    def loadFromMap(cls,inputMap):
+        level=Level(None,None)
+        level.baseStg=MachineSettingsMemento.loadFromMap(inputMap["baseStg"])
+        level.levelStg=MachineSettingsMemento.loadFromMap(inputMap["levelStg"])
+        level.inputMsg=inputMap["inputMsg"]
+        level.outputMsg=inputMap["outputMsg"]
+        level.i=inputMap["i"]
+        level.j=inputMap["j"]
+        level.k=inputMap["k"]
+        level.l=inputMap["l"]
+        level.s=inputMap["s"]
+        level.st=inputMap["st"]
+        level.xor=inputMap["xor"]
+        level.baseMcBlkSize=inputMap["baseMcBlkSize"]
+        level.levelMcBlkSize=inputMap["levelMcBlkSizse"]
+        return level

@@ -86,4 +86,20 @@ class Util(object):
     def convertHexStringIntoByteList(cls,string):
         return list(bytes.fromhex(string))
 
+    @classmethod
+    def writeObjectToFileAsJson(cls,obj,fileName):
+        target = open(fileName, 'w')
+        target.write(Util.toJson(obj))
+        target.close()
+    @classmethod
+    def readJsonFileIntoObject(cls,fileName):
+        target = open(fileName, 'r')
+        fileContents=target.read()
+        target.close()
+        return  json.loads(fileContents)
+
+
+
+
+
 

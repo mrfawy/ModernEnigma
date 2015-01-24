@@ -60,3 +60,13 @@ class TestUtil(unittest.TestCase):
         print(hashed)
         self.assertIsNotNone(hashed)
 
+    def testWriteObjectToFileAsJosn(self):
+        obj=[1,2,3]
+        testFile="testWriteTofile.txt"
+        Util.writeObjectToFileAsJson(obj,testFile)
+
+        res=Util.readJsonFileIntoObject(testFile)
+        self.assertEqual(obj,res)
+
+
+

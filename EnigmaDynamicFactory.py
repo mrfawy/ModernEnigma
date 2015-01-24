@@ -9,16 +9,14 @@ from Util import Util
 from RandomGenerator import RandomGenerator
 from EnigmaConfigGenerator import EnigmaConfigGenerator
 class EnigmaDynamicFactory(object):
-    def __init__(self,random=None):
-        self.random=random
-        if not random:
-            self.random=RandomGenerator()
+    def __init__(self,seed=None):
+        self.seed=seed
+        self.random=RandomGenerator(seed)
 
     def createEnigmaMachineFromModel(self,modelNo):
-        generator=EnigmaConfigGenerator(self.random)
+        generator=EnigmaConfigGenerator(seed)
         cfg=generator.createMachineConfig(modelNo)
         mc=self.createEnigmaMachineFromConfig(cfg)
-        mc.adjustMachineSettings()
         return mc
 
 
@@ -29,7 +27,7 @@ class EnigmaDynamicFactory(object):
         rotorStockList=[]
         for r in rotorCfgList:
             rotorStockList.append(Rotor(r["ID"],Wiring(r["wiring"]),r["notch"]))
-        plugboard=PlugBoard(Wiring(cipherModuleCfg["PLUGBOARD"]["wiring"]))
+        plugboard=PlugBoard(Wiring())
         reflector=Reflector(Wiring(cipherModuleCfg["REFLECTOR"]["wiring"]))
         cipherModule["ROTOR_STOCK"]=rotorStockList
         cipherModule["PLUGBOARD"]=plugboard
