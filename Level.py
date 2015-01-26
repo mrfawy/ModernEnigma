@@ -9,36 +9,36 @@ class Level(object):
         self.random=RandomGenerator(seed)
         self.inputMsg=""
         self.outputMsg=""
-        self.i={0:[],1:[]}
-        self.j={0:[],1:[]}
-        self.k={0:[],1:[]}
-        self.l={0:[],1:[]}
-        self.s={0:[],1:[]}
-        self.st={0:[],1:[]}
-        self.xor={0:[],1:[]}
+        self.i={"0":[],"1":[]}
+        self.j={"0":[],"1":[]}
+        self.k={"0":[],"1":[]}
+        self.l={"0":[],"1":[]}
+        self.s={"0":[],"1":[]}
+        self.st={"0":[],"1":[]}
+        self.xor={"0":[],"1":[]}
         self.baseMcBlkSize={}
         self.levelMcBlkSize={}
         self.initLevelValues()
 
     def initLevelValues(self,min=1,max=2,minBlkSize=2,maxBlkSize=64):
-        self.i[0]=self.random.nextInt(min,max)
-        self.i[1]=self.random.nextInt(min,max)
-        self.j[0]=self.random.nextInt(min,max)
-        self.j[1]=self.random.nextInt(min,max)
-        self.k[0]=self.random.nextInt(min,max)
-        self.k[1]=self.random.nextInt(min,max)
-        self.l[0]=self.random.nextInt(min,max)
-        self.l[1]=self.random.nextInt(min,max)
-        self.s[0]=self.random.nextInt(min,max)
-        self.s[1]=self.random.nextInt(min,max)
-        self.st[0]=self.random.nextInt(min,max)
-        self.st[1]=self.random.nextInt(min,max)
-        self.xor[0]=self.random.nextInt()
-        self.xor[1]=self.random.nextInt()
-        self.baseMcBlkSize[0]=self.random.nextInt(minBlkSize,maxBlkSize)
-        self.baseMcBlkSize[1]=self.random.nextInt(minBlkSize,maxBlkSize)
-        self.levelMcBlkSize[0]=self.random.nextInt(minBlkSize,maxBlkSize)
-        self.levelMcBlkSize[1]=self.random.nextInt(minBlkSize,maxBlkSize)
+        self.i["0"]=self.random.nextInt(min,max)
+        self.i["1"]=self.random.nextInt(min,max)
+        self.j["0"]=self.random.nextInt(min,max)
+        self.j["1"]=self.random.nextInt(min,max)
+        self.k["0"]=self.random.nextInt(min,max)
+        self.k["1"]=self.random.nextInt(min,max)
+        self.l["0"]=self.random.nextInt(min,max)
+        self.l["1"]=self.random.nextInt(min,max)
+        self.s["0"]=self.random.nextInt(min,max)
+        self.s["1"]=self.random.nextInt(min,max)
+        self.st["0"]=self.random.nextInt(min,max)
+        self.st["1"]=self.random.nextInt(min,max)
+        self.xor["0"]=self.random.nextInt()
+        self.xor["1"]=self.random.nextInt()
+        self.baseMcBlkSize["0"]=self.random.nextInt(minBlkSize,maxBlkSize)
+        self.baseMcBlkSize["1"]=self.random.nextInt(minBlkSize,maxBlkSize)
+        self.levelMcBlkSize["0"]=self.random.nextInt(minBlkSize,maxBlkSize)
+        self.levelMcBlkSize["1"]=self.random.nextInt(minBlkSize,maxBlkSize)
 
     def getAsMap(self):
         result={}
@@ -54,7 +54,7 @@ class Level(object):
         result["st"]=self.st
         result["xor"]=self.xor
         result["baseMcBlkSize"]=self.baseMcBlkSize
-        result["levelMcBlkSizse"]=self.levelMcBlkSize
+        result["levelMcBlkSize"]=self.levelMcBlkSize
         return result
     @classmethod
     def loadFromMap(cls,inputMap):
@@ -71,5 +71,5 @@ class Level(object):
         level.st=inputMap["st"]
         level.xor=inputMap["xor"]
         level.baseMcBlkSize=inputMap["baseMcBlkSize"]
-        level.levelMcBlkSize=inputMap["levelMcBlkSizse"]
+        level.levelMcBlkSize=inputMap["levelMcBlkSize"]
         return level

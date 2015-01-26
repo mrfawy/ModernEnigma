@@ -130,7 +130,8 @@ def runTillError():
         res=encryptTextAsBin()
         expected=[72, 101, 108, 108, 111, 32, 69, 110, 105, 103, 109, 97, 32, 33]
         if len(res)==0 or res!=expected:
-            break
+            return
+    print(" ALL CASES DONE !!")
 def loadFromJsonFiles():
     CharIndexMap.rangeTypeisCharacterBased=False
     seed=None
@@ -152,7 +153,6 @@ def loadFromJsonFiles():
     levelEncryptor=LevelEncryptor(baseMachine,levelMachine,level,seed)
     encLevel=levelEncryptor.encryptLevel()
 
-    print("Encrypted Seq in : "+str(elapsed_time))
     print("ENC:")
     print(Util.convertByteListIntoHexString(encLevel.outputMsg))
 
@@ -169,5 +169,5 @@ def loadFromJsonFiles():
     return resultLevel.inputMsg
     pass
 
-
+# runTillError()
 loadFromJsonFiles()

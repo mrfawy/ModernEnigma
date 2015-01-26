@@ -49,6 +49,8 @@ class Util(object):
             else:
                 result=result+random.sample(result,sampleSize)
             result[0]=sampleSize
+        if(len(result)%blkSize !=0):
+            print("WARNING < INVALID PADDING ")
         return result
     @classmethod
     def unpadSequence(cls,seq):
@@ -97,6 +99,20 @@ class Util(object):
         fileContents=target.read()
         target.close()
         return  json.loads(fileContents)
+
+    @classmethod
+    def divideIntoChunks(cls,seq,chunkSize):
+        result=[]
+        chunkNum=len(seq)//chunkSize
+        if(len(seq)%chunkSize !=0):
+            raise ("INVALID SEQ LENGTH AND CHUNK SIZE , REM != 0 !!")
+        startIndex=0
+        endIndex=chunkSize
+        for i in range(chunkNum):
+            result.append(seq[startIndex:endIndex])
+            startIndex=endIndex
+            endIndex+=chunkSize
+        return result
 
 
 

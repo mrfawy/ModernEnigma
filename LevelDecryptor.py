@@ -46,6 +46,9 @@ class LevelDecryptor(LevelEncryptor):
 
 
     def decryptSequence(self,seq,machine,blkSize,times=1,xorSeedValue=0,displayStg=None):
+        if(len(seq)%blkSize != 0):
+            print("Invalid BLKsize in decrypt,REM= "+str(len(seq)%blkSize))
+            print(seq)
         result=[]
         result=seq
         for t in range(times):
@@ -64,17 +67,17 @@ class LevelDecryptor(LevelEncryptor):
         if self.streamConverter:
             E=self.streamConverter.convertInput(E)
         self.resetMachniesSettings()
-        phaseDecOut=self.decryptPhase(1,self.levelMachine,self.baseMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,E)
+        phaseDecOut=self.decryptPhase("1",self.levelMachine,self.baseMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,E)
         self.resetMachniesSettings()
-        phaseDecOut=self.decryptPhase(0,self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,phaseDecOut)
+        phaseDecOut=self.decryptPhase("0",self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,phaseDecOut)
         self.level.inputMsg=phaseDecOut
         if self.streamConverter:
             self.level.inputMsg=self.streamConverter.convertInput(msg)
         return self.level
 
     def performAdjustPadding(self,seq,blkSize=1):
-        if(len(seq)==0):
-            return seq
+        # if(len(seq)==0):
+            # return seq
         return Util.unpadSequence(seq)
 
 

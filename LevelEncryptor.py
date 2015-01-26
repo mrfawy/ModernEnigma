@@ -22,7 +22,6 @@ class LevelEncryptor(object):
 
     def encryptPhase(self,id,machine1,machine2,m1BlkSize,m2BlkSize,seq):
         M1p=self.generatePerMsgWindowSetting(machine1)
-        import pdb; pdb.set_trace()
         EM1p=self.encryptSequence(M1p,machine2,m2BlkSize[id],self.level.i[id],self.level.xor[id])
         Msg_M1p=self.encryptSequence(seq,machine1,m1BlkSize[id],self.level.j[id],self.level.xor[id],M1p)
         EMsg=EM1p+Msg_M1p
@@ -57,12 +56,12 @@ class LevelEncryptor(object):
             seq=self.streamConverter.convertInput(msg)
 
         self.resetMachniesSettings()
-        phaseEncOut=self.encryptPhase(0,self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,seq)
+        phaseEncOut=self.encryptPhase("0",self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,seq)
         self.resetMachniesSettings()
-        phaseEncOut=self.encryptPhase(1,self.levelMachine,self.baseMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,phaseEncOut)
+        phaseEncOut=self.encryptPhase("1",self.levelMachine,self.baseMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,phaseEncOut)
         self.level.outputMsg=phaseEncOut
-        if self.streamConverter:
-            self.level.outputMsg=self.streamConverter.convertOutput(E)
+        # if self.streamConverter:
+            # self.level.outputMsg=self.streamConverter.convertOutput(E)
         return self.level
 
 
@@ -70,6 +69,9 @@ class LevelEncryptor(object):
         result=[]
         result=seq
         result=self.performAdjustPadding(result,blkSize)
+        if(len(result)%blkSize !=0):
+            print("encrpyt seq , invalid padding ")
+
         result=self.applyXor(result,xorSeedValue)
         for t in range(times):
             self.resetMachniesSettings()
@@ -81,15 +83,9 @@ class LevelEncryptor(object):
 
     def processSeq(self,seq,machine,blkSize):
         result=[]
-        startIndex=0
-        endIndex=blkSize
-        while endIndex<=len(seq):
-            currentBlk=seq[startIndex:endIndex]
-            result=result+machine.processKeyListPress(currentBlk)
-            startIndex+=blkSize
-            endIndex+=blkSize
-
-
+        seqChunks=Util.divideIntoChunks(seq,blkSize)
+        for chunk in seqChunks:
+            result.append(machine.processKeyListPress(chunk))
         return result
 
     def performAdjustPadding(self,seq,blkSize=1):
@@ -100,7 +96,12 @@ class LevelEncryptor(object):
         result=[]
         for s in seq:
             xorValue=randomXor.nextInt()
-            result.append(s^xorValue)
+            xorResult=s^xorValue
+            rangeSize=CharIndexMap.getRangeSize()
+            while(xorResult>rangeSize):
+                xorValue=randomXor.nextInt()
+                xorResult=s^xorValue
+            result.append(xorResult)
         return result
 
 
