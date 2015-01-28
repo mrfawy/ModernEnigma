@@ -63,9 +63,13 @@ class Util(object):
 
     @classmethod
     def removeDuplicates(cls,seq):
+        result=[]
         seen = set()
-        seen_add = seen.add
-        return [ x for x in seq if not (x in seen or seen_add(x))]
+        for s in seq:
+            if(s not in seen):
+                result.append(s)
+                seen.add(s)
+        return result
 
     @classmethod
     def hashString(cls,string,salt=None):
