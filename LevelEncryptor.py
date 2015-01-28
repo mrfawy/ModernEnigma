@@ -10,6 +10,7 @@ class LevelEncryptor(object):
         self.baseMachine=baseMachine
         self.levelMachine=levelMachine
         self.level=level
+        self.seed=seed
         self.random=RandomGenerator(seed)
         self.streamConverter=streamConverter
         self.shuffler=Shuffler()
@@ -30,7 +31,7 @@ class LevelEncryptor(object):
         y=self.encryptSequence(x,machine2,m2BlkSize[id],self.level.l[id],self.level.xor[id])
         #
         # print("ENCRYPT")
-        # print("ID:"+str(id))
+        # print("ID:"+id)
         # print("Msg:")
         # print(seq)
         # print("M1p:")
@@ -55,22 +56,17 @@ class LevelEncryptor(object):
         if self.streamConverter:
             seq=self.streamConverter.convertInput(msg)
 
-        self.resetMachniesSettings()
         phaseEncOut=self.encryptPhase("0",self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,seq)
-        self.resetMachniesSettings()
         phaseEncOut=self.encryptPhase("1",self.levelMachine,self.baseMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,phaseEncOut)
         self.level.outputMsg=phaseEncOut
-        # if self.streamConverter:
-            # self.level.outputMsg=self.streamConverter.convertOutput(E)
+        if self.streamConverter:
+            self.level.outputMsg=self.streamConverter.convertOutput(E)
         return self.level
 
 
     def encryptSequence(self,seq,machine,blkSize,times=1,xorSeedValue=0,displayStg=None):
-        result=[]
         result=seq
-        result=self.performAdjustPadding(result,blkSize)
-        if(len(result)%blkSize !=0):
-            print("encrpyt seq , invalid padding ")
+        result=self.performPadding(result,blkSize)
 
         result=self.applyXor(result,xorSeedValue)
         for t in range(times):
@@ -85,11 +81,11 @@ class LevelEncryptor(object):
         result=[]
         seqChunks=Util.divideIntoChunks(seq,blkSize)
         for chunk in seqChunks:
-            result.append(machine.processKeyListPress(chunk))
+            result+=machine.processKeyListPress(chunk)
         return result
 
-    def performAdjustPadding(self,seq,blkSize=1):
-        return Util.padSequence(seq,blkSize,self.random.nextInt())
+    def performPadding(self,seq,blkSize=1):
+        return Util.padSequence(seq,blkSize,self.seed)
 
     def applyXor(self,seq,xorSeedValue):
         randomXor=RandomGenerator(xorSeedValue)
@@ -97,10 +93,6 @@ class LevelEncryptor(object):
         for s in seq:
             xorValue=randomXor.nextInt()
             xorResult=s^xorValue
-            rangeSize=CharIndexMap.getRangeSize()
-            while(xorResult>rangeSize):
-                xorValue=randomXor.nextInt()
-                xorResult=s^xorValue
             result.append(xorResult)
         return result
 

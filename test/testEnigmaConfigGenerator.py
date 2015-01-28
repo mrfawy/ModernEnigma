@@ -42,9 +42,6 @@ class TestEnigmaConfigGenerator(unittest.TestCase):
         for i in self.seq:
             paired=wiringCfg[i][0]
             self.assertEqual(i,wiringCfg[paired][0])
-    def testCreatePlugBoardCfg(self):
-        plugboardCfg=self.generator.createPlugboardCfg(0,self.seq)
-        self.assertEqual(4,len(plugboardCfg["wiring"]))
 
     def testCreateRotorCfg(self):
         rotorCfg=self.generator.createRotorConfig(0,len(self.seq))
@@ -60,7 +57,6 @@ class TestEnigmaConfigGenerator(unittest.TestCase):
         moduleCfg=self.generator.createCipherModuleConfig()
         self.assertIsNotNone(moduleCfg["ROTOR_STOCK"])
         self.assertIsNotNone(moduleCfg["REFLECTOR"])
-        self.assertIsNotNone(moduleCfg["PLUGBOARD"])
 
     def testCreateSwappModuleCfg(self):
         moduleCfg=self.generator.createSwappingModuleConfig()

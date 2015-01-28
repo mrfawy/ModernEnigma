@@ -14,7 +14,7 @@ class EnigmaDynamicFactory(object):
         self.random=RandomGenerator(seed)
 
     def createEnigmaMachineFromModel(self,modelNo):
-        generator=EnigmaConfigGenerator(seed)
+        generator=EnigmaConfigGenerator(self.seed)
         cfg=generator.createMachineConfig(modelNo)
         mc=self.createEnigmaMachineFromConfig(cfg)
         return mc

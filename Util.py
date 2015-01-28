@@ -57,6 +57,8 @@ class Util(object):
         if seq[0]==0:
             return list(seq[1::])
         else:
+            if(seq[0]>len(seq)):
+                    raise ("Invalid unpadding , unpadding exceeds seq size")
             return list(seq[1:len(seq)-seq[0]])
 
     @classmethod

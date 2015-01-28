@@ -9,7 +9,9 @@ import json
 class TestLevelEncryptor(unittest.TestCase):
     def setUp(self):
         self.baseMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCb")
+        self.baseMachine.adjustMachineSettings()
         self.levelMachine=EnigmaDynamicFactory().createEnigmaMachineFromModel("MCm")
+        self.levelMachine.adjustMachineSettings()
         self.level=Level(self.baseMachine.getMachineSettings(),self.levelMachine.getMachineSettings())
         self.levelEncryptor=LevelEncryptor(self.baseMachine,self.levelMachine,self.level)
     def testOK(self):
