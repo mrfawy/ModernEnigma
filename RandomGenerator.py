@@ -17,5 +17,5 @@ class RandomGenerator(object):
 
     def nextInt(self,a=0,b=None):
         if not b:
-            b=CharIndexMap.getRangeSize()
+            b=CharIndexMap.getRangeSize()-1
         return self.random.randint(a,b)
