@@ -4,10 +4,12 @@ from PlugBoard import PlugBoard
 from MapperSwitch import MapperSwitch
 from Wiring import Wiring
 from CharIndexMap import CharIndexMap
+from Util import Util
 
 
 class MachineSettingManager(object):
     def __init__(self,seed=None):
+        self.seed=seed
         self.random=RandomGenerator(seed)
 
     @classmethod
@@ -20,6 +22,7 @@ class MachineSettingManager(object):
         memento.swappingRotorStg=self.generateDefaultSettingsForRotorStock(mc.swappingRotorStockMap)
 
         memento.activeSwapSignals={"CYCLE_STEP":1,"SIGNALS":[0]}
+        memento.swapSalt=" "
 
 
         return memento
@@ -59,6 +62,7 @@ class MachineSettingManager(object):
         memento.swappingRotorStg=self.generateRandomSettingsForRotorStock(mc.swappingRotorStockMap)
 
         memento.activeSwapSignals=self.generateRandomActiveSwapSignalStg(mc)
+        memento.swapSalt=Util.generateRandomStringSeed()
 
         return memento
     def generateRandomActiveSwapSignalStg(self,mc):
@@ -91,6 +95,7 @@ class MachineSettingManager(object):
         memento.plugboardStg={"wiring":mc.plugboard.wiring.getAsMap()}
         memento.swappingRotorStg=MachineSettingManager.extractRotorSettingsFromRotorList(mc.swapRotorsIdList,mc.swappingRotorStockMap)
         memento.activeSwapSignals={"CYCLE_STEP":mc.swapActiveSignalsCycleStep,"SIGNALS":mc.swapActiveSignals}
+        memento.swapSalt=mc.swapSalt
         return memento
     @classmethod
     def extractRotorSettingsFromRotorList(self,rotorIdList,rotorStockMap):
@@ -123,6 +128,8 @@ class MachineSettingManager(object):
         for rId in settingsMemento.swappingRotorStg["ORDER"]:
             mc.swapRotorsIdList.append(rId)
             mc.swappingRotorStockMap[rId].offset=settingsMemento.swappingRotorStg["OFFSET"][index]
+
+        mc.swapSalt=settingsMemento.swapSalt
 
         mc.settingsReady=True
 

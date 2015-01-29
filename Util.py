@@ -10,7 +10,7 @@ class Util(object):
     def seqToStr(cls,seq):
         result=""
         for c in seq:
-            result+=c
+            result+=str(c)
         return result
 
     @classmethod
@@ -119,6 +119,17 @@ class Util(object):
             startIndex=endIndex
             endIndex+=chunkSize
         return result
+    @classmethod
+    def generateRandomStringSeed(cls,length=100,seed=None):
+        random=RandomGenerator(seed)
+        charSeq=""
+        for i in range(length):
+            randomChar=random.sample(CharIndexMap.charRange,1)[0]
+            while(randomChar=="|"):
+                randomChar=random.sample(CharIndexMap.charRange,1)[0]
+            charSeq+=str(randomChar)
+        return charSeq
+
 
 
 

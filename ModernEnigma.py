@@ -7,6 +7,7 @@ from RandomGenerator import RandomGenerator
 from MachineSettingsMemento import MachineSettingsMemento
 from MachineSettingManager import MachineSettingManager
 from Util import Util
+from Shuffler import Shuffler
 
 class ModernEnigma:
     def __init__(self,cipherRotorStockMap,reflector,plugboard,swappingRotorStockMap):
@@ -42,7 +43,7 @@ class ModernEnigma:
 
         self.processStepping(self.cipherRotorIdList,self.cipherRotorStockMap)
 
-        # self.processRotorSwapping()
+        self.processRotorSwapping()
 
         return output
 
@@ -51,9 +52,9 @@ class ModernEnigma:
         swapResult=self.applyActivePins(self.swapRotorsIdList,self.swappingRotorStockMap,activePins)
 
         swapSeed=self.swapSalt+Util.seqToStr(swapResult)
-        self.cipherRotorIdList=self.Shuffler.shuffleSeq(self.cipherRotorIdList,swapSeed)
+        self.cipherRotorIdList=Shuffler.shuffleSeq(self.cipherRotorIdList,swapSeed)
 
-        self.processStepping(self.swapRotorsIdList,swapRotorStockMap)
+        self.processStepping(self.swapRotorsIdList,self.swappingRotorStockMap)
 
         #shift swappingSignalsByStep
         self.processActiveSwapSignalsCycleStep()
@@ -63,7 +64,8 @@ class ModernEnigma:
     def processActiveSwapSignalsCycleStep(self):
         result=[]
         for s in self.swapActiveSignals:
-            newSignalIndex=(s+self.swapActiveSignalsCycleStep) %self.swapRotorsLevel1[0].size
+            swapRotorSize=self.swappingRotorStockMap[self.swapRotorsIdList[0]].size
+            newSignalIndex=(s+self.swapActiveSignalsCycleStep) %swapRotorSize
             result.append(newSignalIndex)
 
         self.swapActiveSignals=result

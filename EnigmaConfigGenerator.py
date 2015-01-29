@@ -7,8 +7,8 @@ import hashlib
 class EnigmaConfigGenerator(object):
 
     def __init__(self,seed=None):
+        self.seed=seed
         self.random=RandomGenerator(seed)
-        self.shuffler=Shuffler(self.random)
 
         # self.CIPHER_ROTOR_COUNT_MIN=CharIndexMap.getRangeSize()//5
         # self.CIPHER_ROTOR_COUNT_MAX=CharIndexMap.getRangeSize()//2
@@ -34,16 +34,11 @@ class EnigmaConfigGenerator(object):
 
 
     def createRandomModelName(self,length=100,cipherRotorCount=None):
-        charSeq=""
-        for i in range(length):
-            randomChar=self.random.sample(CharIndexMap.charRange,1)[0]
-            while(randomChar=="|"):
-                randomChar=self.random.sample(CharIndexMap.charRange,1)[0]
-            charSeq+=randomChar
+        modelName=Util.generateRandomStringSeed(length)
         if cipherRotorCount:
-            charSeq+="|"+str(cipherRotorCount)
+            modelName+="|"+str(cipherRotorCount)
 
-        return Util.seqToStr(charSeq)
+        return modelName
 
 
     def createMachineConfig(self,modelNo):
@@ -115,8 +110,7 @@ class EnigmaConfigGenerator(object):
     def getShuffledSequence(self,seq=None):
         if not seq:
             seq=CharIndexMap.getRange()
-        shuffler=Shuffler(self.random)
-        shSeq= shuffler.shuffleSeq(seq,self.random.nextInt())
+        shSeq= Shuffler.shuffleSeq(seq,self.random.nextInt())
         return shSeq
 
 
@@ -131,7 +125,7 @@ class EnigmaConfigGenerator(object):
         if not sequence:
             sequence=CharIndexMap.getRange()
         wiringTuples=[]
-        seq=self.shuffler.shuffleSeq(sequence,self.random.nextInt())
+        seq=Shuffler.shuffleSeq(sequence,self.random.nextInt())
         while len(seq)>0:
             selectedPair=self.random.sample(seq,2)
             wiringTuples.append((selectedPair[0],selectedPair[1]))

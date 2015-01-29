@@ -4,6 +4,7 @@ class MachineSettingsMemento(object):
         self.cipherRotorStg={}
         self.plugboardStg={}
         self.activeSwapSignals=[]
+        self.swapSalt=None
         self.swappingRotorStg={}
 
     def getAsMap(self):
@@ -12,6 +13,7 @@ class MachineSettingsMemento(object):
         result["plugboardStg"]=self.plugboardStg
         result["activeSwapSignals"]=self.activeSwapSignals
         result["swappingRotorStg"]=self.swappingRotorStg
+        result["swapSalt"]=self.swapSalt
         return result
 
     @classmethod
@@ -21,6 +23,7 @@ class MachineSettingsMemento(object):
         memento.plugboardStg=inputMap["plugboardStg"]
         memento.activeSwapSignals=inputMap["activeSwapSignals"]
         memento.swappingRotorStg=inputMap["swappingRotorStg"]
+        memento.swapSalt=inputMap["swapSalt"]
         return memento
 
 
