@@ -49,7 +49,7 @@ class ModernEnigma:
 
         self.processStepping(self.rotorList)
 
-        self.processRotorSwapping()
+        # self.processRotorSwapping()
 
         return output
 
@@ -61,6 +61,7 @@ class ModernEnigma:
         swapLevel2Result=self.applyActivePins(self.swapRotorsLevel2,swapLevel2Input)
         swapResult=self.applyMappingActivePins(self.l2CipherMapper,swapLevel2Result)
         swapResult=Util.removeDuplicates(swapResult)
+
 
         self.swapRotors(self.rotorList,swapResult)
 
@@ -127,7 +128,9 @@ class ModernEnigma:
         return self.rotorList[0].size
 
     def adjustWindowDisplay(self,windowSetting):
-        for i in range(len(self.rotorList)):
+        if(len(windowSetting)!=self.getCipherRotorsCount()):
+            raise ("Invalid window setting !!, size doesn't match with cipher rotor count ")
+        for i in range(self.getCipherRotorsCount()):
             self.rotorList[i].adjustDisplay(windowSetting[i])
 
 

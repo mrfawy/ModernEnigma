@@ -88,7 +88,8 @@ class LevelEncryptor(object):
         return Util.padSequence(seq,blkSize,self.seed)
 
     def applyXor(self,seq,xorSeedValue):
-        randomXor=RandomGenerator(xorSeedValue)
+        hashedSeed=Util.hashString(str(xorSeedValue))
+        randomXor=RandomGenerator(hashedSeed)
         result=[]
         for s in seq:
             xorValue=randomXor.nextInt()
