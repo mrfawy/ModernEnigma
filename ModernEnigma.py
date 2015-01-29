@@ -9,25 +9,18 @@ from MachineSettingManager import MachineSettingManager
 from Util import Util
 
 class ModernEnigma:
-    def __init__(self,rotorStockList,reflector,plugboard,l1SwappingRotorStockList,l2SwappingRotorStockList,l1l2SeparatorSwitch):
+    def __init__(self,cipherRotorStockMap,reflector,plugboard,swappingRotorStockMap):
         self.settingsReady=False
-        self.rotorStockList=rotorStockList
-        self.rotorsStockMap={}
-        for rotorStock in rotorStockList:
-            self.rotorsStockMap[rotorStock.id]=rotorStock
-        self.rotorList=[]
+        self.cipherRotorStockMap=cipherRotorStockMap
+        self.cipherRotorIdList=[]
         self.reflector=reflector
         self.plugboard=plugboard
         """swapping settings"""
-        self.l1SwappingRotorStockList=l1SwappingRotorStockList
-        self.l2SwappingRotorStockList=l2SwappingRotorStockList
-        self.l1l2SeparatorSwitch=l1l2SeparatorSwitch
-        self.swapRotorsLevel1=[]
-        self.swapRotorsLevel2=[]
+        self.swappingRotorStockMap=swappingRotorStockMap
+        self.swapRotorsIdList=[]
         self.swapActiveSignals=[]
+        self.swapSalt=None
         self.swapActiveSignalsCycleStep=0
-        self.l2CipherMapper=None
-        self.cyclePeriod=None
 
 
     def adjustMachineSettings(self,settingsMemento=None):
@@ -40,14 +33,14 @@ class ModernEnigma:
             raise Exception("Settings are not set for this machine!!")
         lastOut=self.plugboard.signalIn(indexInList)
         inputPins=lastOut
-        resultPins=self.applyActivePins(self.rotorList,inputPins)
+        resultPins=self.applyActivePins(self.cipherRotorIdList,self.cipherRotorStockMap,inputPins)
 
         lastReverseIn=self.reflector.signalIn(resultPins)
 
-        resultPins=self.applyActivePinsReversed(self.rotorList,lastReverseIn)
+        resultPins=self.applyActivePinsReversed(self.cipherRotorIdList,self.cipherRotorStockMap,lastReverseIn)
         output=self.plugboard.reverseSignal(resultPins)
 
-        self.processStepping(self.rotorList)
+        self.processStepping(self.cipherRotorIdList,self.cipherRotorStockMap)
 
         # self.processRotorSwapping()
 
@@ -55,33 +48,17 @@ class ModernEnigma:
 
     def processRotorSwapping(self):
         activePins=self.swapActiveSignals
-        swapLevel1Result=self.applyActivePins(self.swapRotorsLevel1,activePins)
-        swapLevel2Input=self.applyMappingActivePins(self.l1l2SeparatorSwitch,swapLevel1Result)
-        swapLevel2Input=Util.removeDuplicates(swapLevel2Input)
-        swapLevel2Result=self.applyActivePins(self.swapRotorsLevel2,swapLevel2Input)
-        swapResult=self.applyMappingActivePins(self.l2CipherMapper,swapLevel2Result)
-        swapResult=Util.removeDuplicates(swapResult)
+        swapResult=self.applyActivePins(self.swapRotorsIdList,self.swappingRotorStockMap,activePins)
 
+        swapSeed=self.swapSalt+Util.seqToStr(swapResult)
+        self.cipherRotorIdList=self.Shuffler.shuffleSeq(self.cipherRotorIdList,swapSeed)
 
-        self.swapRotors(self.rotorList,swapResult)
-
-        self.processStepping(self.swapRotorsLevel1)
-        self.processStepping(self.swapRotorsLevel2)
+        self.processStepping(self.swapRotorsIdList,swapRotorStockMap)
 
         #shift swappingSignalsByStep
         self.processActiveSwapSignalsCycleStep()
 
-    def swap(self,rotorList,i,j):
-        tmp=rotorList[i]
-        rotorList[i]=rotorList[j]
-        rotorList[j]=tmp
 
-    def swapRotors(self,rotorList,swapIndexList):
-        for index in swapIndexList:
-            if index==0 or index==len(rotorList)-1:
-                self.swap(rotorList,0,len(rotorList)-1)
-                continue
-            self.swap(rotorList,index,(3*index)%len(rotorList))
 
     def processActiveSwapSignalsCycleStep(self):
         result=[]
@@ -92,76 +69,52 @@ class ModernEnigma:
         self.swapActiveSignals=result
 
 
-    def applyActivePins(self,rotors,pins):
+    def applyActivePins(self,rotorIdList,rotorStockMap,pins):
         lastout=pins
-        for rotor in rotors:
+        for rId in rotorIdList:
+            rotor=rotorStockMap[rId]
             lastout=rotor.signalIn(lastout)
         return lastout
-    def applyMappingActivePins(self,mapper,pins):
-        resultPins=[]
-        for pin in pins:
-           outputs=mapper.signalIn(pin)
-           for o in outputs:
-                if o not in resultPins:
-                    resultPins.append(o)
-        return resultPins
 
-    def applyActivePinsReversed(self,rotors,pins):
+    def applyActivePinsReversed(self,rotorIdList,rotorStockMap,pins):
         lastout=pins
-        for rotor in reversed(rotors):
+        for rId in reversed(rotorIdList):
+            rotor=rotorStockMap[rId]
             lastout=rotor.reverseSignal(lastout)
         return lastout
 
-    def processStepping(self,rotors):
+    def processStepping(self,rotorIdList,rotorStockMap):
         notchFlag=False
-        for i  in range(len(rotors)) :
-            rotor=rotors[i]
-            if i==0:
+        index=0
+        for rId  in rotorIdList :
+            rotor=rotorStockMap[rId]
+            if index==0:
                 notchFlag=rotor.rotate()
+                index+=1
                 continue
             if notchFlag:
                 notchFlag=rotor.rotate()
 
     def getCipherRotorsCount(self):
-        return len(self.rotorList)
+        return len(self.cipherRotorIdList)
+
     def getCipherRotorsSize(self):
-        return self.rotorList[0].size
+        return self.cipherRotorStockMap[self.cipherRotorIdList[0]].size
 
     def adjustWindowDisplay(self,windowSetting):
         if(len(windowSetting)!=self.getCipherRotorsCount()):
             raise ("Invalid window setting !!, size doesn't match with cipher rotor count ")
         for i in range(self.getCipherRotorsCount()):
-            self.rotorList[i].adjustDisplay(windowSetting[i])
+            rotor=self.cipherRotorStockMap[self.cipherRotorIdList[i]]
+            rotor.adjustDisplay(windowSetting[i])
 
 
     def getMachineSettings(self):
         return MachineSettingManager.backupMachineSettings(self)
 
-    def cycleRotorsForward(self):
-        lastRotor=self.rotorList[-1]
-        for i in range(len(self.rotorList)-1,0,-1):
-            self.rotorList[i]=self.rotorList[i-1]
-        self.rotorList[0]=lastRotor
-
-    def cycleRotorsBackward(self):
-        firstRotor=self.rotorList[0]
-        for i in range(0,len(self.rotorList)-1):
-            self.rotorList[i]=self.rotorList[i+1]
-        self.rotorList[-1]=firstRotor
 
     def printMachineInformation(self):
-        info="""Mahcine Information:
-                Cipher:
-                    Current Active Rotors:{0} / {1}
-                Swapping:
-                    L1 rotor count :{2} , Size : {3}
-                    L2 rotor Count: {4}, size : {5}"""
-        info=info.format(len(self.rotorList),len(self.rotorStockList),len(self.l1SwappingRotorStockList),str(self.swapRotorsLevel1[0].size),len(self.l2SwappingRotorStockList),str(self.swapRotorsLevel2[0].size))
-        print (info)
-
-
-
-
+        raise ("Not implemented Feature")
 
 
 

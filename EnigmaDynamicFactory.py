@@ -23,13 +23,13 @@ class EnigmaDynamicFactory(object):
     def createCipherModuleFromConfig(self,config):
         cipherModule={}
         cipherModuleCfg=config["CIPHER_MODULE"]
-        rotorCfgList=cipherModuleCfg["ROTOR_STOCK"]
-        rotorStockList=[]
-        for r in rotorCfgList:
-            rotorStockList.append(Rotor(r["ID"],Wiring(r["wiring"]),r["notch"]))
+        cipherRotorStockCfg=cipherModuleCfg["ROTOR_STOCK"]
+        cipherRotorMap={}
+        for key,val in cipherRotorStockCfg.items():
+            cipherRotorMap[key]=Rotor(val["ID"],Wiring(val["wiring"]),val["notch"])
         plugboard=PlugBoard(Wiring())
         reflector=Reflector(Wiring(cipherModuleCfg["REFLECTOR"]["wiring"]))
-        cipherModule["ROTOR_STOCK"]=rotorStockList
+        cipherModule["ROTOR_STOCK"]=cipherRotorMap
         cipherModule["PLUGBOARD"]=plugboard
         cipherModule["REFLECTOR"]=reflector
 
@@ -38,49 +38,23 @@ class EnigmaDynamicFactory(object):
     def createSwappingModuleFromConfig(self,config):
         swapModule={}
         swappingModuleCfg=config["SWAPPING_MODULE"]
-        l1rotorCfgList=swappingModuleCfg["L1_ROTOR_STOCK"]
-        l2rotorCfgList=swappingModuleCfg["L2_ROTOR_STOCK"]
-        l1l2MapperCfg=swappingModuleCfg["L1_L2_MAPPER"]
+        swapRotorStockCfg=swappingModuleCfg["SWAP_ROTOR_STOCK"]
+        swapRotorMap={}
+        for key,val in swapRotorStockCfg.items():
+            swapRotorMap[key]=Rotor(val["ID"],Wiring(val["wiring"]),val["notch"])
 
-        l1SwappingRotorStockList=[]
-        for l1r in l1rotorCfgList:
-            l1SwappingRotorStockList.append(Rotor(l1r["ID"],Wiring(l1r["wiring"]),l1r["notch"]))
-
-
-        l2SwappingRotorStockList=[]
-        for l2r in l2rotorCfgList:
-            l2SwappingRotorStockList.append(Rotor(l2r["ID"],Wiring(l2r["wiring"]),l2r["notch"],len(l2r["wiring"])))
-
-
-        l1l2Mapper=self.createMapper(l1l2MapperCfg)
-
-        swapModule["L1_ROTOR_STOCK"]=l1SwappingRotorStockList
-        swapModule["L2_ROTOR_STOCK"]=l2SwappingRotorStockList
-        swapModule["L1_L2_MAPPER"]=l1l2Mapper
+        swapModule["SWAP_ROTOR_STOCK"]=swapRotorMap
 
         return swapModule
     def createEnigmaMachineFromConfig(self,config):
         cipherModule=self.createCipherModuleFromConfig(config)
         swappingModule=self.createSwappingModuleFromConfig(config)
 
-        rotorStockList=cipherModule["ROTOR_STOCK"]
+        cipherRotorStockMap=cipherModule["ROTOR_STOCK"]
         reflector=cipherModule["REFLECTOR"]
         plugboard=cipherModule["PLUGBOARD"]
 
-        l1SwappingRotorStockList=swappingModule["L1_ROTOR_STOCK"]
-        l2SwappingRotorStockList=swappingModule["L2_ROTOR_STOCK"]
-        l1l2SeparatorSwitch=swappingModule["L1_L2_MAPPER"]
-        l2CipherMapper=None
+        swapRotorStockMap=swappingModule["SWAP_ROTOR_STOCK"]
 
-
-
-        mc=ModernEnigma(rotorStockList,reflector,plugboard,l1SwappingRotorStockList,l2SwappingRotorStockList,l1l2SeparatorSwitch)
+        mc=ModernEnigma(cipherRotorStockMap,reflector,plugboard,swapRotorStockMap)
         return mc
-
-    def createMapper(self,config):
-
-        w=Wiring(config["wiring"])
-
-        return MapperSwitch(w)
-
-

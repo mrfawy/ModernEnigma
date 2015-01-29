@@ -24,7 +24,7 @@ class TestLevelEncryptor(unittest.TestCase):
 
     def testGeneratePerMsgWindowSetting(self):
         out=self.levelEncryptor.generatePerMsgWindowSetting(self.baseMachine)
-        self.assertEqual(len(self.baseMachine.rotorList),len(out))
+        self.assertEqual(self.baseMachine.getCipherRotorsCount(),len(out))
 
     def testApplyXor(self):
         seq=[1,2,3,4]

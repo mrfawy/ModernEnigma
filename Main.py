@@ -62,7 +62,7 @@ def encryptFile():
 
     print("DONE !!")
 
-def encryptTextAsBin():
+def encryptTextAsBin(writeToFile=False):
     CharIndexMap.rangeTypeisCharacterBased=False
 
     start_time = time.time()
@@ -70,28 +70,32 @@ def encryptTextAsBin():
 
     baseMachineModelName=EnigmaConfigGenerator(seed).createRandomModelName()
     baseMachineCfg=EnigmaConfigGenerator(seed).createMachineConfig(baseMachineModelName)
-
-    Util.writeObjectToFileAsJson(baseMachineCfg,"./state/baseMcCfg.json")
+    if writeToFile:
+        Util.writeObjectToFileAsJson(baseMachineCfg,"./state/baseMcCfg.json")
 
     baseMachine=EnigmaDynamicFactory(seed).createEnigmaMachineFromConfig(baseMachineCfg)
     baseMcStg=MachineSettingManager(seed).generateRandomSettingsForMachine(baseMachine)
 
-    Util.writeObjectToFileAsJson(baseMcStg.getAsMap(),"./state/baseMcStg.json")
+    if writeToFile:
+        Util.writeObjectToFileAsJson(baseMcStg.getAsMap(),"./state/baseMcStg.json")
 
     baseMachine.adjustMachineSettings(baseMcStg)
 
     levelMachineModelName=EnigmaConfigGenerator(seed).createRandomModelName()
     levelMcCfg=EnigmaConfigGenerator(seed).createMachineConfig(levelMachineModelName)
-    Util.writeObjectToFileAsJson(levelMcCfg,"./state/levelMcCfg.json")
+    if writeToFile:
+        Util.writeObjectToFileAsJson(levelMcCfg,"./state/levelMcCfg.json")
     levelMachine=EnigmaDynamicFactory(seed).createEnigmaMachineFromConfig(levelMcCfg)
     levelMcStg=MachineSettingManager(seed).generateRandomSettingsForMachine(levelMachine)
-    Util.writeObjectToFileAsJson(levelMcStg.getAsMap(),"./state/levelMcStg.json")
+    if writeToFile:
+        Util.writeObjectToFileAsJson(levelMcStg.getAsMap(),"./state/levelMcStg.json")
     levelMachine.adjustMachineSettings(levelMcStg)
 
     level=Level(baseMcStg,levelMcStg,seed)
 
 
-    Util.writeObjectToFileAsJson(level.getAsMap(),"./state/level.json")
+    if writeToFile:
+        Util.writeObjectToFileAsJson(level.getAsMap(),"./state/level.json")
 
 
     elapsed_time = time.time() - start_time
@@ -107,8 +111,8 @@ def encryptTextAsBin():
     encLevel=levelEncryptor.encryptLevel()
     elapsed_time = time.time() - start_time
     # print("Encrypted Seq in : "+str(elapsed_time))
-    # print("ENC:")
-    # print(Util.convertByteListIntoHexString(encLevel.outputMsg))
+    print("ENC:")
+    print(Util.convertByteListIntoHexString(encLevel.outputMsg))
 
     encLevel.inputMsg=""
 
@@ -118,18 +122,20 @@ def encryptTextAsBin():
     resultLevel=levelDecryptor.decryptLevel()
     elapsed_time = time.time() - start_time
     # print("Decrypted Sequence in :"+str(elapsed_time))
-    print("DEC:")
-    print(resultLevel.inputMsg)
+    # print("DEC:")
+    # print(resultLevel.inputMsg)
     # print(Util.decodeByteListIntoString(resultLevel.inputMsg))
 
-    print("DONE !!")
+    # print("DONE !!")
     return resultLevel.inputMsg
 
 def runTillError():
-    for i in range(100):
+    for i in range(1000):
+        print("#I:"+str(i))
         res=encryptTextAsBin()
         expected=[72, 101, 108, 108, 111, 32, 69, 110, 105, 103, 109, 97, 32, 33]
-        if len(res)==0 or res!=expected:
+        if  res!=expected:
+            print(res)
             return
     print(" ALL CASES DONE !!")
 def loadFromJsonFiles():
@@ -169,5 +175,5 @@ def loadFromJsonFiles():
     return resultLevel.inputMsg
     pass
 
-# runTillError()
-loadFromJsonFiles()
+runTillError()
+# loadFromJsonFiles()

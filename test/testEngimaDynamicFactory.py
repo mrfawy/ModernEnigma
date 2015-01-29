@@ -37,7 +37,7 @@ class TestEnigmaDynamicFactory(unittest.TestCase):
                     ]
                 }
             },
-            "ROTOR_STOCK": [
+            "ROTOR_STOCK": { "0":
                 {
                     "ID": "0",
                     "notch": [
@@ -55,24 +55,10 @@ class TestEnigmaDynamicFactory(unittest.TestCase):
                         ]
                     }
                 }
-            ]
+            }
         },
         "SWAPPING_MODULE": {
-            "L1_L2_MAPPER": {
-                "ID": "L1L2MPPR",
-                "wiring": {
-                    "0": [
-                        0
-                    ],
-                    "1": [
-                        2
-                    ],
-                    "2": [
-                        1
-                    ]
-                }
-            },
-            "L1_ROTOR_STOCK": [
+                "SWAP_ROTOR_STOCK": {"0":
                 {
                     "ID": "0",
                     "notch": [
@@ -90,26 +76,7 @@ class TestEnigmaDynamicFactory(unittest.TestCase):
                         ]
                     }
                 }
-            ],
-            "L2_ROTOR_STOCK": [
-                {
-                    "ID": "0",
-                    "notch": [
-                        0
-                    ],
-                    "wiring": {
-                        "0": [
-                            0
-                        ],
-                        "1": [
-                            2
-                        ],
-                        "2": [
-                            1
-                        ]
-                    }
-                }
-            ]
+            }
         }
     }
 
@@ -122,9 +89,7 @@ class TestEnigmaDynamicFactory(unittest.TestCase):
     def testCreateSwappingModuleFromConfig(self):
         module=self.factory.createSwappingModuleFromConfig(self.machineConfig)
         self.assertIsNotNone(module)
-        self.assertIsNotNone(module["L1_ROTOR_STOCK"])
-        self.assertIsNotNone(module["L2_ROTOR_STOCK"])
-        self.assertIsNotNone(module["L1_L2_MAPPER"])
+        self.assertIsNotNone(module["SWAP_ROTOR_STOCK"])
 
 
     def testCreateEnigmaMachineFromConfig(self):

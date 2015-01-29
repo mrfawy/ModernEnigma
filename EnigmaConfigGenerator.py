@@ -23,23 +23,15 @@ class EnigmaConfigGenerator(object):
         # self.SWAP_ACTIVE_SIGNALS_COUNT_MIN=CharIndexMap.getRangeSize()//5
         # self.SWAP_ACTIVE_SIGNALS_COUNT_MAX=CharIndexMap.getRangeSize()//2
 
-        # self.SWAP_ROTOR_L1_COUNT_MIN=CharIndexMap.getRangeSize()//5
-        # self.SWAP_ROTOR_L1_COUNT_MAX=CharIndexMap.getRangeSize()//2
-        self.SWAP_ROTOR_L1_COUNT_MIN=2
-        self.SWAP_ROTOR_L1_COUNT_MAX=2
-        # self.SWAP_ROTOR_L1_MIN_SIZE=CharIndexMap.getRangeSize()
-        # self.SWAP_ROTOR_L1_MAX_SIZE=CharIndexMap.getRangeSize()
-        self.SWAP_ROTOR_L1_MIN_SIZE=5
-        self.SWAP_ROTOR_L1_MAX_SIZE=5
+        # self.SWAP_ROTOR_COUNT_MIN=CharIndexMap.getRangeSize()//5
+        # self.SWAP_ROTOR_COUNT_MAX=CharIndexMap.getRangeSize()//2
+        self.SWAP_ROTOR_COUNT_MIN=2
+        self.SWAP_ROTOR_COUNT_MAX=2
+        # self.SWAP_ROTOR_MIN_SIZE=CharIndexMap.getRangeSize()
+        # self.SWAP_ROTOR_MAX_SIZE=CharIndexMap.getRangeSize()
+        self.SWAP_ROTOR_MIN_SIZE=5
+        self.SWAP_ROTOR_MAX_SIZE=5
 
-        # self.SWAP_ROTOR_L2_COUNT_MIN=CharIndexMap.getRangeSize()//5
-        # self.SWAP_ROTOR_L2_COUNT_MAX=CharIndexMap.getRangeSize()//2
-        self.SWAP_ROTOR_L2_COUNT_MIN=2
-        self.SWAP_ROTOR_L2_COUNT_MAX=3
-        # self.SWAP_ROTOR_L2_MIN_SIZE=CharIndexMap.getRangeSize()
-        # self.SWAP_ROTOR_L2_MIN_SIZE=CharIndexMap.getRangeSize()
-        self.SWAP_ROTOR_L2_MIN_SIZE=5
-        self.SWAP_ROTOR_L2_MAX_SIZE=5
 
     def createRandomModelName(self,length=100,cipherRotorCount=None):
         charSeq=""
@@ -77,19 +69,14 @@ class EnigmaConfigGenerator(object):
 
     def createSwappingModuleConfig(self):
         moduleCfg={}
-        moduleCfg["L1_ROTOR_STOCK"]=self.createSwappingL1RotorStockConfig()
-        moduleCfg["L2_ROTOR_STOCK"]=self.createSwappingL2RotorStockConfig()
-
-        choosedL1Size=len(moduleCfg["L1_ROTOR_STOCK"][0]["wiring"])
-        choosedL2Size=len(moduleCfg["L2_ROTOR_STOCK"][0]["wiring"])
-
-        moduleCfg["L1_L2_MAPPER"]=self.createMapperCfg("L1L2MPPR",range(choosedL1Size),range(choosedL2Size))
+        moduleCfg["SWAP_ROTOR_STOCK"]=self.createSwappingRotorStockConfig()
         return moduleCfg
+
     def createRotorStockConfig(self,rotorCount,rotorSize):
-        rotorStock=[]
+        rotorStock={}
         for i in range(rotorCount):
-            rotorConfig=self.createRotorConfig(i,rotorSize)
-            rotorStock.append(rotorConfig)
+            rotorConfig=self.createRotorConfig(str(i),rotorSize)
+            rotorStock[str(i)]=rotorConfig
         return rotorStock
 
     def createRotorConfig(self,id,size=None,hasNotch=True):
@@ -116,21 +103,14 @@ class EnigmaConfigGenerator(object):
         rotorSize=CharIndexMap.getRangeSize()
         return self.createRotorStockConfig(rotorCount,rotorSize)
 
-    def createSwappingL1RotorStockConfig(self,rotorCount=None):
+    def createSwappingRotorStockConfig(self,rotorCount=None):
         if not rotorCount:
-            rotorCount=self.random.nextInt(self.SWAP_ROTOR_L1_COUNT_MIN,self.SWAP_ROTOR_L1_COUNT_MAX)
+            rotorCount=self.random.nextInt(self.SWAP_ROTOR_COUNT_MIN,self.SWAP_ROTOR_COUNT_MAX)
 
-        rotorsize=self.random.nextInt(self.SWAP_ROTOR_L1_MIN_SIZE,self.SWAP_ROTOR_L1_MAX_SIZE)
+        rotorsize=self.random.nextInt(self.SWAP_ROTOR_MIN_SIZE,self.SWAP_ROTOR_MAX_SIZE)
 
         return self.createRotorStockConfig(rotorCount,rotorsize)
 
-    def createSwappingL2RotorStockConfig(self,rotorCount=None):
-        if not rotorCount:
-            rotorCount=self.random.nextInt(self.SWAP_ROTOR_L2_COUNT_MIN,self.SWAP_ROTOR_L2_COUNT_MAX)
-
-        rotorsize=self.random.nextInt(self.SWAP_ROTOR_L2_MIN_SIZE,self.SWAP_ROTOR_L2_MAX_SIZE)
-
-        return self.createRotorStockConfig(rotorCount,rotorsize)
 
     def getShuffledSequence(self,seq=None):
         if not seq:

@@ -19,7 +19,6 @@ class TestShuffler(unittest.TestCase):
         seq=self.shuffler.deshuffleSeq(shSeq,123)
         self.assertNotEqual(shSeq,seq)
         self.assertEqual(len(shSeq),len(seq))
-        self.assertEqual(seq,[0,1,2,3,4,5])
 
     def testDuality(self):
         msg=[0,1,2,3,4,5]
