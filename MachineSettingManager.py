@@ -111,10 +111,10 @@ class MachineSettingManager(object):
     def applyMachineSettings(self,mc,settingsMemento):
         if not settingsMemento:
             raise Exception("Settings not found to ajdust !!")
-        mc.rotorIdList=[]
+        mc.cipherRotorIdList=[]
         index=0
         for rId in settingsMemento.cipherRotorStg["ORDER"]:
-            mc.rotorIdList.append(rId)
+            mc.cipherRotorIdList.append(rId)
             mc.cipherRotorStockMap[rId].offset=settingsMemento.cipherRotorStg["OFFSET"][index]
             index+=1
 
