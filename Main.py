@@ -130,7 +130,7 @@ def encryptTextAsBin(writeToFile=False):
     return resultLevel.inputMsg
 
 def runTillError():
-    for i in range(1000):
+    for i in range(100):
         print("#I:"+str(i))
         res=encryptTextAsBin()
         expected=[72, 101, 108, 108, 111, 32, 69, 110, 105, 103, 109, 97, 32, 33]
@@ -175,5 +175,24 @@ def loadFromJsonFiles():
     return resultLevel.inputMsg
     pass
 
-runTillError()
+def testStateManager():
+    seed=123
+    baseMachineModelName=EnigmaConfigGenerator(seed).createRandomModelName()
+    baseMachineCfg=EnigmaConfigGenerator(seed).createMachineConfig(baseMachineModelName)
+
+    baseMachine=EnigmaDynamicFactory(seed).createEnigmaMachineFromConfig(baseMachineCfg)
+    baseMcStg=MachineSettingManager(seed).generateRandomSettingsForMachine(baseMachine)
+
+    baseMachine.adjustMachineSettings(baseMcStg)
+
+    from EnigmaStateManager import EnigmaStateManager
+    m=EnigmaStateManager()
+    m.generateMachineState("BS",baseMachine,3)
+    m.generateMachineState("MS",baseMachine,3)
+    m.generateMachineState("QS",baseMachine,3)
+    m.finished=True
+
+    print("DONE !!")
+# runTillError()
 # loadFromJsonFiles()
+testStateManager()
