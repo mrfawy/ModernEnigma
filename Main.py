@@ -198,6 +198,6 @@ def testStateManager():
     m.finished=True
 
     print("DONE !!")
-# runTillError()
+runTillError()
 # loadFromJsonFiles()
-testStateManager()
+# testStateManager()
