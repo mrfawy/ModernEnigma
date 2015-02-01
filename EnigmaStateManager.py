@@ -5,6 +5,7 @@ class EnigmaStateManager:
 
     def __init__(self,num_worker_threads=5):
         self.machineStateTable={}
+        self.workRequestMap={}
         self.workQueue=Queue()
         self.num_worker_threads=num_worker_threads
         self.finished=False
@@ -37,7 +38,7 @@ class EnigmaStateManager:
     def run(self):
         for i in range(self.num_worker_threads):
             t = threading.Thread(target=self.processWorkQueue)
-            # t.daemon = True
+            t.daemon = True
             t.start()
 
     def retreiveMachineState(self,machineId,stateNumber):
@@ -45,8 +46,14 @@ class EnigmaStateManager:
         if entryID in self.machineStateTable:
             return self.machineStateTable[entryID]
         else:
-            self.generateMachineState(machineId,stateNumber)
-            return self.machineStateTable[entryID]
+            """request already in queue , need to wait till it's ready"""
+            if machineId in self.workRequestMap and  stateNumber <= self.workRequestMap[machineId]:
+                while entryID not in self.machineStateTable:
+                    time.sleep(0.1)
+                return self.machineStateTable[entryID]
+            else:
+                raise ("No workRequest in workQueue for this machine state !!")
+
 
     def generateMachineState(self,machineId,machine,generatedStepsCount):
         request={}
@@ -54,11 +61,19 @@ class EnigmaStateManager:
         request["STCount"]=generatedStepsCount
         request["MC"]=machine
         self.workQueue.put(request)
+        if machineId in self.workRequestMap:
+            lastStep=self.workRequestMap[machineId]
+            lastStep+=generatedStepsCount
+            self.workRequestMap[machineId]=lastStep
+        else:
+            self.workRequestMap[machineId]=generatedStepsCount
 
-    def addMachineStateToTable(self,machineID,stateNumber,state):
-        key=machineID+"|"+str(stateNumber)
-        self.machineStateTable[key]=state
-        print(key)
+    def addMachineStateToTable(self,machineId,stateNumber,state):
+        if machineId not in self.machineStateTable:
+            self.machineStateTable[machineId]={}
+
+        entry=self.machineStateTable[machineId]
+        entry[stateNumber]=state
 
     def getEntryId(self,machineId,stateNumber):
         return str(machineId)+"|"+str(stateNumber)

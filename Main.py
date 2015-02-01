@@ -190,6 +190,11 @@ def testStateManager():
     m.generateMachineState("BS",baseMachine,3)
     m.generateMachineState("MS",baseMachine,3)
     m.generateMachineState("QS",baseMachine,3)
+    while True:
+        time.sleep(4)
+        print(Util.toJson(m.machineStateTable))
+        print("===============================")
+        break
     m.finished=True
 
     print("DONE !!")
