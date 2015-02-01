@@ -8,6 +8,7 @@ from MachineSettingsMemento import MachineSettingsMemento
 from MachineSettingManager import MachineSettingManager
 from Util import Util
 from Shuffler import Shuffler
+import copy
 
 class ModernEnigma:
     def __init__(self,cipherRotorStockMap,reflector,plugboard,swappingRotorStockMap):
@@ -117,6 +118,9 @@ class ModernEnigma:
 
     def printMachineInformation(self):
         raise ("Not implemented Feature")
+
+    def clone(self):
+        return copy.deepcopy(self)
 
 
 

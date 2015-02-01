@@ -7,7 +7,7 @@ from Util import Util
 from EnigmaStateManager import EnigmaStateManager
 
 class LevelEncryptor(object):
-    def __init__(self,baseMachine,levelMachine,level,stateManager=None,seed=None,streamConverter=None):
+    def __init__(self,baseMachine,levelMachine,level,seed=None,stateManager=None,streamConverter=None):
         self.baseMachine=baseMachine
         self.levelMachine=levelMachine
         self.level=level
@@ -18,6 +18,8 @@ class LevelEncryptor(object):
         self.stateManager=stateManager
         if not stateManager:
             self.stateManager=EnigmaStateManager()
+
+        self.resetMachniesSettings()
 
     def resetMachniesSettings(self):
         self.baseMachine.adjustMachineSettings(self.level.baseStg)
@@ -55,10 +57,11 @@ class LevelEncryptor(object):
 
 
     def encryptLevel(self,verbose=False):
-        self.generateNeededMachineStates()
         seq=self.level.inputMsg
         if self.streamConverter:
             seq=self.streamConverter.convertInput(msg)
+
+        self.generateNeededStatesForLevel(len(seq))
 
         phaseEncOut=self.encryptPhase("0",self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,seq)
         phaseEncOut=self.encryptPhase("1",self.levelMachine,self.baseMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,phaseEncOut)
@@ -66,25 +69,25 @@ class LevelEncryptor(object):
         if self.streamConverter:
             self.level.outputMsg=self.streamConverter.convertOutput(E)
         return self.level
-    def calculateNeededStatesForSeq(self,seqLen,blkSize):
-        paddedSeqLen=Util.calculatePaddingForSeqlength(seqLen,blkSize)
+    def calculateNeededStatesForSeqLen(self,seqLen,blkSize):
+        paddedSeqLen=Util.calculatePaddingForSeqLen(seqLen,blkSize)
         result= paddedSeqLen//blkSize
         return result
     def  calculateNeededStatesForPhase(self,id,m1,m2,m1BlkSize,m2BlkSize,seqLen):
         result={}
         M1PLen=m1.getCipherRotorsCount()
-        EM1pLen=Util.calculatePaddingForSeqlength(M1PLen,m2BlkSize[id])
-        EM1PNeededStates=self.calculateNeededState(M1PLen,m2BlkSize[id])
+        EM1pLen=Util.calculatePaddingForSeqLen(M1PLen,m2BlkSize[id])
+        EM1PNeededStates=self.calculateNeededStatesForSeqLen(M1PLen,m2BlkSize[id])
 
-        Msg_M1pLen=Util.calculatePaddingForSeqlength(seqLen,m1BlkSize[id])
-        Msg_M1pNeededStates=self.calculateNeededStates(seqLen,m1BlkSize[id])
+        Msg_M1pLen=Util.calculatePaddingForSeqLen(seqLen,m1BlkSize[id])
+        Msg_M1pNeededStates=self.calculateNeededStatesForSeqLen(seqLen,m1BlkSize[id])
 
         SEMsgLen=EM1pLen+Msg_M1pLen
-        xLen=Util.calculatePaddingForSeqlength(SEMsgLen,m1BlkSize[id])
-        xNeededStates=self.calculateNeededStates(SEMsgLen,m1BlkSize[id])
+        xLen=Util.calculatePaddingForSeqLen(SEMsgLen,m1BlkSize[id])
+        xNeededStates=self.calculateNeededStatesForSeqLen(SEMsgLen,m1BlkSize[id])
 
-        yLen=Util.calculatePaddingForSeqlength(xLen,m2BlkSize[id])
-        yNeedStates=self.calculateNeededStates(xLen,m2BlkSize[id])
+        yLen=Util.calculatePaddingForSeqLen(xLen,m2BlkSize[id])
+        yNeedStates=self.calculateNeededStatesForSeqLen(xLen,m2BlkSize[id])
 
         result["EM1PNeededStates"]=EM1PNeededStates
         result["Msg_M1pNeededStates"]=Msg_M1pNeededStates
@@ -93,8 +96,8 @@ class LevelEncryptor(object):
         result["yLen"]=yLen
         return result
 
-    def generateNeededStatesForLevel(self):
-        phase0=self.calculateNeededStatesForPhase("0",self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,len(seq))
+    def generateNeededStatesForLevel(self,seqLen):
+        phase0=self.calculateNeededStatesForPhase("0",self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,seqLen)
         phase1=self.calculateNeededStatesForPhase("1",self.levelMachine,self.baseMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,phase0["yLen"])
 
         BsStates=max(phase0["xNeededStates"],phase1["EM1PNeededStates"],phase1["yNeedStates"])
@@ -102,61 +105,18 @@ class LevelEncryptor(object):
         MsStates=max(phase0["EM1PNeededStates"],phase0["yNeedStates"],phase1["EM1PNeededStates"],phase1["xNeededStates"])
         MpStates=phase1["Msg_M1pNeededStates"]
 
-        # self.resetMachniesSettings()
-        # self.stateManager.generateMachineState("Bp",BpStates)
-        # self.stateManager.generateMachineState("Mp",self.levelMachine,4)
+        self.stateManager.generateMachineState("Bs",self.baseMachine.clone(),BsStates)
+        self.stateManager.generateMachineState("Ms",self.levelMachine.clone(),MsStates)
 
+        M1p_ph0=self.generatePerMsgWindowSetting(self.baseMachine)
+        BpMachine=self.baseMachine.clone()
+        BpMachine.adjustWindowDisplay(M1p_ph0)
+        self.stateManager.generateMachineState("Bp",BpMachine,BpStates)
 
-
-
-
-
-
-
-    def generateNeededMachineStates(self):
-        bsMcRotorCount=self.baseMachine.getCipherRotorsCount()
-        LvMcRotorCount=self.levelMachine.getCipherRotorsCount()
-        seqLen=len(self.level.inputMsg)
-
-        BsNeededStates=0
-        MsNeededStates=0
-        BpNeededStates=0
-        MpNeededStates=0
-
-        """phase 0"""
-        phaseMap={}
-        phase0={}
-        M1PLen=bsMcRotorCount
-        EM1pLen=Util.calculatePaddingForSeqlength(M1PLen,self.level.levelMcBlkSize[0])
-
-        EM1PNeededStates=self.calculateNeededState(M1PLen,self.level.levelMcBlkSize[0])
-        MsNeededStates+=m1pNeededStates
-
-        Msg_M1pLen=Util.calculatePaddingForSeqlength(seqLen,self.level.baseMcBlkSize[0])
-
-        Msg_M1pNeededStates=self.calculateNeededStates(seqLen,self.level.baseMcBlkSize[0])
-        BpNeededStates=Msg_M1pStates
-
-        SEMsgLen=EM1pLen+Msg_M1pLen
-        xLen=Util.calculatePaddingForSeqlength(SEMsgLen,self.level.baseMcBlkSize[0])
-        xNeededStates=self.calculateNeededStates(SEMsgLen,self.level.baseMcBlkSize[0])
-
-        yLen=Util.calculatePaddingForSeqlength(xLen,self.level.levelMcBlkSize[0])
-        yNeedStates=self.calculateNeededStates(xLen,self.level.levelMcBlkSize[0])
-
-
-        SEMsgLen=Util.calculatePaddingForSeqlength(seqLen,baseMcBlkSize)+EM1pLen
-        SEMsgNeededStates=self.calculateNeededStates(SEMsgLen,
-
-
-        BsNeededStates=self
-
-
-
-
-        phase0["M1P"]={mc.getCipherRotorsCount(),
-
-
+        M1p_ph1=self.generatePerMsgWindowSetting(self.levelMachine)
+        MpMachine=self.levelMachine.clone()
+        MpMachine.adjustWindowDisplay(M1p_ph1)
+        self.stateManager.generateMachineState("Mp",MpMachine,MpStates)
 
 
 

@@ -61,7 +61,11 @@ class TestModernEnigma(unittest.TestCase):
         self.assertEqual([2,1,1],[rotors[0].offset,rotors[1].offset,rotors[2].offset])
 
     def testProcessRotorSwapping(self):
-        raise ("Test case need to be writted ")
+        self.machine.adjustMachineSettings()
+        cipherRotorsBefor=self.machine.cipherRotorIdList[:]
+        self.machine.processRotorSwapping()
+        cipherRotorsAfter=self.machine.cipherRotorIdList
+        self.assertNotEqual(cipherRotorsBefor,cipherRotorsAfter)
 
 
     def testAdjustWindowDisplay(self):
@@ -75,5 +79,10 @@ class TestModernEnigma(unittest.TestCase):
         self.machine.cipherRotorStockMap=rotors
         self.machine.adjustWindowDisplay([3,2,1])
         self.assertEqual([3,2,1],[rotors[0].offset,rotors[1].offset,rotors[2].offset])
+
+    def testClone(self):
+        cloneMc=self.machine.clone()
+        self.assertIsNotNone(cloneMc)
+        self.assertEqual(cloneMc.cipherRotorIdList,self.machine.cipherRotorIdList)
 
 

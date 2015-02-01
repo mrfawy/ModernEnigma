@@ -62,7 +62,7 @@ class Util(object):
             return list(seq[1:len(seq)-seq[0]])
 
     @classmethod
-    def calculatePaddingForSeqlength(cls,seqLen,blkSize):
+    def calculatePaddingForSeqLen(cls,seqLen,blkSize):
         rem=(seqLen+1)% blkSize
         sampleSize=blkSize-rem
         if(sampleSize>seqLen):
