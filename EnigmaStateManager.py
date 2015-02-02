@@ -3,7 +3,7 @@ import time
 from queue import Queue
 class EnigmaStateManager:
 
-    def __init__(self,num_worker_threads=5):
+    def __init__(self,num_worker_threads=4):
         self.machineStateTable={}
         self.workRequestMap={}
         self.workQueue=Queue()
@@ -12,7 +12,6 @@ class EnigmaStateManager:
         self.run()
 
     def processWorkQueue(self):
-        print("checking queue ")
         while not self.finished:
             workRequest=self.workQueue.get()
             self.generateState(workRequest)
@@ -42,15 +41,16 @@ class EnigmaStateManager:
             t.start()
 
     def retreiveMachineState(self,machineId,stateNumber):
-        entryID=self.getEntryId(machineId,stateNumber)
-        if entryID in self.machineStateTable:
-            return self.machineStateTable[entryID]
+
+        if machineId in self.machineStateTable and stateNumber in self.machineStateTable[machineId]:
+            return self.machineStateTable[machineId][stateNumber]
         else:
             """request already in queue , need to wait till it's ready"""
             if machineId in self.workRequestMap and  stateNumber <= self.workRequestMap[machineId]:
-                while entryID not in self.machineStateTable:
+                while (machineId not in self.machineStateTable) or (stateNumber not in self.machineStateTable[machineId]):
                     time.sleep(0.1)
-                return self.machineStateTable[entryID]
+
+                return self.machineStateTable[machineId][stateNumber]
             else:
                 raise ("No workRequest in workQueue for this machine state !!")
 
@@ -75,6 +75,4 @@ class EnigmaStateManager:
         entry=self.machineStateTable[machineId]
         entry[stateNumber]=state
 
-    def getEntryId(self,machineId,stateNumber):
-        return str(machineId)+"|"+str(stateNumber)
 

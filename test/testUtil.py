@@ -74,5 +74,17 @@ class TestUtil(unittest.TestCase):
         res=Util.divideIntoChunks(seq,2)
         self.assertEqual(expected,res)
 
+    def testCalculatePaddingForSeqLen(self):
+        seq=[0,1,2,3]
+        paddedSeq=Util.padSequence(seq,64)
+        calcValue=Util.calculatePaddingForSeqLen(len(seq),64)
+        self.assertEqual(len(paddedSeq),calcValue)
+
+        seq=[0,1,2,3]
+        paddedSeq=Util.padSequence(seq,2)
+        calcValue=Util.calculatePaddingForSeqLen(len(seq),2)
+        self.assertEqual(len(paddedSeq),calcValue)
+
+
 
 

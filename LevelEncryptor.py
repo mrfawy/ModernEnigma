@@ -5,6 +5,7 @@ from Level import Level
 from Shuffler import Shuffler
 from Util import Util
 from EnigmaStateManager import EnigmaStateManager
+from LevelAnalyzer import LevelAnalyzer
 
 class LevelEncryptor(object):
     def __init__(self,baseMachine,levelMachine,level,seed=None,stateManager=None,streamConverter=None):
@@ -19,6 +20,10 @@ class LevelEncryptor(object):
         if not stateManager:
             self.stateManager=EnigmaStateManager()
 
+        self.levelAnalayzer=LevelAnalyzer(baseMachine,levelMachine,level,seed,self.stateManager)
+        self.M1p_ph0=None
+        self.M1p_ph1=None
+
         self.resetMachniesSettings()
 
     def resetMachniesSettings(self):
@@ -26,14 +31,13 @@ class LevelEncryptor(object):
         self.levelMachine.adjustMachineSettings(self.level.levelStg)
 
 
-    def encryptPhase(self,id,machine1,machine2,m1BlkSize,m2BlkSize,seq):
-        M1p=self.generatePerMsgWindowSetting(machine1)
-        EM1p=self.encryptSequence(M1p,machine2,m2BlkSize[id],self.level.i[id],self.level.xor[id])
-        Msg_M1p=self.encryptSequence(seq,machine1,m1BlkSize[id],self.level.j[id],self.level.xor[id],M1p)
+    def encryptPhase(self,id,Ms1,Mp1,Ms2,Mp2,m1BlkSize,m2BlkSize,M1PerMsgStg,seq):
+        EM1p=self.encryptSequence(M1PerMsgStg,Ms2,m2BlkSize[id],self.level.i[id],self.level.xor[id])
+        Msg_M1p=self.encryptSequence(seq,Mp1,m1BlkSize[id],self.level.j[id],self.level.xor[id])
         EMsg=EM1p+Msg_M1p
         SEMsg=Shuffler.shuffleSeq(EMsg,self.level.s[id])
-        x=self.encryptSequence(SEMsg,machine1,m1BlkSize[id],self.level.k[id],self.level.xor[id])
-        y=self.encryptSequence(x,machine2,m2BlkSize[id],self.level.l[id],self.level.xor[id])
+        x=self.encryptSequence(SEMsg,Ms1,m1BlkSize[id],self.level.k[id],self.level.xor[id])
+        y=self.encryptSequence(x,Ms2,m2BlkSize[id],self.level.l[id],self.level.xor[id])
         #
         # print("ENCRYPT")
         # print("ID:"+id)
@@ -63,81 +67,51 @@ class LevelEncryptor(object):
 
         self.generateNeededStatesForLevel(len(seq))
 
-        phaseEncOut=self.encryptPhase("0",self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,seq)
-        phaseEncOut=self.encryptPhase("1",self.levelMachine,self.baseMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,phaseEncOut)
+        phaseEncOut=self.encryptPhase("0","Bs","Bp","Ms","Mp",self.level.baseMcBlkSize,self.level.levelMcBlkSize,self.M1p_ph0,seq)
+        phaseEncOut=self.encryptPhase("1","Ms","Mp","Bs","Bp",self.level.levelMcBlkSize,self.level.baseMcBlkSize,self.M1p_ph1,phaseEncOut)
         self.level.outputMsg=phaseEncOut
         if self.streamConverter:
             self.level.outputMsg=self.streamConverter.convertOutput(E)
         return self.level
-    def calculateNeededStatesForSeqLen(self,seqLen,blkSize):
-        paddedSeqLen=Util.calculatePaddingForSeqLen(seqLen,blkSize)
-        result= paddedSeqLen//blkSize
-        return result
-    def  calculateNeededStatesForPhase(self,id,m1,m2,m1BlkSize,m2BlkSize,seqLen):
-        result={}
-        M1PLen=m1.getCipherRotorsCount()
-        EM1pLen=Util.calculatePaddingForSeqLen(M1PLen,m2BlkSize[id])
-        EM1PNeededStates=self.calculateNeededStatesForSeqLen(M1PLen,m2BlkSize[id])
-
-        Msg_M1pLen=Util.calculatePaddingForSeqLen(seqLen,m1BlkSize[id])
-        Msg_M1pNeededStates=self.calculateNeededStatesForSeqLen(seqLen,m1BlkSize[id])
-
-        SEMsgLen=EM1pLen+Msg_M1pLen
-        xLen=Util.calculatePaddingForSeqLen(SEMsgLen,m1BlkSize[id])
-        xNeededStates=self.calculateNeededStatesForSeqLen(SEMsgLen,m1BlkSize[id])
-
-        yLen=Util.calculatePaddingForSeqLen(xLen,m2BlkSize[id])
-        yNeedStates=self.calculateNeededStatesForSeqLen(xLen,m2BlkSize[id])
-
-        result["EM1PNeededStates"]=EM1PNeededStates
-        result["Msg_M1pNeededStates"]=Msg_M1pNeededStates
-        result["xNeededStates"]=xNeededStates
-        result["yNeedStates"]=yNeedStates
-        result["yLen"]=yLen
-        return result
 
     def generateNeededStatesForLevel(self,seqLen):
-        phase0=self.calculateNeededStatesForPhase("0",self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,seqLen)
-        phase1=self.calculateNeededStatesForPhase("1",self.levelMachine,self.baseMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,phase0["yLen"])
+        neededStatesMap=self.levelAnalayzer.analyzeNeededStatesForLevel()
+        self.stateManager.generateMachineState("Bs",self.baseMachine.clone(),neededStatesMap["Bs"])
+        self.stateManager.generateMachineState("Ms",self.levelMachine.clone(),neededStatesMap["Ms"])
 
-        BsStates=max(phase0["xNeededStates"],phase1["EM1PNeededStates"],phase1["yNeedStates"])
-        BpStates=phase0["Msg_M1pNeededStates"]
-        MsStates=max(phase0["EM1PNeededStates"],phase0["yNeedStates"],phase1["EM1PNeededStates"],phase1["xNeededStates"])
-        MpStates=phase1["Msg_M1pNeededStates"]
-
-        self.stateManager.generateMachineState("Bs",self.baseMachine.clone(),BsStates)
-        self.stateManager.generateMachineState("Ms",self.levelMachine.clone(),MsStates)
-
-        M1p_ph0=self.generatePerMsgWindowSetting(self.baseMachine)
+        self.M1p_ph0=self.generatePerMsgWindowSetting(self.baseMachine)
         BpMachine=self.baseMachine.clone()
-        BpMachine.adjustWindowDisplay(M1p_ph0)
-        self.stateManager.generateMachineState("Bp",BpMachine,BpStates)
+        BpMachine.adjustWindowDisplay(self.M1p_ph0)
+        self.stateManager.generateMachineState("Bp",BpMachine,neededStatesMap["Bs"])
 
-        M1p_ph1=self.generatePerMsgWindowSetting(self.levelMachine)
+        self.M1p_ph1=self.generatePerMsgWindowSetting(self.levelMachine)
         MpMachine=self.levelMachine.clone()
-        MpMachine.adjustWindowDisplay(M1p_ph1)
-        self.stateManager.generateMachineState("Mp",MpMachine,MpStates)
+        MpMachine.adjustWindowDisplay(self.M1p_ph1)
+        self.stateManager.generateMachineState("Mp",MpMachine,neededStatesMap["Mp"])
 
-
-
-    def encryptSequence(self,seq,machine,blkSize,times=1,xorSeedValue=0,displayStg=None):
+    def encryptSequence(self,seq,machineId,blkSize,times=1,xorSeedValue=0):
         result=seq
         result=self.performPadding(result,blkSize)
 
         result=self.applyXor(result,xorSeedValue)
         for t in range(times):
-            self.resetMachniesSettings()
-            if displayStg:
-                machine.adjustWindowDisplay(displayStg)
-            result=self.processSeq(result,machine,blkSize)
+            result=self.processSeq(result,machineId,blkSize)
 
         return result
 
-    def processSeq(self,seq,machine,blkSize):
+    def processSeq(self,seq,machineId,blkSize):
         result=[]
         seqChunks=Util.divideIntoChunks(seq,blkSize)
+        index=0
         for chunk in seqChunks:
-            result+=machine.processKeyListPress(chunk)
+            state=self.stateManager.retreiveMachineState(machineId,index)
+            result+=self.processChunkSeqByState(state,chunk)
+            index+=1
+        return result
+    def processChunkSeqByState(self,state,seq):
+        result=[]
+        for s in seq:
+            result.append(state[s])
         return result
 
     def performPadding(self,seq,blkSize=1):

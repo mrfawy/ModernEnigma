@@ -19,17 +19,18 @@ class TestLevelDecryptor(unittest.TestCase):
         self.level=Level(self.baseMachine.getMachineSettings(),self.levelMachine.getMachineSettings())
         self.levelDecryptor=LevelDecryptor(self.baseMachine,self.levelMachine,self.level)
     def testDualOK(self):
-        CharIndexMap.rangeTypeisCharacterBased=False
-        msg=[1,2,3,4,5]
-        self.level.inputMsg=msg
-        seed=123
-        levelEncryptor=LevelEncryptor(self.baseMachine,self.levelMachine,self.level,seed)
-        encLevel=levelEncryptor.encryptLevel()
-
-        encLevel.inputMsg=""
-        self.levelDecryptor.level=encLevel
-        resultLevel=self.levelDecryptor.decryptLevel()
-
-        self.assertEqual(resultLevel.inputMsg,msg)
+        # CharIndexMap.rangeTypeisCharacterBased=False
+        # msg=[1,2,3,4,5]
+        # self.level.inputMsg=msg
+        # seed=123
+        # levelEncryptor=LevelEncryptor(self.baseMachine,self.levelMachine,self.level,seed)
+        # encLevel=levelEncryptor.encryptLevel()
+        #
+        # encLevel.inputMsg=""
+        # self.levelDecryptor.level=encLevel
+        # resultLevel=self.levelDecryptor.decryptLevel()
+        #
+        # self.assertEqual(resultLevel.inputMsg,msg)
         # print(resultLevel.toJson())
+        raise("commented")
 

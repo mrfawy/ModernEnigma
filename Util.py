@@ -68,7 +68,7 @@ class Util(object):
         if(sampleSize>seqLen):
             return blkSize
         else:
-            return seqLen +sampleSize
+            return seqLen+1+sampleSize
 
     @classmethod
     def removeDuplicates(cls,seq):

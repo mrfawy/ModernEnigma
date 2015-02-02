@@ -130,7 +130,7 @@ def encryptTextAsBin(writeToFile=False):
     return resultLevel.inputMsg
 
 def runTillError():
-    for i in range(100):
+    for i in range(1):
         print("#I:"+str(i))
         res=encryptTextAsBin()
         expected=[72, 101, 108, 108, 111, 32, 69, 110, 105, 103, 109, 97, 32, 33]

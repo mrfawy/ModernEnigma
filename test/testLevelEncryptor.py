@@ -15,12 +15,13 @@ class TestLevelEncryptor(unittest.TestCase):
         self.level=Level(self.baseMachine.getMachineSettings(),self.levelMachine.getMachineSettings())
         self.levelEncryptor=LevelEncryptor(self.baseMachine,self.levelMachine,self.level)
     def testOK(self):
-        msg="AAAAA"
-        msgSeq=Util.encodeStringIntoByteList(msg)
-        self.level.inputMsg=msgSeq
-        resultLevel=self.levelEncryptor.encryptLevel()
-        decMsg=Util.decodeByteListIntoString(resultLevel.inputMsg)
-        self.assertEqual(msg,decMsg)
+        # msg="AAAAA"
+        # msgSeq=Util.encodeStringIntoByteList(msg)
+        # self.level.inputMsg=msgSeq
+        # resultLevel=self.levelEncryptor.encryptLevel()
+        # decMsg=Util.decodeByteListIntoString(resultLevel.inputMsg)
+        # self.assertEqual(msg,decMsg)
+        raise("commented")
 
     def testGeneratePerMsgWindowSetting(self):
         out=self.levelEncryptor.generatePerMsgWindowSetting(self.baseMachine)
