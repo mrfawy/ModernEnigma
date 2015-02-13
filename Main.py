@@ -134,6 +134,7 @@ def runTillError():
         print("#I:"+str(i))
         res=encryptTextAsBin()
         expected=[72, 101, 108, 108, 111, 32, 69, 110, 105, 103, 109, 97, 32, 33]
+        print(res)
         if  res!=expected:
             print(res)
             return

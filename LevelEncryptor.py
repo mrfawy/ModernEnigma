@@ -15,12 +15,11 @@ class LevelEncryptor(object):
         self.seed=seed
         self.random=RandomGenerator(seed)
         self.streamConverter=streamConverter
-        self.resetMachniesSettings()
         self.stateManager=stateManager
         if not stateManager:
             self.stateManager=EnigmaStateManager()
 
-        self.levelAnalayzer=LevelAnalyzer(baseMachine,levelMachine,level,seed,self.stateManager)
+        self.levelAnalayzer=LevelAnalyzer(baseMachine,levelMachine,level,self.stateManager)
         self.M1p_ph0=None
         self.M1p_ph1=None
 
@@ -75,7 +74,7 @@ class LevelEncryptor(object):
         return self.level
 
     def generateNeededStatesForLevel(self,seqLen):
-        neededStatesMap=self.levelAnalayzer.analyzeNeededStatesForLevel()
+        neededStatesMap=self.levelAnalayzer.analyzeNeededStatesForEncryptLevel()
         self.stateManager.generateMachineState("Bs",self.baseMachine.clone(),neededStatesMap["Bs"])
         self.stateManager.generateMachineState("Ms",self.levelMachine.clone(),neededStatesMap["Ms"])
 

@@ -1,15 +1,14 @@
 from Util import Util
 class LevelAnalyzer(object):
-    def __init__(self,baseMachine,levelMachine,level,seed=None,stateManager=None):
+    def __init__(self,baseMachine,levelMachine,level,stateManager=None):
         self.baseMachine=baseMachine
         self.levelMachine=levelMachine
         self.level=level
-        self.seed=seed
         self.stateManager=stateManager
         if not stateManager:
             self.stateManager=EnigmaStateManager()
 
-    def analyzeNeededStatesForLevel(self):
+    def analyzeNeededStatesForEncryptLevel(self):
         phase0=self.calculateNeededStatesForPhase("0",self.baseMachine,self.levelMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,len(self.level.inputMsg))
         phase1=self.calculateNeededStatesForPhase("1",self.levelMachine,self.baseMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,phase0["yLen"])
 
@@ -23,6 +22,22 @@ class LevelAnalyzer(object):
         result["Bp"]=BpStates
         result["Ms"]=MsStates
         result["Mp"]=MpStates
+
+        return result
+    def analyzeNeededStatesForDecryptLevel(self):
+        seqLen=len(self.level.outputMsg)
+        BsStatesPh1=self.calculateNeededStatesForSeqLen(seqLen,self.level.baseMcBlkSize["1"])
+        BsStatesPh0=self.calculateNeededStatesForSeqLen(seqLen,self.level.baseMcBlkSize["0"])
+        MsStatesPh1=self.calculateNeededStatesForSeqLen(seqLen,self.level.levelMcBlkSize["1"])
+        MsStatesPh0=self.calculateNeededStatesForSeqLen(seqLen,self.level.levelMcBlkSize["0"])
+
+
+        BsStates=max(BsStatesPh0,BsStatesPh1)
+        MsStates=max(MsStatesPh0,MsStatesPh1)
+
+        result={}
+        result["Bs"]=BsStates
+        result["Ms"]=MsStates
 
         return result
 
