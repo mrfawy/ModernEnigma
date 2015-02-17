@@ -69,6 +69,7 @@ class LevelEncryptor(object):
         phaseEncOut=self.encryptPhase("0","Bs","Bp","Ms","Mp",self.level.baseMcBlkSize,self.level.levelMcBlkSize,self.M1p_ph0,seq)
         phaseEncOut=self.encryptPhase("1","Ms","Mp","Bs","Bp",self.level.levelMcBlkSize,self.level.baseMcBlkSize,self.M1p_ph1,phaseEncOut)
         self.level.outputMsg=phaseEncOut
+        self.stateManager.finished=True
         if self.streamConverter:
             self.level.outputMsg=self.streamConverter.convertOutput(E)
         return self.level

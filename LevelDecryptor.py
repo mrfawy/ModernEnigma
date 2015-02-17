@@ -38,25 +38,25 @@ class LevelDecryptor(LevelEncryptor):
         self.stateManager.generateMachineState(Mp1,clonedMpMc,M1PNeededStates)
 
         Msg=self.decryptSequence(Msg_M1p,Mp1,m1BlkSize[id],self.level.j[id],self.level.xor[id])
-        # print("DECRYPT")
-        # print("ID:"+id)
-        # print("y:")
-        # print(seq)
-        # print("x:")
-        # print(x)
-        # print("SEMsg:")
-        # print(SEMsg)
-        # print("EMsg:")
-        # print(EMsg)
-        # print("EM1p:")
-        # print(EM1p)
-        # print("Msg_M1p:")
-        # print(Msg_M1p)
-        # print("M1p:")
-        # print(M1p)
-        # print("Msg:")
-        # print(Msg)
-        #
+        print("DECRYPT")
+        print("ID:"+id)
+        print("y:")
+        print(seq)
+        print("x:")
+        print(x)
+        print("SEMsg:")
+        print(SEMsg)
+        print("EMsg:")
+        print(EMsg)
+        print("EM1p:")
+        print(EM1p)
+        print("Msg_M1p:")
+        print(Msg_M1p)
+        print("M1p:")
+        print(M1p)
+        print("Msg:")
+        print(Msg)
+
         return Msg
 
 
@@ -77,6 +77,7 @@ class LevelDecryptor(LevelEncryptor):
         self.generateNeededBaseStatesForLevel(len(E))
         phaseDecOut=self.decryptPhase("1","Ms","Mp","Bs",self.baseMachine,self.levelMachine,self.level.levelMcBlkSize,self.level.baseMcBlkSize,E)
         phaseDecOut=self.decryptPhase("0","Bs","Bp","Ms",self.levelMachine,self.baseMachine,self.level.baseMcBlkSize,self.level.levelMcBlkSize,phaseDecOut)
+        self.stateManager.finished=True
         self.level.inputMsg=phaseDecOut
         if self.streamConverter:
             self.level.inputMsg=self.streamConverter.convertInput(msg)

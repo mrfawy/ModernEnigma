@@ -16,7 +16,7 @@ class EnigmaStateManager:
             workRequest=self.workQueue.get()
             self.generateState(workRequest)
             self.workQueue.task_done()
-            time.sleep(0.5)
+            time.sleep(0.2)
 
     def generateState(self,workRequest):
         mc=workRequest["MC"]
@@ -37,7 +37,7 @@ class EnigmaStateManager:
     def run(self):
         for i in range(self.num_worker_threads):
             t = threading.Thread(target=self.processWorkQueue)
-            t.daemon = True
+            t.daemon =True
             t.start()
 
     def retreiveMachineState(self,machineId,stateNumber):
