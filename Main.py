@@ -33,7 +33,7 @@ def encryptFile():
     print("2 MAchines were created in :"+str(elapsed_time))
 
     start_time = time.time()
-    msg=FileReader().readSeqFromFile("tst.txt")
+    msg=FileReader().readSeqFromFile("alice.txt")
     elapsed_time = time.time() - start_time
     print("Parsed File to read Seq in : "+str(elapsed_time))
     level.inputMsg=msg
@@ -45,7 +45,7 @@ def encryptFile():
     elapsed_time = time.time() - start_time
     print("Encrypted Seq in : "+str(elapsed_time))
 
-    FileReader().writeSeqTofile(encLevel.outputMsg,"tst.enc",True)
+    FileReader().writeSeqTofile(encLevel.outputMsg,"tst.enc")
     print("Encrypted File written")
 
     encLevel.inputMsg=""
@@ -130,7 +130,7 @@ def encryptTextAsBin(writeToFile=False):
     return resultLevel.inputMsg
 
 def runTillError():
-    for i in range(1):
+    for i in range(100):
         print("#I:"+str(i))
         res=encryptTextAsBin()
         expected=[72, 101, 108, 108, 111, 32, 69, 110, 105, 103, 109, 97, 32, 33]
@@ -201,4 +201,5 @@ def testStateManager():
     print("DONE !!")
 runTillError()
 # loadFromJsonFiles()
+# encryptFile()
 # testStateManager()
