@@ -199,7 +199,7 @@ def testStateManager():
     m.finished=True
 
     print("DONE !!")
-runTillError()
+# runTillError()
 # loadFromJsonFiles()
-# encryptFile()
+encryptFile()
 # testStateManager()
